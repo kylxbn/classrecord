@@ -1,0 +1,78 @@
+ ---------- CREDITS ----------
+
+
+
+ ----- Technologies used
+
+Current:
+    Microsoft Windows 10
+    Acer Aspire E15 / E5-575G-52DA
+    Java 9
+    IntelliJ IDEA
+    JavaFX
+    SceneBuilder
+    Git
+
+Before:
+    Dell Inspiron 15-3531
+    Java 8
+    NetBeans 8.2
+    Swing
+
+
+
+ ----- Libraries
+
+Current:
+    SnakeYAML
+    Apache Derby
+    Apache Commons
+    Thumbnailinator
+
+Before:
+    SQLite 3
+
+
+
+ ----- Icons
+
+    Icons8
+
+
+
+ ----- Thanks
+
+    みきとP
+    鬱P
+    buzzG
+    初音ミク
+    キズナアイ
+    ミライアカリ
+    輝夜月
+    Stack Overflow
+
+
+
+ ----- Legal stuff
+
+This program is (c) 2018 Kyle Alexander Buan.
+
+This program is not responsible for any loss, damage, or any misfortune that may arise from the use of this program. You are solely responsible for your own actions, and the programmer will NOT be held liable for anything.
+
+This program is not distributed with the intention of fitness for any purpose of any kind.
+While I checked this program as best as I can and verified that the code does work perfectly (or at least the grade-computing part does), any possible error cannot be blamed on me.
+
+If you are using this program legally, you are granted the following:
+- Indefinite use of program
+- Copying of program files for backup purposes
+- Copying of your database for backup purposes
+- Printing data from program multiple times
+
+However, even if you do have a valid license, you ARE NOT ALLOWED to do the following:
+- Reverse engineering the program
+- Distributing the program without permission, modified or not
+- Selling the program to another person
+and most importantly,
+- Using the program without a valid license
+
+Any treatment deemed inappropriate by the programmer will not be tolerated and the culprit will be persecuted to the full extent permitted by law.

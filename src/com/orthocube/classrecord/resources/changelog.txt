@@ -1,0 +1,117 @@
+CHANGELOG:
+
+2.3.3 (January 2, 2018)
+    * Fix cases where Task editor window will fail to show due to
+      missing icon files
+
+2.3.2 (September 8, 2017)
+    + You can now search the student on Facebook via the
+      "Search student on Facebook" context menu
+      scattered around the program
+    * Corrected the MPS computation to divide by the total score,
+      not highest attained score
+    - Old DepEd MPS computation removed
+
+2.3.1 (September 1, 2017)
+    ! Happy Ber-months!
+    + This version adds another "Mean Percentage Score"
+      computation as found in 
+      http://sciencing.com/convert-mean-score-percentage-5993737.html
+      This is becuase I found the Excel spreadseet named
+      "SAMPLE Template of MPS.xlsx" (which I based the original
+      MPS computation on) suspicious, because it gives percentages
+      higher than 100. That is very fishy, so I added another style.
+
+2.3.0 (August 31, 2017)
+    ! This was a rather hurried update.
+    + Automatic MPS computation
+    + Database Engine updated to support individual course
+      per enrollee (DB Engine V4)
+    + Enrollee Course is used to separate the students
+      in a class per course, for MPS and Grade viewing.
+    * Several small tweaks.
+
+2.2.0 (August 30, 2017)
+    + Partial printing support for
+      SHS Grades into official FCAT form
+    + Partial exporting of SHS grades into Excel
+    + Complete exporting of SHS grades into simple Excel form
+    * Other small fixes
+
+2.1.1 (August 3, 2017)
+    + Class list display was sped up significantly
+      (fast enough that you won't even notice it load.)
+
+2.1.0 (July 26, 2017)
+    + Database is now backed-up every log in, retaining up to
+      50 old copies of the database. Restoring old
+      backups can only be done manually for security
+      (simply rename the backup to the correct file name)
+    + Faces in photos are now properly rotated AND scaled
+      to fit the border
+    + "Please wait..." message while logging in since
+      it takes some time for the program to load
+    + Some UI rearrangements
+    + Right-clicking a class shows quick Attendance
+      operations menu
+    * Splash screen now properly displayed
+
+2.0.0 (July 24, 2017)
+    + Version 2 WTF
+    + Account passwords are now hashed for added security
+    + When adding a student's photo, the image can now be rotated
+      to make the eyes horizontal and centered on the image
+    + Actions operating on data are now accessible on
+      right-clicking table rows
+    + UI now full of cute icons
+    + Several form layout improvements
+    + Account permissions implemented
+    + Double click on table rows to edit or view the item
+    + Double click on table rows to select a student
+      (e.g. when adding scores or enrolling students)
+    + Text is now shown antialiased even on Japanese version of
+      Windows for improved text readability
+    * Fix windows showing multiple times when clicking
+      buttons multiple times
+    * Fix program crash on "Add Attendance Day" close
+    * Fix table cells editable even when DB isn't actually
+      being edited  
+    * Fix user password being displayed (asterisked) when
+      editing user list--password itself isn't visible
+      but showing how many characters a password has is still
+      a security vulnerability
+    * Windows are now shown centered on their parent
+      window, not on the center of the screen
+    ! Still not implemented on Java FX but I think I will
+      continue to use Swing anyway, since the program
+      is already this good XD
+
+1.2.0 (July 22, 2017)
+    + More options in searching and viewing class list
+    + Clicking [Enter] key is equivalent to clicking
+      the [Confirm] button (like "Save" or "Add" buttons)
+    + Added SQL Console for advanced database recovery and configuration
+      in case of program failure and fix is needed ASAP
+    + [Quick Add] button added on Attendance Days to quickly add
+      and edit a day
+    + Automatically focusing entry fields to facilitate data entry
+    + [Classes] now opens automatically on start-up.
+    * Task's original Criteria is now selected automatically when
+      editing a task
+
+1.1.2 (June 23, 2017)
+    * Fix app crash on close Student Enrolled In window
+    * Fix display wrong student name in Student Enrolled In window
+    * Fix only College grades shown on Student Enrolled In window
+    * Fix Search on click Enter on choosing Add Enrollee student
+    * Fix database crash on running newly installed app
+
+1.1.1 (June 22, 2017)
+    * Fix wrong display of number of students shown
+
+1.1.0 (June 20, 2017)
+    + 'Notes' field added to Classes.
+    + Allows users to view the subjects that a certain student enrolled.
+
+1.0.0 (June 19, 2017):
+    + Hey, first fully-functional release!

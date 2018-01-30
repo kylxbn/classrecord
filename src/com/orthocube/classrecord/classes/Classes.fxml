@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright © Kyle Alexander Buan - All Rights Reserved.
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited.
+  ~ Proprietary and confidential.
+  ~ Written by Kyle Alexander Buan <orthocube@protonmail.com>, 2018.
+  -->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
+           maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="687.0" prefWidth="921.0"
+           stylesheets="@../res/modena_dark.css" xmlns="http://javafx.com/javafx/9.0.1"
+           fx:controller="com.orthocube.classrecord.classes.ClassesController">
+    <items>
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="100.0" spacing="8.0">
+            <children>
+                <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" spacing="8.0">
+                    <children>
+                        <GridPane hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                  minHeight="0.0" minWidth="0.0" HBox.hgrow="ALWAYS">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0"
+                                                   percentWidth="45.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0"
+                                                   percentWidth="15.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0"
+                                                   percentWidth="10.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="30.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <TextField fx:id="txtClassSearch" maxWidth="1.7976931348623157E308" minHeight="0.0"
+                                           minWidth="0.0" promptText="Class"/>
+                                <TextField fx:id="txtSYSearch" maxWidth="1.7976931348623157E308" minHeight="0.0"
+                                           minWidth="0.0" promptText="S.Y." GridPane.columnIndex="1"/>
+                                <TextField fx:id="txtSemSearch" minHeight="0.0" minWidth="0.0" promptText="Sem"
+                                           GridPane.columnIndex="2"/>
+                                <TextField fx:id="txtCourseSearch" minHeight="0.0" minWidth="0.0" promptText="Course"
+                                           GridPane.columnIndex="3"/>
+                            </children>
+                        </GridPane>
+                    </children>
+                </HBox>
+                <TitledPane fx:id="ttlView" animated="false" collapsible="false" maxHeight="1.7976931348623157E308"
+                            maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
+                            text="View Options">
+                    <content>
+                        <GridPane hgap="4.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                  minHeight="-Infinity" minWidth="-Infinity" vgap="4.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308"
+                                                   minWidth="-Infinity" percentWidth="33.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308"
+                                                   minWidth="-Infinity" percentWidth="33.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308"
+                                                   minWidth="-Infinity" percentWidth="33.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <Label fx:id="lblTimeView" minHeight="-Infinity" minWidth="-Infinity"
+                                       text="Time period:"/>
+                                <Label fx:id="lblLevelView" minHeight="-Infinity" minWidth="-Infinity" text="Level:"
+                                       GridPane.columnIndex="1"/>
+                                <Label fx:id="lblSortingView" minHeight="-Infinity" minWidth="-Infinity" text="Sorting:"
+                                       GridPane.columnIndex="2"/>
+                                <RadioButton fx:id="rdoTimeToday" minHeight="-Infinity" minWidth="-Infinity"
+                                             mnemonicParsing="false" selected="true" text="Today"
+                                             GridPane.rowIndex="1"/>
+                                <RadioButton fx:id="rdoTimeThisSemester" minHeight="-Infinity" minWidth="-Infinity"
+                                             mnemonicParsing="false" text="This Semester" GridPane.rowIndex="2"/>
+                                <RadioButton fx:id="rdoTimeAll" minHeight="-Infinity" minWidth="-Infinity"
+                                             mnemonicParsing="false" text="All" GridPane.rowIndex="3"/>
+                                <RadioButton fx:id="rdoLevelCollege" minHeight="-Infinity" minWidth="-Infinity"
+                                             mnemonicParsing="false" text="College" GridPane.columnIndex="1"
+                                             GridPane.rowIndex="1"/>
+                                <RadioButton fx:id="rdoLevelSHS" minHeight="-Infinity" minWidth="-Infinity"
+                                             mnemonicParsing="false" text="SHS" GridPane.columnIndex="1"
+                                             GridPane.rowIndex="2"/>
+                                <RadioButton fx:id="rdoLevelAll" minHeight="-Infinity" minWidth="-Infinity"
+                                             mnemonicParsing="false" selected="true" text="All" GridPane.columnIndex="1"
+                                             GridPane.rowIndex="3"/>
+                                <RadioButton fx:id="rdoSortingChronological" minHeight="-Infinity" minWidth="-Infinity"
+                                             mnemonicParsing="false" selected="true" text="Chronological"
+                                             GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                                <RadioButton fx:id="rdoSortingAlphabetical" minHeight="-Infinity" minWidth="-Infinity"
+                                             mnemonicParsing="false" text="Alphabetical" GridPane.columnIndex="2"
+                                             GridPane.rowIndex="2"/>
+                            </children>
+                        </GridPane>
+                    </content>
+                    <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
+                            <image>
+                                <Image url="@../res/View_16px.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </TitledPane>
+                <TableView fx:id="tblClasses" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                           minHeight="0.0" minWidth="-Infinity" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colName" prefWidth="68.0" resizable="false" sortable="false" text="Name"/>
+                        <TableColumn fx:id="colSY" minWidth="5.0" prefWidth="32.0" resizable="false" sortable="false"
+                                     text="S.Y."/>
+                        <TableColumn fx:id="colSem" prefWidth="36.0" resizable="false" sortable="false" text="Sem"/>
+                        <TableColumn fx:id="colRoom" prefWidth="104.0" resizable="false" sortable="false" text="Room"/>
+                        <TableColumn fx:id="colCourse" prefWidth="153.0" resizable="false" sortable="false"
+                                     text="Course"/>
+                    </columns>
+                    <contextMenu>
+                        <ContextMenu>
+                            <items>
+                                <MenuItem fx:id="mnuEnrollees" mnemonicParsing="false" onAction="#mnuEnrolleesAction"
+                                          text="Enrollees"/>
+                                <MenuItem mnemonicParsing="false" text="Criterias"/>
+                                <Menu mnemonicParsing="false" text="Attendance">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" text="Quick add"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem mnemonicParsing="false" text="View attendance days"/>
+                                        <MenuItem mnemonicParsing="false" text="Summarize attendance"/>
+                                    </items>
+                                </Menu>
+                                <MenuItem mnemonicParsing="false" text="Tasks"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem mnemonicParsing="false" text="Grades"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem mnemonicParsing="false" onAction="#mnuDeleteAction" text="Remove"/>
+                            </items>
+                        </ContextMenu>
+                    </contextMenu>
+                </TableView>
+                <HBox alignment="CENTER_LEFT">
+                    <children>
+                        <Label text=" subjects shown."/>
+                        <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                              minWidth="-Infinity" prefHeight="1.0" prefWidth="1.0" HBox.hgrow="ALWAYS"/>
+                        <Button mnemonicParsing="false" onAction="#cmdAddAction" text="Add"/>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+            </padding>
+        </VBox>
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+              minWidth="-Infinity">
+            <children>
+                <ScrollPane fitToWidth="true" minHeight="-Infinity" minWidth="-Infinity" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox minHeight="-Infinity" minWidth="-Infinity">
+                            <children>
+                                <TitledPane fx:id="ttlInfo" animated="false" collapsible="false"
+                                            maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                            minHeight="-Infinity" minWidth="-Infinity" text="Class Info">
+                                    <content>
+                                        <GridPane hgap="8.0" vgap="4.0">
+                                            <columnConstraints>
+                                                <ColumnConstraints halignment="RIGHT" hgrow="NEVER"
+                                                                   maxWidth="1.7976931348623157E308"
+                                                                   minWidth="-Infinity"/>
+                                                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308"
+                                                                   minWidth="-Infinity" prefWidth="100.0"/>
+                                                <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308"
+                                                                   minWidth="-Infinity"/>
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                            </rowConstraints>
+                                            <children>
+                                                <Label fx:id="lblName" text="Name:"/>
+                                                <Label fx:id="lblSY" text="School Year:" GridPane.rowIndex="1"/>
+                                                <Label fx:id="lblSemester" text="Semester:" GridPane.rowIndex="2"/>
+                                                <Label fx:id="lblYear" text="Year:" GridPane.rowIndex="3"/>
+                                                <Label fx:id="lblCourse" text="Course:" GridPane.rowIndex="4"/>
+                                                <Label fx:id="lblRoom" text="Room:" GridPane.rowIndex="5"/>
+                                                <Label fx:id="lblLevel" text="Level:" GridPane.rowIndex="6"/>
+                                                <Label fx:id="lblNotes" text="Notes:" GridPane.rowIndex="7"/>
+                                                <TextField fx:id="txtName" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2"/>
+                                                <TextField fx:id="txtSY" GridPane.columnIndex="1"
+                                                           GridPane.rowIndex="1"/>
+                                                <TextField fx:id="txtCourse" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2" GridPane.rowIndex="4"/>
+                                                <TextField fx:id="txtRoom" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2" GridPane.rowIndex="5"/>
+                                                <TextField fx:id="txtNotes" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2" GridPane.rowIndex="7"/>
+                                                <ChoiceBox fx:id="cboLevel" maxHeight="1.7976931348623157E308"
+                                                           maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                                           minWidth="-Infinity" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2" GridPane.rowIndex="6"/>
+                                                <Label fx:id="lblSY2" text="- 2017" GridPane.columnIndex="2"
+                                                       GridPane.rowIndex="1"/>
+                                                <ChoiceBox fx:id="cboSemester" maxHeight="1.7976931348623157E308"
+                                                           maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                                           minWidth="-Infinity" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2" GridPane.rowIndex="2"/>
+                                                <ChoiceBox fx:id="cboYear" maxHeight="1.7976931348623157E308"
+                                                           maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                                           minWidth="-Infinity" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2" GridPane.rowIndex="3"/>
+                                            </children>
+                                        </GridPane>
+                                    </content>
+                                    <graphic>
+                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
+                                            <image>
+                                                <Image url="@../res/Info_16px.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </TitledPane>
+                                <TitledPane fx:id="ttlSchedule" animated="false" collapsible="false"
+                                            text="Class Schedule">
+                                    <content>
+                                        <GridPane hgap="8.0" vgap="4.0">
+                                            <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308"
+                                                                   minWidth="-Infinity"/>
+                                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                                                <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308"
+                                                                   minWidth="-Infinity"/>
+                                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                                vgrow="SOMETIMES"/>
+                                            </rowConstraints>
+                                            <children>
+                                                <CheckBox fx:id="chkSunday" mnemonicParsing="false" text="Sunday"/>
+                                                <CheckBox fx:id="chkFriday" mnemonicParsing="false" text="Friday"
+                                                          GridPane.rowIndex="5"/>
+                                                <CheckBox fx:id="chkSaturday" mnemonicParsing="false" text="Saturday"
+                                                          GridPane.rowIndex="6"/>
+                                                <CheckBox fx:id="chkThursday" mnemonicParsing="false" text="Thursday"
+                                                          GridPane.rowIndex="4"/>
+                                                <CheckBox fx:id="chkWednesday" mnemonicParsing="false" text="Wednesday"
+                                                          GridPane.rowIndex="3"/>
+                                                <CheckBox fx:id="chkTuesday" mnemonicParsing="false" text="Tuesday"
+                                                          GridPane.rowIndex="2"/>
+                                                <CheckBox fx:id="chkMonday" mnemonicParsing="false" text="Monday"
+                                                          GridPane.rowIndex="1"/>
+                                                <TextField fx:id="txtSunday" GridPane.columnIndex="1"/>
+                                                <TextField fx:id="txtMonday" GridPane.columnIndex="1"
+                                                           GridPane.rowIndex="1"/>
+                                                <TextField fx:id="txtTuesday" GridPane.columnIndex="1"
+                                                           GridPane.rowIndex="2"/>
+                                                <TextField fx:id="txtWednesday" GridPane.columnIndex="1"
+                                                           GridPane.rowIndex="3"/>
+                                                <TextField fx:id="txtThursday" GridPane.columnIndex="1"
+                                                           GridPane.rowIndex="4"/>
+                                                <TextField fx:id="txtFriday" GridPane.columnIndex="1"
+                                                           GridPane.rowIndex="5"/>
+                                                <TextField fx:id="txtSaturday" GridPane.columnIndex="1"
+                                                           GridPane.rowIndex="6"/>
+                                                <Label text=" - " GridPane.columnIndex="2"/>
+                                                <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                                                <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                                                <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                                                <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+                                                <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+                                                <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+                                                <TextField fx:id="txtSunday2" GridPane.columnIndex="3"/>
+                                                <TextField fx:id="txtMonday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="1"/>
+                                                <TextField fx:id="txtTuesday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="2"/>
+                                                <TextField fx:id="txtWednesday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="3"/>
+                                                <TextField fx:id="txtThursday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="4"/>
+                                                <TextField fx:id="txtFriday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="5"/>
+                                                <TextField fx:id="txtSaturday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="6"/>
+                                            </children>
+                                        </GridPane>
+                                    </content>
+                                    <graphic>
+                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
+                                            <image>
+                                                <Image url="@../res/Schedule_16px.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </TitledPane>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+                <HBox alignment="CENTER_RIGHT" spacing="8.0">
+                    <children>
+                        <Button fx:id="cmdSave" defaultButton="true" mnemonicParsing="false" onAction="#cmdSaveAction"
+                                text="Save">
+                            <graphic>
+                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
+                                    <image>
+                                        <Image url="@../res/Save_16px.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </children>
+                    <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+    </items>
+</SplitPane>

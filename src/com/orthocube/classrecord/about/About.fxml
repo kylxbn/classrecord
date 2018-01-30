@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright © Kyle Alexander Buan - All Rights Reserved.
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited.
+  ~ Proprietary and confidential.
+  ~ Written by Kyle Alexander Buan <orthocube@protonmail.com>, 2018.
+  -->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
+           maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="100.0" prefHeight="694.0" prefWidth="932.0"
+           stylesheets="@../res/modena_dark.css" xmlns="http://javafx.com/javafx/9.0.1"
+           fx:controller="com.orthocube.classrecord.about.AboutController">
+    <items>
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+              minWidth="-Infinity" spacing="8.0">
+            <children>
+                <HBox alignment="TOP_CENTER">
+                    <children>
+                        <Label alignment="CENTER_RIGHT" text="Class Record">
+                            <font>
+                                <Font name="System Bold" size="36.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox>
+                    <children>
+                        <VBox HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="Version 3.0 ALPHA, Built on "/>
+                                <Label fx:id="lblDatabaseVersion" text="Database engine version "/>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+                <GridPane hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                          minHeight="-Infinity" minWidth="-Infinity">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="1.7976931348623157E308"
+                                           minWidth="-Infinity"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <Label fx:id="lblJavaVersion" text="Currently running on Java " GridPane.columnIndex="1"/>
+                        <Label fx:id="lblVendor" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <Label text="JRE Version:"/>
+                        <Label text="JRE Developer:" GridPane.rowIndex="1"/>
+                        <Label text="OS Name:" GridPane.rowIndex="2"/>
+                        <Label text="OS Version:" GridPane.rowIndex="3"/>
+                        <Label fx:id="lblOSName" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        <Label fx:id="lblOSVersion" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                        <Label text="OS Architecture:" GridPane.rowIndex="4"/>
+                        <Label fx:id="lblCPUISA" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                    </children>
+                </GridPane>
+                <HBox>
+                    <children>
+                        <VBox>
+                            <children>
+                                <Label text="Records student data, attendance, scores, grades," wrapText="true"/>
+                                <Label text="and automatically generates reports for them." wrapText="true"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+                <VBox>
+                    <children>
+                        <Label text="Programmed in Java 9 by Kyle Alexander Buan"/>
+                        <Label text="© 2018 Kyle Alexander Buan">
+                            <font>
+                                <Font name="System Bold" size="15.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                </VBox>
+                <HBox alignment="CENTER">
+                    <children>
+                        <VBox alignment="TOP_CENTER">
+                            <children>
+                                <Label text="Feel free to send suggestions for improvements, "/>
+                                <Label text="error reports, and anything else to: "/>
+                                <Label text="orthocube@protonmail.com"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+                <VBox>
+                    <children>
+                        <Label text="Song playing while building app:"/>
+                        <Label text="    Carl Orff - “O Fortuna”"/>
+                        <Label text="    From the album “Carmina Burana”"/>
+                    </children>
+                </VBox>
+                <TextArea fx:id="txtCredits" editable="false" prefHeight="200.0" prefWidth="200.0" text="tersitke"
+                          wrapText="true" VBox.vgrow="ALWAYS">
+                    <font>
+                        <Font name="Consolas" size="12.0"/>
+                    </font>
+                </TextArea>
+            </children>
+            <padding>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+            </padding>
+        </VBox>
+        <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0" stylesheets="@../res/modena_dark.css">
+            <children>
+                <Label text="Changelog:"/>
+                <TextArea fx:id="txtChangelog" editable="false" prefHeight="200.0" prefWidth="200.0" text="tsryth\"
+                          wrapText="true" VBox.vgrow="ALWAYS">
+                    <font>
+                        <Font name="Consolas" size="12.0"/>
+                    </font>
+                </TextArea>
+            </children>
+            <padding>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+            </padding>
+        </VBox>
+    </items>
+</SplitPane>

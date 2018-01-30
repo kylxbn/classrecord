@@ -1,0 +1,130 @@
+Users:
+    UserID   INTEGER PRIMARY KEY NOT NULL
+    Username TEXT
+    Password TEXT
+    Caps     INTEGER
+
+Students:
+    StudentID INTEGER PRIMARY KEY NOT NULL
+    SID       TEXT
+    FN        TEXT
+    MN        TEXT
+    LN        TEXT
+    isFemale  NUMBER 0 = "Male", 1 = "Female"
+    Contact   TEXT
+    Address   TEXT
+    Notes     TEXT
+    Picture   BLOB
+
+Classes:
+    ClassID NUMBER PRIMARY KEY NOT NULL
+    Name      TEXT
+    SY        NUMBER
+    Sem       NUMBER
+    YearLevel NUMBER
+    Course    TEXT
+    Room      TEXT
+    Days      NUMBER
+    Times     TEXT
+    IsSHS     NUMBER 0 = "College", 1 = "SHS"
+
+Criterias:
+    CriteriaID NUMBER PRIMARY KEY NOT NULL
+    ClassID    NUMBER
+    Name       TEXT
+    Percent    NUMBER
+    Terms      INT
+
+CriteriasSHS:
+    CriteriaID NUMBER PRIMARY KEY NOT NULL
+    ClassID    NUMBER
+    Name       TEXT
+    Percent    NUMBER
+    Terms      INT 
+
+Enrollees:
+    EnrolleeID NUMBER PRIMARY KEY NOT NULL
+    ClassID    NUMBER
+    StudentID  NUMBER
+    ClassCard  NUMBER
+    Notes      TEXT
+    Course     TEXT
+
+SHSEnrollees:
+    EnrolleeID NUMBER PRIMARY KEY NOT NULL
+    ClassID    NUMBER
+    StudenID   NUMBER
+    Notes      TEXT 
+    Course     TEXT
+
+AttendanceDays:
+    DayID   NUMBER PRIMARY KEY
+    Date    TEXT
+    ClassID NUMBER
+    Notes   TEXT
+
+AttendanceList:
+    AttendanceID NUMBER PRIMARY KEY
+    DayID        NUMBER
+    EnrolleeID   NUMBER
+    Remarks      TEXT A = Absent, P = Present, L = Late, O = Others
+    Notes        TEXT
+
+Tasks:
+    TaskID     NUMBER PRIMARY KEY
+    Name       TEXT
+    ClassID    NUMBER
+    CriteriaID NUMBER
+    Term       NUMBER
+    Items      NUMBER
+
+SHSTasks:
+    TaskID     NUMBER PRIMARY KEY
+    Name       TEXT
+    ClassID    NUMBER
+    CriteriaID NUMBER
+    Term       NUMBER
+    Items      NUMBER
+
+Scores:
+    ScoreID    NUMBER PRIMARY KEY
+    EnrolleeID NUMBER
+    TaskID     NUMBER
+    Score      NUMBER
+    Notes      TEXT
+
+SHSScores:
+    ScoreID    NUMBER PRIMARY KEY
+    EnrolleeID NUMBER
+    TaskID     NUMBER
+    Score      NUMBER
+    Notes      TEXT
+
+LicenseKeys:
+    KeyID      NUMBER PRIMARY KEY
+    LicenseKey TEXT NOT NULL
+
+Counters:
+    ID             NUMBER PRIMARY KEY NOT NULL
+    Users          NUMBER NOT NULL
+    Students       NUMBER NOT NULL
+    Classes        NUMBER NOT NULL
+    Criterias      NUMBER NOT NULL
+    Enrollees      NUMBER NOT NULL
+    AttendanceDays NUMBER NOT NULL
+    AttendanceList NUMBER NOT NULL
+    Tasks          NUMBER NOT NULL
+    Scores         NUMBER NOT NULL
+    Reminders      NUMBER NOT NULL
+
+Reminders:
+    ID        NUMBER PRIMARY KEY NOT NULL
+    StartDate TEXT NOT NULL
+    EndDate   TEXT NOT NULL
+    Title     TEXT NOT NULL
+    Notes     TEXT NOT NULL
+    Location  TEXT NOT NULL
+
+Settings:
+    SettingKey   TEXT
+    SettingValue TEXT

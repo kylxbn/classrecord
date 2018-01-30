@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Thumbnailinator">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/Thumbnailinator.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
