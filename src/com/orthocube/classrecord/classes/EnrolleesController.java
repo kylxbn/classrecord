@@ -86,7 +86,7 @@ public class EnrolleesController implements Initializable {
         currentClass = c;
         try {
             tblEnrollees.setItems(DB.getEnrollees(currentClass));
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             Dialogs.exception(e);
         }
     }

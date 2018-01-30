@@ -317,34 +317,29 @@ public class DB {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Students">
-    private static Student getStudent(ResultSet r) throws SQLException, IOException {
-        Student temp = new Student(r.getLong("Students.StudentID"));
-        temp.setSID(r.getString("Students.SID"));
-        temp.setFN(r.getString("Students.FN"));
-        temp.setMN(r.getString("Students.MN"));
-        temp.setLN(r.getString("Students.LN"));
-        temp.setFemale(r.getInt("Students.IsFemale") > 0);
-        temp.setContact(r.getString("Students.Contact"));
-        temp.setAddress(r.getString("Students.Address"));
-        temp.setNotes(r.getString("Students.Notes"));
-        InputStream is = r.getBinaryStream("Students.Picture");
-        if (is != null) {
-            temp.setPicture(ImageIO.read(is));
-            is.close();
-        }
-        return temp;
-    }
-
     public static ObservableList<Student> getStudents() throws SQLException, IOException {
         LOGGER.log(Level.INFO, "Getting students...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT * FROM Students");
+        PreparedStatement prep = con.prepareStatement("SELECT Students.StudentID, Students.SID, Students.FN, Students.MN, Students.LN, Students.IsFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture FROM Students");
         r = prep.executeQuery();
 
         ObservableList<Student> students = FXCollections.observableArrayList();
 
         while (r.next()) {
-            Student temp = getStudent(r);
+            Student temp = new Student(r.getLong(1));
+            temp.setSID(r.getString(2));
+            temp.setFN(r.getString(3));
+            temp.setMN(r.getString(4));
+            temp.setLN(r.getString(5));
+            temp.setFemale(r.getInt(6) > 0);
+            temp.setContact(r.getString(7));
+            temp.setAddress(r.getString(8));
+            temp.setNotes(r.getString(9));
+            InputStream is = r.getBinaryStream(10);
+            if (is != null) {
+                temp.setPicture(ImageIO.read(is));
+                is.close();
+            }
             students.add(temp);
         }
 
@@ -405,13 +400,27 @@ public class DB {
     public static ObservableList<Clazz> getEnrolledIn(Student s) throws SQLException {
         LOGGER.log(Level.INFO, "Getting Enrolled In list...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT * FROM Classes JOIN Enrollees ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.StudentID = ?");
+        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes JOIN Enrollees ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.StudentID = ?");
         prep.setLong(1, s.getID());
         r = prep.executeQuery();
 
         ObservableList<Clazz> classes = FXCollections.observableArrayList();
         while (r.next()) {
-            Clazz temp = getClass(r);
+            Clazz temp = new Clazz(r.getLong(1));
+            temp.setName(r.getString(2));
+            temp.setSY(r.getInt(3));
+            temp.setSem(r.getInt(4));
+            temp.setYear(r.getInt(5));
+            temp.setCourse(r.getString(6));
+            temp.setRoom(r.getString(7));
+            temp.setDays(r.getInt(8));
+
+            ArrayList<String> times = new ArrayList<>();
+            Collections.addAll(times, r.getString(9).split("\\|"));
+            temp.setTimes(times);
+
+            temp.setSHS(r.getShort(10) > 0);
+            temp.setNotes(r.getString(11));
             classes.add(temp);
         }
 
@@ -421,7 +430,7 @@ public class DB {
     public static ObservableList<Clazz> getSHSEnrolledIn(Student s) throws SQLException {
         LOGGER.log(Level.INFO, "Getting SHS Enrolled In list...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT Classes.* FROM Classes JOIN SHSEnrollees ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.StudentID = ?");
+        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes JOIN SHSEnrollees ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.StudentID = ?");
         prep.setLong(1, s.getID());
         r = prep.executeQuery();
 
@@ -437,7 +446,7 @@ public class DB {
             temp.setDays(r.getInt(8));
 
             ArrayList<String> times = new ArrayList<>();
-            Collections.addAll(times, r.getString(9).split("|"));
+            Collections.addAll(times, r.getString(9).split("\\|"));
 
             temp.setTimes(times);
 
@@ -452,37 +461,31 @@ public class DB {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Classes">
-    private static Clazz getClass(ResultSet r) throws SQLException {
-        Clazz temp = new Clazz(r.getLong("Classes.ClassID"));
-        temp.setName(r.getString("Classes.Name"));
-        temp.setSY(r.getInt("Classes.SY"));
-        temp.setSem(r.getInt("Classes.Sem"));
-        temp.setYear(r.getInt("Classes.YearLevel"));
-        temp.setCourse(r.getString("Classes.Course"));
-        temp.setRoom(r.getString("Classes.Room"));
-        temp.setDays(r.getInt("Classes.Days"));
-
-        ArrayList<String> times = new ArrayList<>();
-        Collections.addAll(times, r.getString("Classes.Times").split("\\|"));
-        temp.setTimes(times);
-
-        temp.setSHS(r.getShort("Classes.IsSHS") > 0);
-        temp.setNotes(r.getString("Classes.Notes"));
-
-        return temp;
-
-    }
-
     public static ObservableList<Clazz> getClasses() throws SQLException {
         LOGGER.log(Level.INFO, "Getting classes...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT * FROM Classes");
+        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes");
         r = prep.executeQuery();
 
         ObservableList<Clazz> classes = FXCollections.observableArrayList();
 
         while (r.next()) {
-            Clazz temp = getClass(r);
+            Clazz temp = new Clazz(r.getInt(1));
+            temp.setName(r.getString(2));
+            temp.setSY(r.getInt(3));
+            temp.setSem(r.getInt(4));
+            temp.setYear(r.getInt(5));
+            temp.setCourse(r.getString(6));
+            temp.setRoom(r.getString(7));
+            temp.setDays(r.getInt(8));
+
+            ArrayList<String> times = new ArrayList<>();
+            Collections.addAll(times, r.getString(9).split("\\|"));
+
+            temp.setTimes(times);
+
+            temp.setSHS(r.getInt(10) > 0);
+            temp.setNotes(r.getString(11));
             classes.add(temp);
         }
 
@@ -551,22 +554,7 @@ public class DB {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Enrollees">
-    private static Enrollee getEnrollee(ResultSet r) throws SQLException {
-        Enrollee temp = new Enrollee(r.getLong("Enrollees.EnrolleeID"));
-        temp.setClasscard(r.getInt("Enrollees.ClassCard"));
-        temp.setNotes(r.getString("Enrollees.Notes"));
-        temp.setCourse(r.getString("Enrollees.Course"));
-        return temp;
-    }
-
-    private static Enrollee getSHSEnrollee(ResultSet r) throws SQLException {
-        Enrollee temp = new Enrollee(r.getLong("SHSEnrollees.EnrolleeID"));
-        temp.setNotes(r.getString("SHSEnrollees.Notes"));
-        temp.setCourse(r.getString("SHSEnrollees.Course"));
-        return temp;
-    }
-
-    public static ObservableList<Enrollee> getEnrollees(Clazz c) throws SQLException, IOException {
+    public static ObservableList<Enrollee> getEnrollees(Clazz c) throws SQLException {
         LOGGER.log(Level.INFO, "Getting Enrollees...");
         ResultSet r;
 
@@ -574,9 +562,9 @@ public class DB {
 
         boolean shs = c.isSHS();
         if (shs)
-            prep = con.prepareStatement("SELECT * FROM (Students JOIN SHSEnrollees ON SHSEnrollees.StudentID = Students.StudentID) JOIN Classes ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.ClassID = ?");
+            prep = con.prepareStatement("SELECT SHSEnrollees.EnrolleeID, SHSEnrollees.ClassID, Students.StudentID, Students.FN, Students.LN, SHSEnrollees.Notes, SHSEnrollees.Course FROM (Students JOIN SHSEnrollees ON SHSEnrollees.StudentID = Students.StudentID) JOIN Classes ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.ClassID = ?");
         else {
-            prep = con.prepareStatement("SELECT * FROM (Students JOIN Enrollees ON Enrollees.StudentID = Students.StudentID) JOIN Classes ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.ClassID = ?");
+            prep = con.prepareStatement("SELECT Enrollees.EnrolleeID, Enrollees.ClassID, Students.StudentID, Students.FN, Students.LN, Enrollees.ClassCard, Enrollees.Notes, Enrollees.Course FROM (Students JOIN Enrollees ON Enrollees.StudentID = Students.StudentID) JOIN Classes ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.ClassID = ?");
         }
 
         prep.setLong(1, c.getID());
@@ -585,14 +573,23 @@ public class DB {
         ObservableList<Enrollee> enrollees = FXCollections.observableArrayList();
         while (r.next()) {
             if (shs) {
-                Enrollee temp = getSHSEnrollee(r);
-                temp.setStudent(getStudent(r));
-                temp.setClass(getClass(r));
+                Enrollee temp = new Enrollee(r.getLong(1));
+                temp.setClass(new Clazz(r.getLong(2)));
+                temp.setStudent(new Student(r.getLong(3)));
+                temp.getStudent().setFN(r.getString(4));
+                temp.getStudent().setLN(r.getString(5));
+                temp.setNotes(r.getString(6));
+                temp.setCourse(r.getString(7));
                 enrollees.add(temp);
             } else {
-                Enrollee temp = getEnrollee(r);
-                temp.setStudent(getStudent(r));
-                temp.setClass(getClass(r));
+                Enrollee temp = new Enrollee(r.getLong(1));
+                temp.setClass(new Clazz(r.getLong(2)));
+                temp.setStudent(new Student(r.getLong(3)));
+                temp.getStudent().setFN(r.getString(4));
+                temp.getStudent().setLN(r.getString(5));
+                temp.setClasscard(r.getInt(6));
+                temp.setNotes(r.getString(7));
+                temp.setCourse(r.getString(8));
                 enrollees.add(temp);
             }
         }
