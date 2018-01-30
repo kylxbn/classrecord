@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 /**
  * @author OrthoCube
  */
-public class MainApp extends Application {
+public class MainApp extends Application implements MainPreloader.CredentialsConsumer {
     private final static Logger LOGGER = Logger.getLogger(MainApp.class.getName());
 
     private ArrayList<SplitPane> history = new ArrayList<>();
@@ -60,6 +60,22 @@ public class MainApp extends Application {
 
     private Locale language = Locale.ENGLISH;
     private ResourceBundle bundle = null; // ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings", language);
+    private Stage stage;
+
+    private String username;
+    private String password;
+
+    private void mayBeShown() {
+        if (username != null && stage != null) {
+            Platform.runLater(() -> stage.show());
+        }
+    }
+
+    public void setCredential(String username, String password) {
+        this.username = username;
+        this.password = password;
+        mayBeShown();
+    }
 
     private static void changeLoggingLevel(Level l) {
         Logger rootLogger = LogManager.getLogManager().getLogger("");
@@ -100,6 +116,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) {
+        this.stage = stage;
         Scene scene = new Scene(root);
 
         Platform.setImplicitExit(true);
@@ -108,10 +125,10 @@ public class MainApp extends Application {
                 e.consume();
         });
 
-        stage.setScene(scene);
-        stage.setTitle("Class Record"); //bundle.getString("classrecord"));
+        this.stage.setScene(scene);
+        this.stage.setTitle("Class Record"); //bundle.getString("classrecord"));
 
-        stage.show();
+        mayBeShown();
     }
 
     @Override
