@@ -88,15 +88,18 @@ public class MainApp extends Application {
             changeLoggingLevel(Level.OFF);
         }
 
-        launch(args);
+        System.setProperty("javafx.preloader", "com.orthocube.classrecord.MainPreloader");
+        Application.launch(MainApp.class, args);
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
-
+    public void init() throws Exception {
         loadFXMLs();
         showStudents();
+    }
 
+    @Override
+    public void start(Stage stage) {
         Scene scene = new Scene(root);
 
         Platform.setImplicitExit(true);
@@ -126,6 +129,7 @@ public class MainApp extends Application {
         root = rootLoader.load();
         mainController = rootLoader.getController();
         mainController.setMainApp(this);
+        notifyPreloader(new MainPreloader.ProgressNotification(0.2));
 
         LOGGER.log(Level.INFO, "Loading Students.fxml...");
         FXMLLoader studentLoader = new FXMLLoader(getClass().getResource("students/Students.fxml"));
@@ -133,6 +137,7 @@ public class MainApp extends Application {
         students = studentLoader.load();
         studentsController = studentLoader.getController();
         studentsController.setMainApp(this);
+        notifyPreloader(new MainPreloader.ProgressNotification(0.4));
 
         LOGGER.log(Level.INFO, "Loading Classes.fxml...");
         FXMLLoader classesLoader = new FXMLLoader(getClass().getResource("classes/Classes.fxml"));
@@ -140,6 +145,7 @@ public class MainApp extends Application {
         classes = classesLoader.load();
         classesController = classesLoader.getController();
         classesController.setMainApp(this);
+        notifyPreloader(new MainPreloader.ProgressNotification(0.6));
 
         LOGGER.log(Level.INFO, "Loading Users.fxml...");
         FXMLLoader usersLoader = new FXMLLoader(getClass().getResource("users/Users.fxml"));
@@ -147,6 +153,7 @@ public class MainApp extends Application {
         users = usersLoader.load();
         usersController = usersLoader.getController();
         usersController.setMainApp(this);
+        notifyPreloader(new MainPreloader.ProgressNotification(0.8));
 
         LOGGER.log(Level.INFO, "Loading About.fxml...");
         FXMLLoader aboutLoader = new FXMLLoader(getClass().getResource("about/About.fxml"));
@@ -154,6 +161,7 @@ public class MainApp extends Application {
         about = aboutLoader.load();
         aboutController = aboutLoader.getController();
         aboutController.setMainApp(this);
+        notifyPreloader(new MainPreloader.ProgressNotification(1.0));
     }
 
     private void updateNavigation() {
