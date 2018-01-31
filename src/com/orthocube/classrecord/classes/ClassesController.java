@@ -409,19 +409,14 @@ public class ClassesController implements Initializable {
         return "Classes"; //bundle.getString("classes");
     }
 
+    public void setModel(ObservableList<Clazz> model) {
+        classes = model;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
         bundle = rb;
-
-
-        try {
-            LOGGER.log(Level.INFO, "Loading classes...");
-            classes = DB.getClasses();
-            tblClasses.setItems(classes);
-        } catch (SQLException ex) {
-            Dialogs.exception(ex);
-        }
 
         colName.setCellValueFactory(
                 cellData -> cellData.getValue().nameProperty()

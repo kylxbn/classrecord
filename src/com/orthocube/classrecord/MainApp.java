@@ -19,6 +19,7 @@ import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
@@ -27,6 +28,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -57,6 +59,8 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private ClassesController classesController;
     private UsersController usersController;
     private AboutController aboutController;
+
+    private ObservableList<Clazz> classModel;
 
     private Locale language = Locale.ENGLISH;
     private ResourceBundle bundle = null; // ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings", language);
@@ -140,6 +144,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private void loadFXMLs() throws Exception {
         LOGGER.log(Level.INFO, "Loading FXMLs...");
 
+        // ----------- LOAD MAIN ----------------
         LOGGER.log(Level.INFO, "Loading Main.fxml...");
         FXMLLoader rootLoader = new FXMLLoader(getClass().getResource("Main.fxml"));
         rootLoader.setResources(bundle);
@@ -148,22 +153,41 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         mainController.setMainApp(this);
         notifyPreloader(new MainPreloader.ProgressNotification(0.2));
 
+
+        // ------------ LOAD STUDENTS ----------------
         LOGGER.log(Level.INFO, "Loading Students.fxml...");
         FXMLLoader studentLoader = new FXMLLoader(getClass().getResource("students/Students.fxml"));
         studentLoader.setResources(bundle);
         students = studentLoader.load();
         studentsController = studentLoader.getController();
         studentsController.setMainApp(this);
+        notifyPreloader(new MainPreloader.ProgressNotification(0.3));
+
+        LOGGER.log(Level.INFO, "Loading students...");
+        studentsController.setModel(DB.getStudents());
         notifyPreloader(new MainPreloader.ProgressNotification(0.4));
 
+
+        // ------------- LOAD CLASSES -----------------
         LOGGER.log(Level.INFO, "Loading Classes.fxml...");
         FXMLLoader classesLoader = new FXMLLoader(getClass().getResource("classes/Classes.fxml"));
         classesLoader.setResources(bundle);
         classes = classesLoader.load();
         classesController = classesLoader.getController();
         classesController.setMainApp(this);
+        notifyPreloader(new MainPreloader.ProgressNotification(0.5));
+
+        try {
+            LOGGER.log(Level.INFO, "Loading classes...");
+            classModel = DB.getClasses();
+            classesController.setModel(classModel);
+        } catch (SQLException ex) {
+            Dialogs.exception(ex);
+        }
         notifyPreloader(new MainPreloader.ProgressNotification(0.6));
 
+
+        // --------------- LOAD USERS -----------------
         LOGGER.log(Level.INFO, "Loading Users.fxml...");
         FXMLLoader usersLoader = new FXMLLoader(getClass().getResource("users/Users.fxml"));
         usersLoader.setResources(bundle);
@@ -172,6 +196,8 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         usersController.setMainApp(this);
         notifyPreloader(new MainPreloader.ProgressNotification(0.8));
 
+
+        // ----------------- LOAD ABOUT -----------------
         LOGGER.log(Level.INFO, "Loading About.fxml...");
         FXMLLoader aboutLoader = new FXMLLoader(getClass().getResource("about/About.fxml"));
         aboutLoader.setResources(bundle);

@@ -241,6 +241,20 @@ public class StudentsController implements Initializable {
         return "Students";//bundle.getString("students");
     }
 
+    public void setModel(ObservableList<Student> model) {
+        FilteredList<Student> filteredStudents = new FilteredList<>(model, p -> true);
+            txtSearch.textProperty().addListener((obs, oldv, newv) -> filteredStudents.setPredicate(student -> {
+                if (newv == null || newv.isEmpty())
+                    return true;
+                String lowercasefilter = newv.toLowerCase();
+                return student.getFN().toLowerCase().contains(lowercasefilter) || student.getLN().toLowerCase().contains(lowercasefilter);
+            }));
+
+            SortedList<Student> sortedStudents = new SortedList<>(filteredStudents);
+            sortedStudents.comparatorProperty().bind(tblStudents.comparatorProperty());
+            tblStudents.setItems(sortedStudents);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
@@ -253,23 +267,6 @@ public class StudentsController implements Initializable {
         colName.setCellValueFactory(
                 cellData -> Bindings.concat(cellData.getValue().lnProperty(), ", "/*bundle.getString("nameseparator")*/, cellData.getValue().fnProperty())
         );
-
-        try {
-            students = DB.getStudents();
-            FilteredList<Student> filteredStudents = new FilteredList<>(students, p -> true);
-            txtSearch.textProperty().addListener((obs, oldv, newv) -> filteredStudents.setPredicate(student -> {
-                if (newv == null || newv.isEmpty())
-                    return true;
-                String lowercasefilter = newv.toLowerCase();
-                return student.getFN().toLowerCase().contains(lowercasefilter) || student.getLN().toLowerCase().contains(lowercasefilter);
-            }));
-
-            SortedList<Student> sortedStudents = new SortedList<>(filteredStudents);
-            sortedStudents.comparatorProperty().bind(tblStudents.comparatorProperty());
-            tblStudents.setItems(sortedStudents);
-        } catch (SQLException | IOException ex) {
-            Dialogs.exception(ex);
-        }
 
         tblStudents.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldV, newV) -> {
