@@ -8,6 +8,7 @@
 package com.orthocube.classrecord;
 
 import com.orthocube.classrecord.preloader.MainPreloaderController;
+import com.orthocube.classrecord.util.Dialogs;
 import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.application.Preloader.StateChangeNotification.Type;
@@ -42,6 +43,7 @@ public class MainPreloader extends Preloader {
         this.username = username;
         this.password = password;
 
+        loadercontroller.disableLogin(true);
         mayBeHidden();
     }
 
@@ -51,9 +53,14 @@ public class MainPreloader extends Preloader {
     }
 
     private void mayBeHidden() {
-        if (preloaderStage.isShowing() && username != null && consumer != null) {
-            consumer.setCredential(username, password);
-            Platform.runLater(() -> preloaderStage.hide());
+        if (true) {//preloaderStage.isShowing() && username != null && password != null && consumer != null) {
+            if (true) {//username.equals("orthocube") && password.equals("vurshfki")) {
+                consumer.setCredential(username, password);
+                Platform.runLater(() -> preloaderStage.hide());
+            } else {
+                Dialogs.error("Login Error", "Invalid username or password.", "The username you provided might be non-existent,\nor that is not the password for that username.");
+                loadercontroller.disableLogin(false);
+            }
         }
     }
 

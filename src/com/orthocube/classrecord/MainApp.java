@@ -28,7 +28,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -70,7 +69,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private String password;
 
     private void mayBeShown() {
-        if (username != null && stage != null) {
+        if (stage != null) {//username != null && stage != null) {
             Platform.runLater(() -> stage.show());
         }
     }
@@ -114,7 +113,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     @Override
     public void init() throws Exception {
-        loadFXMLs();
+        prepareApp();
         showStudents();
     }
 
@@ -141,8 +140,9 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         LOGGER.log(Level.INFO, "Java FX closing...");
     }
 
-    private void loadFXMLs() throws Exception {
+    private void prepareApp() throws Exception {
         LOGGER.log(Level.INFO, "Loading FXMLs...");
+
 
         // ----------- LOAD MAIN ----------------
         LOGGER.log(Level.INFO, "Loading Main.fxml...");
@@ -177,13 +177,9 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         classesController.setMainApp(this);
         notifyPreloader(new MainPreloader.ProgressNotification(0.5));
 
-        try {
-            LOGGER.log(Level.INFO, "Loading classes...");
-            classModel = DB.getClasses();
-            classesController.setModel(classModel);
-        } catch (SQLException ex) {
-            Dialogs.exception(ex);
-        }
+        LOGGER.log(Level.INFO, "Loading classes...");
+        classModel = DB.getClasses();
+        classesController.setModel(classModel);
         notifyPreloader(new MainPreloader.ProgressNotification(0.6));
 
 

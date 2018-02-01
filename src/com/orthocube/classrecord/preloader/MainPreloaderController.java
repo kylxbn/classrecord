@@ -11,13 +11,13 @@ import com.orthocube.classrecord.MainPreloader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 
 public class MainPreloaderController {
     MainPreloader mainPreloader;
 
     @FXML
-    private VBox vbxLoading;
+    private HBox vbxLoading;
 
     @FXML
     private Label lblDescription;
@@ -39,6 +39,11 @@ public class MainPreloaderController {
         mainPreloader.loginAction(txtUsername.getText(), txtPassword.getText());
     }
 
+    public void disableLogin(boolean v) {
+        cmdLogin.setDisable(v);
+        txtUsername.setDisable(v);
+        txtPassword.setDisable(v);
+    }
 
     public void setMainPreloader(MainPreloader mainPreloader) {
         this.mainPreloader = mainPreloader;
@@ -46,6 +51,22 @@ public class MainPreloaderController {
 
     public void setProgress(double progress) {
         prgProgress.setProgress(progress);
+        if (progress < 0.15)
+            lblDescription.setText("Loading Main panel...");
+        else if (progress < 0.25)
+            lblDescription.setText("Loading Students tab...");
+        else if (progress < 0.35)
+            lblDescription.setText("Connecting to database...");
+        else if (progress < 0.45)
+            lblDescription.setText("Loading Classes tab...");
+        else if (progress < 0.55)
+            lblDescription.setText("Loading classes from database...");
+        else if (progress < 0.65)
+            lblDescription.setText("Loading Users tab...");
+        else if (progress < 0.75)
+            lblDescription.setText("Loading users from database...");
+        else if (progress < 0.85)
+            lblDescription.setText("Loading About tab...");
     }
 
     public void hideProgressBar() {
