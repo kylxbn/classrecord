@@ -282,6 +282,9 @@ public class ClassesController implements Initializable {
             currentClass.setSHS(cboLevel.getSelectionModel().getSelectedIndex() > 0);
             currentClass.setNotes(txtNotes.getText());
             //currentClass.setPicture(ImageIO.read(r.getBinaryStream(10)));
+            cmdSave.setDisable(true);
+            cmdSave.setText("Save");
+
             boolean newentry = DB.save(currentClass);
             if (newentry) {
                 classes.add(currentClass);
@@ -292,8 +295,6 @@ public class ClassesController implements Initializable {
             Dialogs.exception(e);
         }
 
-        cmdSave.setDisable(true);
-        cmdSave.setText("Save");
     }
 
     @FXML

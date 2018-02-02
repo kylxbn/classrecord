@@ -13,13 +13,14 @@ import com.orthocube.classrecord.data.Enrollee;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -44,6 +45,8 @@ public class EnrolleesController implements Initializable {
     private Clazz currentClass;
     private Enrollee currentEnrollee;
     private ResourceBundle bundle;
+
+    private ObservableList<Enrollee> enrollees;
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
     @FXML
@@ -85,7 +88,12 @@ public class EnrolleesController implements Initializable {
     public void showClass(Clazz c) {
         currentClass = c;
         try {
-            tblEnrollees.setItems(DB.getEnrollees(currentClass));
+            if (currentClass.isSHS()) {
+                lblClassCard.setDisable(true);
+                txtClassCard.setDisable(true);
+            }
+            enrollees = DB.getEnrollees(currentClass);
+            tblEnrollees.setItems(enrollees);
         } catch (SQLException e) {
             Dialogs.exception(e);
         }
@@ -95,6 +103,7 @@ public class EnrolleesController implements Initializable {
         txtClassCard.setText(Integer.toString(currentEnrollee.getClasscard()));
         txtNotes.setText(currentEnrollee.getNotes());
         txtCourse.setText(currentEnrollee.getCourse());
+        cmdSave.setDisable(true);
     }
 
     public String getTitle() {
@@ -115,15 +124,34 @@ public class EnrolleesController implements Initializable {
 
         tblEnrollees.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldV, newV) -> {
-                    currentEnrollee = newV;
-                    showEnrolleeInfo();
-
+                    if (cmdSave.isDisable()) {
+                        currentEnrollee = newV;
+                        showEnrolleeInfo();
+                    } else {
+                        if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another class will discard your current unsaved changes.") == ButtonType.OK) {
+                            currentEnrollee = newV;
+                            showEnrolleeInfo();
+                        }
+                    }
                 }
+
         );
 
         colName.prefWidthProperty().bind(tblEnrollees.widthProperty().subtract(19).divide(3.33333333));
         colCourse.prefWidthProperty().bind(tblEnrollees.widthProperty().subtract(19).divide(3.33333333));
         colNotes.prefWidthProperty().bind(tblEnrollees.widthProperty().subtract(19).divide(3.333333333));
+
+        // <editor-fold defaultstate="collapsed" desc="Change listeners">
+        txtClassCard.textProperty().addListener(
+                (obs, ov, nv) -> cmdSave.setDisable(false)
+        );
+        txtCourse.textProperty().addListener(
+                (obs, ov, nv) -> cmdSave.setDisable(false)
+        );
+        txtNotes.textProperty().addListener(
+                (obs, ov, nv) -> cmdSave.setDisable(false)
+        );
+        // </editor-fold>
 
     }
 
@@ -147,6 +175,13 @@ public class EnrolleesController implements Initializable {
 
     @FXML
     private void mnuRemoveAction(ActionEvent event) {
+        if (Dialogs.confirm("Remove Enrollee", "Are you sure you want to delete this this enrollee?", currentEnrollee.getStudent().getFN() + " " + currentEnrollee.getStudent().getLN()) == ButtonType.OK)
+            try {
+                DB.delete(currentClass);
+                enrollees.remove(currentClass);
+            } catch (SQLException e) {
+                Dialogs.exception(e);
+            }
     }
 
     @FXML
@@ -155,6 +190,24 @@ public class EnrolleesController implements Initializable {
 
     @FXML
     private void cmdSaveAction(ActionEvent event) {
+        try {
+            currentEnrollee.setClasscard(Integer.parseInt(txtClassCard.getText()));
+            currentEnrollee.setCourse(txtCourse.getText());
+            currentEnrollee.setNotes(txtNotes.getText());
+
+
+            cmdSave.setDisable(true);
+            cmdSave.setText("Save");
+
+            boolean newentry = DB.save(currentClass);
+            if (newentry) {
+                enrollees.add(currentEnrollee);
+                tblEnrollees.getSelectionModel().select(currentEnrollee);
+                tblEnrollees.scrollTo(currentEnrollee);
+            }
+        } catch (Exception e) {
+            Dialogs.exception(e);
+        }
     }
 
 }

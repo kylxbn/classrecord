@@ -103,8 +103,8 @@
                 <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                       minHeight="-Infinity" minWidth="-Infinity" spacing="8.0">
                     <children>
-                        <Button fx:id="cmdSave" defaultButton="true" mnemonicParsing="false" onAction="#cmdSaveAction"
-                                text="Save"/>
+                        <Button fx:id="cmdSave" defaultButton="true" disable="true" mnemonicParsing="false"
+                                onAction="#cmdSaveAction" text="Save"/>
                     </children>
                     <padding>
                         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>

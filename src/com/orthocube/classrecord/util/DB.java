@@ -564,7 +564,7 @@ public class DB {
         if (shs)
             prep = con.prepareStatement("SELECT SHSEnrollees.EnrolleeID, SHSEnrollees.ClassID, Students.StudentID, Students.FN, Students.LN, SHSEnrollees.Notes, SHSEnrollees.Course FROM (Students JOIN SHSEnrollees ON SHSEnrollees.StudentID = Students.StudentID) JOIN Classes ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.ClassID = ?");
         else {
-            prep = con.prepareStatement("SELECT Enrollees.EnrolleeID, Enrollees.ClassID, Students.StudentID, Students.FN, Students.LN, Enrollees.ClassCard, Enrollees.Notes, Enrollees.Course FROM (Students JOIN Enrollees ON Enrollees.StudentID = Students.StudentID) JOIN Classes ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.ClassID = ?");
+            prep = con.prepareStatement("SELECT Enrollees.EnrolleeID, Enrollees.ClassID, Classes.IsSHS, Students.StudentID, Students.FN, Students.LN, Enrollees.ClassCard, Enrollees.Notes, Enrollees.Course FROM (Students JOIN Enrollees ON Enrollees.StudentID = Students.StudentID) JOIN Classes ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.ClassID = ?");
         }
 
         prep.setLong(1, c.getID());
@@ -574,7 +574,7 @@ public class DB {
         while (r.next()) {
             if (shs) {
                 Enrollee temp = new Enrollee(r.getLong(1));
-                temp.setClass(new Clazz(r.getLong(2)));
+                temp.setClass(c);
                 temp.setStudent(new Student(r.getLong(3)));
                 temp.getStudent().setFN(r.getString(4));
                 temp.getStudent().setLN(r.getString(5));
@@ -583,7 +583,7 @@ public class DB {
                 enrollees.add(temp);
             } else {
                 Enrollee temp = new Enrollee(r.getLong(1));
-                temp.setClass(new Clazz(r.getLong(2)));
+                temp.setClass(c);
                 temp.setStudent(new Student(r.getLong(3)));
                 temp.getStudent().setFN(r.getString(4));
                 temp.getStudent().setLN(r.getString(5));
@@ -599,22 +599,67 @@ public class DB {
 
     public static boolean save(Enrollee e) throws SQLException {
         if (e.getID() == -1) {
-            LOGGER.log(Level.WARNING, "Creating of new enrollees is not yet implemented.");
-            return false;
+            if (e.getClazz().isSHS()) {
+                LOGGER.log(Level.WARNING, "Creating new SHS enrollee");
+                PreparedStatement preps = con.prepareStatement("INSERT INTO SHSEnrollees (ClassID, StudentID, Notes, Course) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                preps.setLong(1, e.getClazz().getID());
+                preps.setLong(2, e.getStudent().getID());
+                preps.setString(3, e.getNotes());
+                preps.setString(4, e.getCourse());
+                preps.executeUpdate();
+                ResultSet res = preps.getGeneratedKeys();
+                res.next();
+                e.setID(res.getLong(1));
+            } else {
+                LOGGER.log(Level.WARNING, "Creating new enrollee");
+                PreparedStatement preps = con.prepareStatement("INSERT INTO Enrollees (ClassID, StudentID, ClassCard, Notes, Course) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                preps.setLong(1, e.getClazz().getID());
+                preps.setLong(2, e.getStudent().getID());
+                preps.setInt(3, e.getClasscard());
+                preps.setString(4, e.getNotes());
+                preps.setString(5, e.getCourse());
+                preps.executeUpdate();
+                ResultSet res = preps.getGeneratedKeys();
+                res.next();
+                e.setID(res.getLong(1));
+            }
+            return true;
         } else {
             LOGGER.log(Level.INFO, "Updating enrollee...");
-            PreparedStatement prep = con.prepareStatement("UPDATE Enrollees SET ClassID = ?, StudentID = ?, ClassCard = ?, Notes = ?, Course = ? WHERE EnrolleeID = ?");
-            prep.setLong(1, e.getClazz().getID());
-            prep.setLong(2, e.getStudent().getID());
-            prep.setInt(3, e.getClasscard());
-            prep.setString(4, e.getNotes());
-            prep.setString(5, e.getCourse());
-            prep.setLong(6, e.getID());
-            prep.executeUpdate();
+            if (e.getClazz().isSHS()) {
+                PreparedStatement prep = con.prepareStatement("UPDATE SHSEnrollees SET ClassID = ?, StudentID = ?, Notes = ?, Course = ? WHERE EnrolleeID = ?");
+                prep.setLong(1, e.getClazz().getID());
+                prep.setLong(2, e.getStudent().getID());
+                prep.setString(3, e.getNotes());
+                prep.setString(4, e.getCourse());
+                prep.setLong(5, e.getID());
+                prep.executeUpdate();
+            } else {
+                PreparedStatement prep = con.prepareStatement("UPDATE Enrollees SET ClassID = ?, StudentID = ?, ClassCard = ?, Notes = ?, Course = ? WHERE EnrolleeID = ?");
+                prep.setLong(1, e.getClazz().getID());
+                prep.setLong(2, e.getStudent().getID());
+                prep.setInt(3, e.getClasscard());
+                prep.setString(4, e.getNotes());
+                prep.setString(5, e.getCourse());
+                prep.setLong(6, e.getID());
+                prep.executeUpdate();
+            }
             return false;
         }
     }
 
+    public static void delete(Enrollee e) throws SQLException {
+        LOGGER.log(Level.INFO, "Deleting enrollee...");
+        if (e.getClazz().isSHS()) {
+            PreparedStatement prep = con.prepareStatement("DELETE FROM SHSEnrollees WHERE EnrolleeID = ?");
+            prep.setLong(1, e.getID());
+            prep.executeUpdate();
+        } else {
+            PreparedStatement prep = con.prepareStatement("DELETE FROM Enrollees WHERE EnrolleeID = ?");
+            prep.setLong(1, e.getID());
+            prep.executeUpdate();
+        }
+    }
 
     // </editor-fold>
 }
