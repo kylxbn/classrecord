@@ -291,6 +291,9 @@ public class ClassesController implements Initializable {
         } catch (Exception e) {
             Dialogs.exception(e);
         }
+
+        cmdSave.setDisable(true);
+        cmdSave.setText("Save");
     }
 
     @FXML
@@ -302,6 +305,7 @@ public class ClassesController implements Initializable {
     void cmdAddAction(ActionEvent event) {
         currentClass = new Clazz();
         showClassInfo();
+        cmdSave.setText("Save as new");
     }
 
     @FXML
@@ -403,6 +407,9 @@ public class ClassesController implements Initializable {
             txtSaturday.setText(times.get(12));
             txtSaturday2.setText(times.get(13));
         }
+
+        cmdSave.setDisable(true);
+        cmdSave.setText("Save");
     }
 
     public String getTitle() {
@@ -411,6 +418,7 @@ public class ClassesController implements Initializable {
 
     public void setModel(ObservableList<Clazz> model) {
         classes = model;
+        tblClasses.setItems(classes);
     }
 
     @Override
@@ -436,8 +444,15 @@ public class ClassesController implements Initializable {
 
         tblClasses.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldV, newV) -> {
-                    currentClass = newV;
-                    showClassInfo();
+                    if (cmdSave.isDisable()) {
+                        currentClass = newV;
+                        showClassInfo();
+                    } else {
+                        if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another class will discard your current unsaved changes.") == ButtonType.OK) {
+                            currentClass = newV;
+                            showClassInfo();
+                        }
+                    }
                 }
         );
 
@@ -486,5 +501,184 @@ public class ClassesController implements Initializable {
         colName.prefWidthProperty().bind(tblClasses.widthProperty().subtract(126).divide(2.0));
         colRoom.prefWidthProperty().bind(tblClasses.widthProperty().subtract(126).divide(5.0));
         colCourse.prefWidthProperty().bind(tblClasses.widthProperty().subtract(126).divide(3.0));
+
+        // <editor-fold defaultstate="collapsed" desc="Change listeners">
+        txtName.textProperty().addListener(
+                (obs, ov, nv) -> {
+
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtSY.textProperty().addListener(
+                (obs, ov, nv) -> {
+
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        cboSemester.valueProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        cboYear.valueProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtCourse.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtRoom.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        cboLevel.valueProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtNotes.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        chkSunday.selectedProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        chkMonday.selectedProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        chkTuesday.selectedProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        chkWednesday.selectedProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        chkThursday.selectedProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        chkFriday.selectedProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        chkSaturday.selectedProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtSunday.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtMonday.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtTuesday.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtWednesday.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtThursday.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtFriday.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtSaturday.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtSunday2.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtMonday2.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtTuesday2.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtWednesday2.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtThursday2.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtFriday2.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        txtSaturday2.textProperty().addListener(
+                (obs, ov, nv) -> {
+                    cmdSave.setDisable(false);
+                }
+        );
+
+        // </editor-fold>
     }
 }

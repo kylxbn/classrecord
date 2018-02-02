@@ -333,8 +333,8 @@
                 </ScrollPane>
                 <HBox alignment="CENTER_RIGHT" spacing="8.0">
                     <children>
-                        <Button fx:id="cmdSave" defaultButton="true" mnemonicParsing="false" onAction="#cmdSaveAction"
-                                text="Save">
+                        <Button fx:id="cmdSave" defaultButton="true" disable="true" mnemonicParsing="false"
+                                onAction="#cmdSaveAction" text="Save">
                             <graphic>
                                 <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
                                     <image>

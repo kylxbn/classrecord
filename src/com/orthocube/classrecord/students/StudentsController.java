@@ -242,17 +242,20 @@ public class StudentsController implements Initializable {
     }
 
     public void setModel(ObservableList<Student> model) {
-        FilteredList<Student> filteredStudents = new FilteredList<>(model, p -> true);
-            txtSearch.textProperty().addListener((obs, oldv, newv) -> filteredStudents.setPredicate(student -> {
-                if (newv == null || newv.isEmpty())
-                    return true;
-                String lowercasefilter = newv.toLowerCase();
-                return student.getFN().toLowerCase().contains(lowercasefilter) || student.getLN().toLowerCase().contains(lowercasefilter);
-            }));
 
-            SortedList<Student> sortedStudents = new SortedList<>(filteredStudents);
-            sortedStudents.comparatorProperty().bind(tblStudents.comparatorProperty());
-            tblStudents.setItems(sortedStudents);
+        students = model;
+
+        FilteredList<Student> filteredStudents = new FilteredList<>(model, p -> true);
+        txtSearch.textProperty().addListener((obs, oldv, newv) -> filteredStudents.setPredicate(student -> {
+            if (newv == null || newv.isEmpty())
+                return true;
+            String lowercasefilter = newv.toLowerCase();
+            return student.getFN().toLowerCase().contains(lowercasefilter) || student.getLN().toLowerCase().contains(lowercasefilter);
+        }));
+
+        SortedList<Student> sortedStudents = new SortedList<>(filteredStudents);
+        sortedStudents.comparatorProperty().bind(tblStudents.comparatorProperty());
+        tblStudents.setItems(sortedStudents);
     }
 
     @Override
