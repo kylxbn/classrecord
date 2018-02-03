@@ -75,6 +75,8 @@ public class DB {
                 if (!("X0Y32".equals(e.getSQLState()))) {
                     Dialogs.exception(e);
                 }
+                LOGGER.log(Level.INFO, "Users table already exists so database is assumed to be all set up.");
+                return;
             }
 
             try {
