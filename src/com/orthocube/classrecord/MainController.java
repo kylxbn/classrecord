@@ -29,14 +29,20 @@ import java.util.ResourceBundle;
  * @author OrthoCube
  */
 public class MainController implements Initializable {
+    // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    Label lblMemory;
+    @FXML
+    ProgressBar prgMemory;
     @FXML
     Menu mnuFile;
     @FXML
     Menu mnuEdit;
     @FXML
     Menu mnuTools;
-
-    // <editor-fold defaultstate="collapsed" desc="Controls">
+    private MainApp mainApp;
+    private ResourceBundle bundle;
+    private ToggleGroup group = null;
     @FXML
     Menu mnuHelp;
     @FXML
@@ -55,9 +61,7 @@ public class MainController implements Initializable {
     MenuItem mnuAbout;
     @FXML
     Label lblClassRecord;
-    private MainApp mainApp;
-    private ResourceBundle bundle;
-    private ToggleGroup group = null;
+
     @FXML
     private Label lblDate;
 
@@ -184,6 +188,13 @@ public class MainController implements Initializable {
             //System.out.println(hour + ":" + (minute) + ":" + second);
             lblDate.setText(formattedDate);
             lblTime.setText(formattedTime);
+
+            long allocatedMem = Runtime.getRuntime().totalMemory();
+            long usedMem = allocatedMem - Runtime.getRuntime().freeMemory();
+
+            prgMemory.setProgress(((double) usedMem) / ((double) allocatedMem));
+            lblMemory.setText(String.format("%d of %dMB used", usedMem / 1000000, allocatedMem / 1000000));
+
         }),
                 new KeyFrame(Duration.seconds(1))
         );

@@ -266,4 +266,25 @@
             </children>
         </VBox>
     </left>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+              minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" BorderPane.alignment="CENTER_RIGHT">
+            <children>
+                <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                           minWidth="-Infinity" orientation="VERTICAL"/>
+                <StackPane>
+                    <children>
+                        <ProgressBar fx:id="prgMemory" prefWidth="150.0" progress="0.0"/>
+                        <Label fx:id="lblMemory" text="MB"/>
+                    </children>
+                </StackPane>
+                <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                           minWidth="-Infinity" orientation="VERTICAL"/>
+                <Label fx:id="lblStatus" text="Ready."/>
+            </children>
+            <padding>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+            </padding>
+        </HBox>
+    </bottom>
 </BorderPane>
