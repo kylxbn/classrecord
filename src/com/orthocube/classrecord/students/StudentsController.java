@@ -9,7 +9,6 @@ package com.orthocube.classrecord.students;
 
 /**
  * Controller for the Students display.
- *
  * @author OrthoCube
  */
 
@@ -53,6 +52,9 @@ public class StudentsController implements Initializable {
     private MainApp mainApp;
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    private Button cmdAdd;
+
     @FXML
     private Label lblShowID;
 
@@ -150,10 +152,15 @@ public class StudentsController implements Initializable {
             currentStudent.setNotes(txtNotes.getText());
             //currentStudent.setPicture(ImageIO.read(r.getBinaryStream(10)));
             boolean newentry = DB.save(currentStudent);
+
+            cmdSave.setDisable(true);
             if (newentry) {
                 students.add(currentStudent);
                 tblStudents.getSelectionModel().select(currentStudent);
                 tblStudents.scrollTo(currentStudent);
+
+                cmdSave.setText("Save");
+                cmdAdd.setDisable(false);
             }
         } catch (Exception e) {
             Dialogs.exception(e);
@@ -175,8 +182,17 @@ public class StudentsController implements Initializable {
 
     @FXML
     void cmdNewStudentAction(ActionEvent event) {
+        if (!cmdSave.isDisable()) {
+            if (Dialogs.confirm("New student", "You have unsaved changes. Discard changes?", "Creating another student will discard\nyour current unsaved changes.") == ButtonType.CANCEL) {
+                return;
+            }
+        }
+
         currentStudent = new Student();
         showStudentInfo();
+        cmdSave.setDisable(false);
+        cmdSave.setText("Save as new");
+        cmdAdd.setDisable(true);
     }
 
     @FXML
@@ -235,6 +251,7 @@ public class StudentsController implements Initializable {
             txtNotes.setText("");
             cmdSave.setDisable(true);
         }
+        cmdSave.setDisable(true);
     }
 
     public String getTitle() {
@@ -273,9 +290,18 @@ public class StudentsController implements Initializable {
 
         tblStudents.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldV, newV) -> {
-                    currentStudent = newV;
-                    showStudentInfo();
-
+                    if (cmdSave.isDisable()) {
+                        currentStudent = newV;
+                        showStudentInfo();
+                    } else {
+                        if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another student will discard your current unsaved changes.") == ButtonType.OK) {
+                            currentStudent = newV;
+                            showStudentInfo();
+                            cmdAdd.setDisable(false);
+                            cmdSave.setDisable(true);
+                            cmdSave.setText("Save");
+                        }
+                    }
                 }
         );
 
@@ -288,6 +314,16 @@ public class StudentsController implements Initializable {
         lblShowName.textProperty().bind(Bindings.concat(txtFN.textProperty(), " ", txtLN.textProperty()));
 
 
+        // <editor-fold defaultstate="collapsed" desc="change listeners">
+        txtSID.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
+        txtLN.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
+        txtFN.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
+        txtMN.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
+        cboGender.valueProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
+        txtContact.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
+        txtAddress.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
+        txtNotes.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
+        // </editor-fold>
     }
 
 }

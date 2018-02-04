@@ -12,6 +12,7 @@ import com.orthocube.classrecord.classes.ClassesController;
 import com.orthocube.classrecord.classes.EnrolleesController;
 import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.data.Student;
+import com.orthocube.classrecord.students.StudentChooserController;
 import com.orthocube.classrecord.students.StudentEnrolledInController;
 import com.orthocube.classrecord.students.StudentsController;
 import com.orthocube.classrecord.users.UsersController;
@@ -25,6 +26,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -60,6 +62,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private AboutController aboutController;
 
     private ObservableList<Clazz> classModel;
+    private ObservableList<Student> studentsModel;
 
     private Locale language = Locale.ENGLISH;
     private ResourceBundle bundle = null; // ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings", language);
@@ -164,7 +167,8 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         notifyPreloader(new MainPreloader.ProgressNotification(0.3));
 
         LOGGER.log(Level.INFO, "Loading students...");
-        studentsController.setModel(DB.getStudents());
+        studentsModel = DB.getStudents();
+        studentsController.setModel(studentsModel);
         notifyPreloader(new MainPreloader.ProgressNotification(0.4));
 
 
@@ -241,6 +245,31 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         trimHistoryThenAdd(enrollees, controller.getTitle());
         currentHistory++;
         updateNavigation();
+    }
+
+    public Student showStudentChooserDialog(Clazz c) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("students/StudentChooser.fxml"));
+            SplitPane studentChooser = loader.load();
+            StudentChooserController studentChooserController = loader.getController();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Choose student");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(stage);
+            Scene scene = new Scene(studentChooser);
+            dialogStage.setScene(scene);
+
+            studentChooserController.setDialogStage(dialogStage);
+            studentChooserController.setClass(c);
+            studentChooserController.setModel(studentsModel);
+
+            dialogStage.showAndWait();
+            return studentChooserController.getResult();
+        } catch (IOException e) {
+            Dialogs.exception(e);
+        }
+        return null;
     }
 
     public void showEnrolledClasses(Student s) throws IOException {

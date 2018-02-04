@@ -460,6 +460,23 @@ public class DB {
 
         return classes;
     }
+
+    public static boolean studentEnrolledIn(Student s, Clazz c) throws SQLException {
+        LOGGER.log(Level.INFO, "Checking if student is enrolled in class...");
+        ResultSet r;
+        PreparedStatement ps;
+        if (c.isSHS()) {
+            ps = con.prepareStatement("SELECT EnrolleeID FROM SHSEnrollees WHERE StudentID = ? AND ClassID = ?");
+            ps.setLong(1, s.getID());
+            ps.setLong(2, c.getID());
+        } else {
+            ps = con.prepareStatement("SELECT EnrolleeID FROM Enrollees WHERE StudentID = ? AND ClassID = ?");
+            ps.setLong(1, s.getID());
+            ps.setLong(2, c.getID());
+        }
+        r = ps.executeQuery();
+        return r.next();
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Classes">
@@ -564,9 +581,9 @@ public class DB {
 
         boolean shs = c.isSHS();
         if (shs)
-            prep = con.prepareStatement("SELECT SHSEnrollees.EnrolleeID, SHSEnrollees.ClassID, Students.StudentID, Students.FN, Students.LN, SHSEnrollees.Notes, SHSEnrollees.Course FROM (Students JOIN SHSEnrollees ON SHSEnrollees.StudentID = Students.StudentID) JOIN Classes ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.ClassID = ?");
+            prep = con.prepareStatement("SELECT SHSEnrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, SHSEnrollees.Notes, SHSEnrollees.Course FROM (Students JOIN SHSEnrollees ON SHSEnrollees.StudentID = Students.StudentID) JOIN Classes ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.ClassID = ?");
         else {
-            prep = con.prepareStatement("SELECT Enrollees.EnrolleeID, Enrollees.ClassID, Classes.IsSHS, Students.StudentID, Students.FN, Students.LN, Enrollees.ClassCard, Enrollees.Notes, Enrollees.Course FROM (Students JOIN Enrollees ON Enrollees.StudentID = Students.StudentID) JOIN Classes ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.ClassID = ?");
+            prep = con.prepareStatement("SELECT Enrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, Enrollees.ClassCard, Enrollees.Notes, Enrollees.Course FROM (Students JOIN Enrollees ON Enrollees.StudentID = Students.StudentID) JOIN Classes ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.ClassID = ?");
         }
 
         prep.setLong(1, c.getID());
@@ -577,21 +594,21 @@ public class DB {
             if (shs) {
                 Enrollee temp = new Enrollee(r.getLong(1));
                 temp.setClass(c);
-                temp.setStudent(new Student(r.getLong(3)));
-                temp.getStudent().setFN(r.getString(4));
-                temp.getStudent().setLN(r.getString(5));
-                temp.setNotes(r.getString(6));
-                temp.setCourse(r.getString(7));
+                temp.setStudent(new Student(r.getLong(2)));
+                temp.getStudent().setFN(r.getString(3));
+                temp.getStudent().setLN(r.getString(4));
+                temp.setNotes(r.getString(5));
+                temp.setCourse(r.getString(6));
                 enrollees.add(temp);
             } else {
                 Enrollee temp = new Enrollee(r.getLong(1));
                 temp.setClass(c);
-                temp.setStudent(new Student(r.getLong(3)));
-                temp.getStudent().setFN(r.getString(4));
-                temp.getStudent().setLN(r.getString(5));
-                temp.setClasscard(r.getInt(6));
-                temp.setNotes(r.getString(7));
-                temp.setCourse(r.getString(8));
+                temp.setStudent(new Student(r.getLong(2)));
+                temp.getStudent().setFN(r.getString(3));
+                temp.getStudent().setLN(r.getString(4));
+                temp.setClasscard(r.getInt(5));
+                temp.setNotes(r.getString(6));
+                temp.setCourse(r.getString(7));
                 enrollees.add(temp);
             }
         }

@@ -64,7 +64,7 @@
                         <Label fx:id="lblTotalStudents" text="current"/>
                         <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                               minWidth="-Infinity" prefHeight="1.0" prefWidth="1.0" HBox.hgrow="ALWAYS"/>
-                        <Button mnemonicParsing="false" onAction="#cmdNewStudentAction" text="Add"/>
+                        <Button fx:id="cmdAdd" mnemonicParsing="false" onAction="#cmdNewStudentAction" text="Add"/>
                     </children>
                 </HBox>
             </children>

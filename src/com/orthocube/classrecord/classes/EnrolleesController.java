@@ -10,6 +10,7 @@ package com.orthocube.classrecord.classes;
 import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.data.Enrollee;
+import com.orthocube.classrecord.data.Student;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.beans.binding.Bindings;
@@ -104,6 +105,9 @@ public class EnrolleesController implements Initializable {
         txtNotes.setText(currentEnrollee.getNotes());
         txtCourse.setText(currentEnrollee.getCourse());
         cmdSave.setDisable(true);
+        if (currentClass.isSHS()) {
+            txtClassCard.setPromptText("Not available");
+        }
     }
 
     public String getTitle() {
@@ -128,9 +132,12 @@ public class EnrolleesController implements Initializable {
                         currentEnrollee = newV;
                         showEnrolleeInfo();
                     } else {
-                        if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another class will discard your current unsaved changes.") == ButtonType.OK) {
+                        if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another enrollee will discard your current unsaved changes.") == ButtonType.OK) {
                             currentEnrollee = newV;
                             showEnrolleeInfo();
+                            cmdAdd.setDisable(false);
+                            cmdSave.setDisable(true);
+                            cmdSave.setText("Save");
                         }
                     }
                 }
@@ -177,8 +184,8 @@ public class EnrolleesController implements Initializable {
     private void mnuRemoveAction(ActionEvent event) {
         if (Dialogs.confirm("Remove Enrollee", "Are you sure you want to delete this this enrollee?", currentEnrollee.getStudent().getFN() + " " + currentEnrollee.getStudent().getLN()) == ButtonType.OK)
             try {
-                DB.delete(currentClass);
-                enrollees.remove(currentClass);
+                DB.delete(currentEnrollee);
+                enrollees.remove(currentEnrollee);
             } catch (SQLException e) {
                 Dialogs.exception(e);
             }
@@ -186,6 +193,20 @@ public class EnrolleesController implements Initializable {
 
     @FXML
     private void cmdAddAction(ActionEvent event) {
+        if (!cmdSave.isDisable()) {
+            if (Dialogs.confirm("New enrollee", "You have unsaved changes. Discard changes?", "Creating another enrollee will discard\nyour current unsaved changes.") == ButtonType.CANCEL) {
+                return;
+            }
+        }
+
+        Student chosenStudent = mainApp.showStudentChooserDialog(currentClass);
+        if (chosenStudent != null) {
+            currentEnrollee = new Enrollee(-1, currentClass, chosenStudent, 0, "", "");
+            showEnrolleeInfo();
+            cmdSave.setDisable(false);
+            cmdSave.setText("Save as new");
+            cmdAdd.setDisable(true);
+        }
     }
 
     @FXML
@@ -195,15 +216,17 @@ public class EnrolleesController implements Initializable {
             currentEnrollee.setCourse(txtCourse.getText());
             currentEnrollee.setNotes(txtNotes.getText());
 
+            boolean newEntry = DB.save(currentEnrollee);
 
             cmdSave.setDisable(true);
-            cmdSave.setText("Save");
-
-            boolean newentry = DB.save(currentClass);
-            if (newentry) {
+            if (newEntry) {
                 enrollees.add(currentEnrollee);
                 tblEnrollees.getSelectionModel().select(currentEnrollee);
                 tblEnrollees.scrollTo(currentEnrollee);
+                cmdAdd.setDisable(false);
+
+                cmdSave.setText("Save");
+                cmdAdd.setDisable(false);
             }
         } catch (Exception e) {
             Dialogs.exception(e);

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+           minHeight="-Infinity" minWidth="-Infinity" prefHeight="622.0" prefWidth="545.0"
+           stylesheets="@../res/modena_dark.css" xmlns="http://javafx.com/javafx/9.0.1"
+           fx:controller="com.orthocube.classrecord.students.StudentChooserController">
+    <items>
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+              minWidth="-Infinity" prefWidth="506.0" spacing="8.0">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                    <children>
+                        <TextField fx:id="txtSearch" promptText="Search using Name or Student ID..."
+                                   HBox.hgrow="ALWAYS"/>
+                    </children>
+                </HBox>
+                <TableView fx:id="tblStudents" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colID" prefWidth="75.0" resizable="false" text="ID"/>
+                        <TableColumn fx:id="colName" prefWidth="75.0" resizable="false" text="Name"/>
+                    </columns>
+                    <contextMenu>
+                        <ContextMenu>
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#mnuSearchOnFacebookAction"
+                                          text="Search on Facebook"/>
+                            </items>
+                        </ContextMenu>
+                    </contextMenu>
+                </TableView>
+                <HBox alignment="CENTER_LEFT">
+                    <children>
+                        <Label fx:id="lblTotalStudents" text="current"/>
+                        <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                              minWidth="-Infinity" prefHeight="1.0" prefWidth="1.0" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="cmdChoose" defaultButton="true" disable="true" mnemonicParsing="false"
+                                onAction="#cmdChooseAction" text="Choose"/>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+            </padding>
+        </VBox>
+    </items>
+</SplitPane>
