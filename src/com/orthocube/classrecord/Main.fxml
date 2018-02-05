@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-            minHeight="100.0" minWidth="100.0" prefHeight="686.0" prefWidth="899.0" stylesheets="@res/modena_dark.css"
+            minHeight="100.0" minWidth="100.0" prefHeight="686.0" prefWidth="899.0"
             xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.MainController">
     <top>
         <VBox BorderPane.alignment="CENTER">

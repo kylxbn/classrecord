@@ -11,7 +11,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-      minHeight="-Infinity" minWidth="-Infinity" prefWidth="463.0" stylesheets="@../res/modena_dark.css"
+      minHeight="-Infinity" minWidth="-Infinity" prefWidth="463.0"
       xmlns="http://javafx.com/javafx/9.0.1"
       fx:controller="com.orthocube.classrecord.preloader.MainPreloaderController">
     <children>

@@ -35,6 +35,7 @@ public class MainPreloader extends Preloader {
         loadercontroller = loader.getController();
         loadercontroller.setMainPreloader(this);
         Scene scene = new Scene(root);
+        preloaderStage.setTitle("ClassRecord - Log In");
         preloaderStage.setScene(scene);
         preloaderStage.show();
     }

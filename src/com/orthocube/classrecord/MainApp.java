@@ -18,6 +18,7 @@ import com.orthocube.classrecord.students.StudentsController;
 import com.orthocube.classrecord.users.UsersController;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -28,6 +29,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import org.controlsfx.control.NotificationPane;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,6 +52,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private int currentHistory = -1;
 
     private BorderPane root;
+    private NotificationPane rootNotification;
 
     private SplitPane students;
     private SplitPane classes;
@@ -71,9 +75,17 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private String username;
     private String password;
 
+
+    public NotificationPane getRootNotification() {
+        return rootNotification;
+    }
+
     private void mayBeShown() {
         if (stage != null) {//username != null && stage != null) {
-            Platform.runLater(() -> stage.show());
+            Platform.runLater(() -> {
+                stage.show();
+                rootNotification.show("Welcome, OrthoCube!");
+            });
         }
     }
 
@@ -123,7 +135,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     @Override
     public void start(Stage stage) {
         this.stage = stage;
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(rootNotification);
 
         Platform.setImplicitExit(true);
         stage.setOnCloseRequest(e -> {
@@ -152,6 +164,19 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         FXMLLoader rootLoader = new FXMLLoader(getClass().getResource("Main.fxml"));
         rootLoader.setResources(bundle);
         root = rootLoader.load();
+        rootNotification = new NotificationPane(root);
+        //rootNotification.setCloseButtonVisible(false);
+        rootNotification.setOnShown(e -> {
+            LOGGER.log(Level.INFO, "Notification show listener triggered");
+            PauseTransition delay = new PauseTransition(Duration.seconds(5));
+            delay.setOnFinished(event -> {
+                LOGGER.log(Level.INFO, "Hiding notification");
+                rootNotification.hide();
+            });
+            delay.play();
+        });
+        //rootNotification.setShowFromTop(false);
+        rootNotification.getStyleClass().add(NotificationPane.STYLE_CLASS_DARK);
         mainController = rootLoader.getController();
         mainController.setMainApp(this);
         notifyPreloader(new MainPreloader.ProgressNotification(0.2));

@@ -11,7 +11,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
-           maxWidth="1.7976931348623157E308" prefHeight="677.0" prefWidth="930.0" stylesheets="@../res/modena_dark.css"
+           maxWidth="1.7976931348623157E308" prefHeight="677.0" prefWidth="930.0"
            xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.classes.EnrolleesController">
     <items>
         <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0">

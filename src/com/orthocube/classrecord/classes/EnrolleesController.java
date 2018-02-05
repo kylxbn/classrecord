@@ -92,6 +92,7 @@ public class EnrolleesController implements Initializable {
             if (currentClass.isSHS()) {
                 lblClassCard.setDisable(true);
                 txtClassCard.setDisable(true);
+                txtClassCard.setPromptText("Not available.");
             }
             enrollees = DB.getEnrollees(currentClass);
             tblEnrollees.setItems(enrollees);
@@ -105,9 +106,6 @@ public class EnrolleesController implements Initializable {
         txtNotes.setText(currentEnrollee.getNotes());
         txtCourse.setText(currentEnrollee.getCourse());
         cmdSave.setDisable(true);
-        if (currentClass.isSHS()) {
-            txtClassCard.setPromptText("Not available");
-        }
     }
 
     public String getTitle() {
@@ -141,7 +139,6 @@ public class EnrolleesController implements Initializable {
                         }
                     }
                 }
-
         );
 
         colName.prefWidthProperty().bind(tblEnrollees.widthProperty().subtract(19).divide(3.33333333));
@@ -186,6 +183,7 @@ public class EnrolleesController implements Initializable {
             try {
                 DB.delete(currentEnrollee);
                 enrollees.remove(currentEnrollee);
+                mainApp.getRootNotification().show("Enrollee removed from class.");
             } catch (SQLException e) {
                 Dialogs.exception(e);
             }
@@ -228,6 +226,8 @@ public class EnrolleesController implements Initializable {
                 cmdSave.setText("Save");
                 cmdAdd.setDisable(false);
             }
+
+            mainApp.getRootNotification().show("Enrollee saved.");
         } catch (Exception e) {
             Dialogs.exception(e);
         }

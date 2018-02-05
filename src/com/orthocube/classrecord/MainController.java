@@ -200,6 +200,7 @@ public class MainController implements Initializable {
         );
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
+
     }
 
 }

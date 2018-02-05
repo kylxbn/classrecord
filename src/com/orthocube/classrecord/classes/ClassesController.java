@@ -296,6 +296,8 @@ public class ClassesController implements Initializable {
                 cmdSave.setText("Save");
                 cmdAdd.setDisable(false);
             }
+
+            mainApp.getRootNotification().show("Class saved.");
         } catch (Exception e) {
             Dialogs.exception(e);
         }
@@ -336,6 +338,7 @@ public class ClassesController implements Initializable {
             try {
                 DB.delete(currentClass);
                 classes.remove(currentClass);
+                mainApp.getRootNotification().show("Class deleted.");
             } catch (SQLException e) {
                 Dialogs.exception(e);
             }

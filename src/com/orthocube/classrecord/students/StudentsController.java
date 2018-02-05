@@ -162,6 +162,8 @@ public class StudentsController implements Initializable {
                 cmdSave.setText("Save");
                 cmdAdd.setDisable(false);
             }
+
+            mainApp.getRootNotification().show("Student saved.");
         } catch (Exception e) {
             Dialogs.exception(e);
         }
@@ -210,6 +212,7 @@ public class StudentsController implements Initializable {
             try {
                 DB.delete(currentStudent);
                 students.remove(currentStudent);
+                mainApp.getRootNotification().show("Student deleted.");
             } catch (SQLException e) {
                 Dialogs.exception(e);
             }

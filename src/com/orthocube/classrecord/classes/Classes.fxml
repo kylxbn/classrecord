@@ -13,15 +13,16 @@
 <?import javafx.scene.layout.*?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
            maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="687.0" prefWidth="921.0"
-           stylesheets="@../res/modena_dark.css" xmlns="http://javafx.com/javafx/9.0.1"
-           fx:controller="com.orthocube.classrecord.classes.ClassesController">
+           xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.classes.ClassesController">
     <items>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="100.0" spacing="8.0">
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="100.0"
+              spacing="8.0">
             <children>
-                <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" spacing="8.0">
+                <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                      minWidth="10.0" spacing="8.0">
                     <children>
                         <GridPane hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                  minHeight="0.0" minWidth="0.0" HBox.hgrow="ALWAYS">
+                                  minHeight="-Infinity" minWidth="10.0" HBox.hgrow="ALWAYS">
                             <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0"
                                                    percentWidth="45.0"/>
@@ -35,8 +36,8 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <TextField fx:id="txtClassSearch" maxWidth="1.7976931348623157E308" minHeight="0.0"
-                                           minWidth="0.0" promptText="Class"/>
+                                <TextField fx:id="txtClassSearch" maxWidth="1.7976931348623157E308"
+                                           minHeight="-Infinity" minWidth="10.0" promptText="Class"/>
                                 <TextField fx:id="txtSYSearch" maxWidth="1.7976931348623157E308" minHeight="0.0"
                                            minWidth="0.0" promptText="S.Y." GridPane.columnIndex="1"/>
                                 <TextField fx:id="txtSemSearch" minHeight="0.0" minWidth="0.0" promptText="Sem"
@@ -150,7 +151,7 @@
                         <Label text=" subjects shown."/>
                         <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                               minWidth="-Infinity" prefHeight="1.0" prefWidth="1.0" HBox.hgrow="ALWAYS"/>
-                        <Button mnemonicParsing="false" onAction="#cmdAddAction" text="Add"/>
+                        <Button fx:id="cmdAdd" mnemonicParsing="false" onAction="#cmdAddAction" text="Add"/>
                     </children>
                 </HBox>
             </children>
@@ -158,10 +159,10 @@
                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
             </padding>
         </VBox>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-              minWidth="-Infinity">
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="100.0">
             <children>
-                <ScrollPane fitToWidth="true" minHeight="-Infinity" minWidth="-Infinity" VBox.vgrow="ALWAYS">
+                <ScrollPane fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                            minHeight="0.0" minWidth="100.0" VBox.vgrow="ALWAYS">
                     <content>
                         <VBox minHeight="-Infinity" minWidth="-Infinity">
                             <children>

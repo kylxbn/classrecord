@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
            minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
-           stylesheets="@../res/modena_dark.css" xmlns="http://javafx.com/javafx/8.0.141"
+           xmlns="http://javafx.com/javafx/8.0.141"
            fx:controller="com.orthocube.classrecord.students.StudentEnrolledInController">
     <items>
         <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
