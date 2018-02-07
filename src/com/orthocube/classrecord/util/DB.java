@@ -755,7 +755,7 @@ public class DB {
         if (c.getClazz().isSHS()) {
             prep = con.prepareStatement("DELETE FROM SHSCriterias WHERE CriteriaID = ?");
         } else {
-            prep = con.prepareStatement("DELETE FROM Enrollees WHERE EnrolleeID = ?");
+            prep = con.prepareStatement("DELETE FROM Criterias WHERE CriteriaID = ?");
         }
         prep.setLong(1, c.getID());
         prep.executeUpdate();
