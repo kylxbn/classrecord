@@ -28,6 +28,7 @@ Current:
     Apache Derby
     Apache Commons
     Thumbnailinator
+    ControlsFX
 
 Before:
     SQLite 3

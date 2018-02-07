@@ -8,8 +8,10 @@
 package com.orthocube.classrecord.util;
 
 import com.orthocube.classrecord.data.Clazz;
+import com.orthocube.classrecord.data.Criteria;
 import com.orthocube.classrecord.data.Enrollee;
 import com.orthocube.classrecord.data.Student;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -669,16 +671,94 @@ public class DB {
 
     public static void delete(Enrollee e) throws SQLException {
         LOGGER.log(Level.INFO, "Deleting enrollee...");
+        PreparedStatement prep;
         if (e.getClazz().isSHS()) {
-            PreparedStatement prep = con.prepareStatement("DELETE FROM SHSEnrollees WHERE EnrolleeID = ?");
-            prep.setLong(1, e.getID());
-            prep.executeUpdate();
+            prep = con.prepareStatement("DELETE FROM SHSEnrollees WHERE EnrolleeID = ?");
         } else {
-            PreparedStatement prep = con.prepareStatement("DELETE FROM Enrollees WHERE EnrolleeID = ?");
-            prep.setLong(1, e.getID());
+            prep = con.prepareStatement("DELETE FROM Enrollees WHERE EnrolleeID = ?");
+        }
+        prep.setLong(1, e.getID());
+        prep.executeUpdate();
+    }
+
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Criterias">
+    public static ObservableList<Criteria> getCriterias(Clazz c) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Criterias...");
+        ResultSet r;
+
+        PreparedStatement prep;
+
+        boolean shs = c.isSHS();
+        if (shs)
+            prep = con.prepareStatement("SELECT SHSCriterias.CriteriaID, SHSCriterias.Name, SHSCriterias.Percent, SHSCriterias.Terms FROM SHSCriterias WHERE SHSCriterias.ClassID = ?");
+        else {
+            prep = con.prepareStatement("SELECT Criterias.CriteriaID, Criterias.Name, Criterias.Percent, Criterias.Terms FROM Criterias WHERE Criterias.ClassID = ?");
+        }
+
+        prep.setLong(1, c.getID());
+        r = prep.executeQuery();
+
+        ArrayList<Criteria> criterias = new ArrayList<>();
+        while (r.next()) {
+            Criteria temp = new Criteria(r.getLong(1));
+            temp.setClass(c);
+            temp.setName(r.getString(2));
+            temp.setPercentage(r.getInt(3));
+            temp.setTerms(r.getInt(4));
+            criterias.add(temp);
+        }
+
+        return FXCollections.observableList(criterias, (Criteria cr) -> new Observable[]{cr.nameProperty(), cr.percentageProperty(), cr.termsProperty()});
+    }
+
+    public static boolean save(Criteria c) throws SQLException {
+        if (c.getID() == -1) {
+            LOGGER.log(Level.WARNING, "Creating new Criteria");
+            PreparedStatement preps;
+            if (c.getClazz().isSHS()) {
+                preps = con.prepareStatement("INSERT INTO SHSCriterias (ClassID, Name, Percent, Terms) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            } else {
+                preps = con.prepareStatement("INSERT INTO Criterias (ClassID, Name, Percent, Terms) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            }
+            preps.setLong(1, c.getClazz().getID());
+            preps.setString(2, c.getName());
+            preps.setInt(3, c.getPercentage());
+            preps.setInt(4, c.getTerms());
+            preps.executeUpdate();
+            ResultSet res = preps.getGeneratedKeys();
+            res.next();
+            c.setID(res.getLong(1));
+            return true;
+        } else {
+            LOGGER.log(Level.INFO, "Updating criteria...");
+            PreparedStatement prep;
+            if (c.getClazz().isSHS()) {
+                prep = con.prepareStatement("UPDATE SHSCriterias SET ClassID = ?, Name = ?, Percent = ?, Terms = ? WHERE CriteriaID = ?");
+            } else {
+                prep = con.prepareStatement("UPDATE Criterias SET ClassID = ?, Name = ?, Percent = ?, Terms = ? WHERE CriteriaID = ?");
+            }
+            prep.setLong(1, c.getClazz().getID());
+            prep.setString(2, c.getName());
+            prep.setInt(3, c.getPercentage());
+            prep.setInt(4, c.getTerms());
+            prep.setLong(5, c.getID());
             prep.executeUpdate();
+            return false;
         }
     }
 
+    public static void delete(Criteria c) throws SQLException {
+        LOGGER.log(Level.INFO, "Deleting criteria...");
+        PreparedStatement prep;
+        if (c.getClazz().isSHS()) {
+            prep = con.prepareStatement("DELETE FROM SHSCriterias WHERE CriteriaID = ?");
+        } else {
+            prep = con.prepareStatement("DELETE FROM Enrollees WHERE EnrolleeID = ?");
+        }
+        prep.setLong(1, c.getID());
+        prep.executeUpdate();
+    }
     // </editor-fold>
 }

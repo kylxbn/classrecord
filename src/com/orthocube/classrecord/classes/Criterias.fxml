@@ -12,9 +12,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
-           maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="571.0"
-           prefWidth="847.0" xmlns="http://javafx.com/javafx/9.0.1"
-           fx:controller="com.orthocube.classrecord.classes.CriteriasController">
+           maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="200.0" prefHeight="571.0" prefWidth="847.0"
+           xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.classes.CriteriasController">
     <items>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="100.0"
               spacing="8.0">
@@ -55,22 +54,22 @@
                                                 vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <Label text="Prelims" GridPane.rowIndex="1">
+                                <Label fx:id="lblPrelims" text="Prelims" GridPane.rowIndex="1">
                                     <font>
                                         <Font name="System Bold" size="12.0"/>
                                     </font>
                                 </Label>
-                                <Label text="Midterms" GridPane.rowIndex="2">
+                                <Label fx:id="lblMidterms" text="Midterms" GridPane.rowIndex="2">
                                     <font>
                                         <Font name="System Bold" size="12.0"/>
                                     </font>
                                 </Label>
-                                <Label text="Semis" GridPane.rowIndex="3">
+                                <Label fx:id="lblSemis" text="Semis" GridPane.rowIndex="3">
                                     <font>
                                         <Font name="System Bold" size="12.0"/>
                                     </font>
                                 </Label>
-                                <Label text="Finals" GridPane.rowIndex="4">
+                                <Label fx:id="lblFinals" text="Finals" GridPane.rowIndex="4">
                                     <font>
                                         <Font name="System Bold" size="12.0"/>
                                     </font>
@@ -141,7 +140,7 @@
                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
             </padding>
         </VBox>
-        <VBox prefHeight="200.0" prefWidth="100.0">
+        <VBox minHeight="100.0" minWidth="100.0">
             <children>
                 <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0"
                             VBox.vgrow="ALWAYS">

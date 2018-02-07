@@ -238,6 +238,9 @@ public class ClassesController implements Initializable {
 
     @FXML
     private Button cmdSave;
+
+    @FXML
+    private MenuItem mnuCriterias;
     // </editor-fold>
 
     public void setMainApp(MainApp mainApp) {
@@ -329,7 +332,15 @@ public class ClassesController implements Initializable {
         } catch (Exception e) {
             Dialogs.exception(e);
         }
+    }
 
+    @FXML
+    void mnuCriteriasAction(ActionEvent event) {
+        try {
+            mainApp.showCriterias(currentClass);
+        } catch (Exception e) {
+            Dialogs.exception(e);
+        }
     }
 
     @FXML

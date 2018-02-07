@@ -13,8 +13,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import org.controlsfx.validation.Severity;
-import org.controlsfx.validation.ValidationResult;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 
@@ -85,22 +83,6 @@ public class MainPreloaderController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ValidationSupport support = new ValidationSupport();
-
-        Validator<String> validator = new Validator<String>() {
-            @Override
-            public ValidationResult apply(Control control, String value) {
-                boolean condition =
-                        value != null
-                                ? !value
-                                .matches(
-                                        "[\\x00-\\x20]*[+-]?(((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*")
-                                : value == null;
-
-                System.out.println(condition);
-
-                return ValidationResult.fromMessageIf(control, "not a number", Severity.ERROR, condition);
-            }
-        };
 
         support.registerValidator(txtUsername, Validator.createEmptyValidator("Username is required"));
         support.registerValidator(txtPassword, Validator.createEmptyValidator("Password is required"));

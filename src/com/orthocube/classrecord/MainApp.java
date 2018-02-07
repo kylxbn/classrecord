@@ -9,6 +9,7 @@ package com.orthocube.classrecord;
 
 import com.orthocube.classrecord.about.AboutController;
 import com.orthocube.classrecord.classes.ClassesController;
+import com.orthocube.classrecord.classes.CriteriasController;
 import com.orthocube.classrecord.classes.EnrolleesController;
 import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.data.Student;
@@ -363,4 +364,16 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         updateNavigation();
     }
 
+    public void showCriterias(Clazz currentClass) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("classes/Criterias.fxml"));
+        loader.setResources(bundle);
+        SplitPane enrollees = loader.load();
+        CriteriasController controller = loader.getController();
+        controller.setMainApp(this);
+        controller.showClass(currentClass);
+
+        trimHistoryThenAdd(enrollees, controller.getTitle());
+        currentHistory++;
+        updateNavigation();
+    }
 }
