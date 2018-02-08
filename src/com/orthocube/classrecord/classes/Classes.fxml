@@ -11,6 +11,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
            maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="687.0" prefWidth="921.0"
            xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.classes.ClassesController">
@@ -25,25 +26,21 @@
                                   minHeight="-Infinity" minWidth="10.0" HBox.hgrow="ALWAYS">
                             <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0"
-                                                   percentWidth="45.0"/>
+                                                   percentWidth="40.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0"
+                                                   percentWidth="20.0"/>
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0"
                                                    percentWidth="15.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0"
-                                                   percentWidth="10.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="30.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="25.0"/>
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <TextField fx:id="txtClassSearch" maxWidth="1.7976931348623157E308"
-                                           minHeight="-Infinity" minWidth="10.0" promptText="Class"/>
-                                <TextField fx:id="txtSYSearch" maxWidth="1.7976931348623157E308" minHeight="0.0"
-                                           minWidth="0.0" promptText="S.Y." GridPane.columnIndex="1"/>
-                                <TextField fx:id="txtSemSearch" minHeight="0.0" minWidth="0.0" promptText="Sem"
-                                           GridPane.columnIndex="2"/>
-                                <TextField fx:id="txtCourseSearch" minHeight="0.0" minWidth="0.0" promptText="Course"
-                                           GridPane.columnIndex="3"/>
+                                <CustomTextField fx:id="txtClassSearch" promptText="Class"/>
+                                <CustomTextField fx:id="txtSYSearch" promptText="S.Y." GridPane.columnIndex="1"/>
+                                <CustomTextField fx:id="txtSemSearch" promptText="Sem" GridPane.columnIndex="2"/>
+                                <CustomTextField fx:id="txtCourseSearch" promptText="Course" GridPane.columnIndex="3"/>
                             </children>
                         </GridPane>
                     </children>

@@ -12,19 +12,15 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" prefHeight="678.0" prefWidth="904.0"
-           xmlns="http://javafx.com/javafx/9.0.1"
-           fx:controller="com.orthocube.classrecord.students.StudentsController">
+           xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.students.StudentsController">
     <items>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
               minWidth="-Infinity" spacing="8.0">
             <children>
-                <HBox alignment="CENTER_LEFT" spacing="8.0">
-                    <children>
-                        <TextField fx:id="txtSearch" promptText="Search using Name or Student ID..."
-                                   HBox.hgrow="ALWAYS"/>
-                    </children>
-                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="8.0"/>
+                <CustomTextField fx:id="txtSearch" promptText="Search for name or Student ID..."/>
                 <TableView fx:id="tblStudents" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colID" prefWidth="75.0" resizable="false" text="ID"/>

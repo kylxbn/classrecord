@@ -16,6 +16,7 @@ import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Student;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import com.orthocube.classrecord.util.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +32,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import org.controlsfx.control.textfield.CustomTextField;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -65,7 +67,7 @@ public class StudentsController implements Initializable {
     private ImageView pboPicture;
 
     @FXML
-    private TextField txtSearch;
+    private CustomTextField txtSearch;
 
     @FXML
     private TableView<Student> tblStudents;
@@ -316,6 +318,7 @@ public class StudentsController implements Initializable {
         lblShowID.textProperty().bind(txtSID.textProperty());
         lblShowName.textProperty().bind(Bindings.concat(txtFN.textProperty(), " ", txtLN.textProperty()));
 
+        Utils.setupClearButtonField(txtSearch);
 
         // <editor-fold defaultstate="collapsed" desc="change listeners">
         txtSID.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));

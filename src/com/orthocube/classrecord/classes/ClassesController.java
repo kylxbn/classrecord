@@ -17,6 +17,7 @@ import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import com.orthocube.classrecord.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -25,6 +26,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import org.controlsfx.control.textfield.CustomTextField;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -59,16 +61,16 @@ public class ClassesController implements Initializable {
     private Button cmdAdd;
 
     @FXML
-    private TextField txtClassSearch;
+    private CustomTextField txtClassSearch;
 
     @FXML
-    private TextField txtSYSearch;
+    private CustomTextField txtSYSearch;
 
     @FXML
-    private TextField txtSemSearch;
+    private CustomTextField txtSemSearch;
 
     @FXML
-    private TextField txtCourseSearch;
+    private CustomTextField txtCourseSearch;
 
     @FXML
     private Button cmdSearch;
@@ -640,6 +642,11 @@ public class ClassesController implements Initializable {
         colName.prefWidthProperty().bind(tblClasses.widthProperty().subtract(126).divide(2.0));
         colRoom.prefWidthProperty().bind(tblClasses.widthProperty().subtract(126).divide(5.0));
         colCourse.prefWidthProperty().bind(tblClasses.widthProperty().subtract(126).divide(3.0));
+
+        Utils.setupClearButtonField(txtClassSearch);
+        Utils.setupClearButtonField(txtSYSearch);
+        Utils.setupClearButtonField(txtSemSearch);
+        Utils.setupClearButtonField(txtCourseSearch);
 
         // <editor-fold defaultstate="collapsed" desc="Change listeners">
         txtName.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));

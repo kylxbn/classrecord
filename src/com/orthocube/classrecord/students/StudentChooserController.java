@@ -12,6 +12,7 @@ import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.data.Student;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import com.orthocube.classrecord.util.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -21,9 +22,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.*;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.CustomTextField;
 
 import java.awt.*;
 import java.io.IOException;
@@ -47,7 +49,7 @@ public class StudentChooserController implements Initializable {
     private Stage dialogStage;
 
     @FXML
-    private TextField txtSearch;
+    private CustomTextField txtSearch;
 
     @FXML
     private TableView<Student> tblStudents;
@@ -148,5 +150,7 @@ public class StudentChooserController implements Initializable {
 
         colID.setPrefWidth(135);
         colName.prefWidthProperty().bind(tblStudents.widthProperty().subtract(154));
+
+        Utils.setupClearButtonField(txtSearch);
     }
 }
