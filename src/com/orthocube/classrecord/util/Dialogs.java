@@ -47,6 +47,7 @@ public class Dialogs {
     }
 
     public static ButtonType exception(Exception ex) {
+        ex.printStackTrace();
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Internal Error");
         alert.setHeaderText("An internal error has occurred!");

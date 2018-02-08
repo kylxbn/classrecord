@@ -13,11 +13,13 @@ import com.orthocube.classrecord.data.Criteria;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import org.controlsfx.validation.Severity;
 import org.controlsfx.validation.ValidationResult;
@@ -145,6 +147,12 @@ public class CriteriasController implements Initializable {
     @FXML
     private Label lblFinals;
 
+    @FXML
+    private ChoiceBox<String> cboTerms;
+    @FXML
+    private PieChart chtPie;
+
+
     // </editor-fold>
 
     @FXML
@@ -246,10 +254,19 @@ public class CriteriasController implements Initializable {
             criterias = DB.getCriterias(currentClass);
             criterias.addListener((ListChangeListener<Criteria>) change -> {
                 computePercentages();
+                updateChart();
             });
             computePercentages();
 
             tblCriterias.setItems(criterias);
+
+            if (c.isSHS()) {
+                cboTerms.setItems(FXCollections.observableArrayList("Midterms", "Finals"));
+            } else {
+                cboTerms.setItems(FXCollections.observableArrayList("Prelims", "Midterms", "Semis", "Finals"));
+            }
+            cboTerms.getSelectionModel().select(0);
+
         } catch (SQLException e) {
             Dialogs.exception(e);
         }
@@ -308,6 +325,97 @@ public class CriteriasController implements Initializable {
         cmdSave.setText("Save");
     }
 
+    private void updateChart() {
+        ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
+        if (currentClass.isSHS()) {
+            switch (cboTerms.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                    for (Criteria c : criterias) {
+                        if ((c.getTerms() & 2) > 0)
+                            data.add(new PieChart.Data(c.getName(), c.getPercentage()));
+                    }
+                    break;
+                case 1:
+                    for (Criteria c : criterias) {
+                        if ((c.getTerms() & 8) > 0)
+                            data.add(new PieChart.Data(c.getName(), c.getPercentage()));
+                    }
+                    break;
+            }
+        } else {
+            switch (cboTerms.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                    for (Criteria c : criterias) {
+                        if ((c.getTerms() & 1) > 0)
+                            data.add(new PieChart.Data(c.getName(), c.getPercentage()));
+                    }
+                    break;
+                case 1:
+                    for (Criteria c : criterias) {
+                        if ((c.getTerms() & 2) > 0)
+                            data.add(new PieChart.Data(c.getName(), c.getPercentage()));
+                    }
+                    break;
+                case 2:
+                    for (Criteria c : criterias) {
+                        if ((c.getTerms() & 4) > 0)
+                            data.add(new PieChart.Data(c.getName(), c.getPercentage()));
+                    }
+                    break;
+                case 3:
+                    for (Criteria c : criterias) {
+                        if ((c.getTerms() & 8) > 0)
+                            data.add(new PieChart.Data(c.getName(), c.getPercentage()));
+                    }
+                    break;
+            }
+        }
+
+        chtPie.setData(data);
+        for (final PieChart.Data item : chtPie.getData()) {
+            item.getNode().setOnMouseClicked(e -> {
+                for (Criteria c : criterias) {
+                    if (currentClass.isSHS()) {
+                        if (c.getName().equals(item.getName())) {
+                            switch (cboTerms.getSelectionModel().getSelectedIndex()) {
+                                case 0:
+                                    if ((c.getTerms() & 2) > 0)
+                                        tblCriterias.getSelectionModel().select(c);
+                                    break;
+                                case 1:
+                                    if ((c.getTerms() & 8) > 0)
+                                        tblCriterias.getSelectionModel().select(c);
+                                    break;
+                            }
+                        }
+                    } else {
+                        if (c.getName().equals(item.getName())) {
+                            switch (cboTerms.getSelectionModel().getSelectedIndex()) {
+                                case 0:
+                                    if ((c.getTerms() & 1) > 0)
+                                        tblCriterias.getSelectionModel().select(c);
+                                    break;
+                                case 1:
+                                    if ((c.getTerms() & 2) > 0)
+                                        tblCriterias.getSelectionModel().select(c);
+                                    break;
+                                case 2:
+                                    if ((c.getTerms() & 4) > 0)
+                                        tblCriterias.getSelectionModel().select(c);
+                                    break;
+                                case 3:
+                                    if ((c.getTerms() & 8) > 0)
+                                        tblCriterias.getSelectionModel().select(c);
+                                    break;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
@@ -358,6 +466,12 @@ public class CriteriasController implements Initializable {
         };
 
         validationSupport.registerValidator(txtPercent, true, validator);
+
+        cboTerms.valueProperty().addListener(e -> updateChart());
+        //chtPie.setLabelLineLength(10);
+        //chtPie.setLegendSide(Side.LEFT);
+        chtPie.setLegendVisible(false);
+        chtPie.setTitle("Criteria percentages");
     }
 
     public void setMainApp(MainApp mainApp) {
