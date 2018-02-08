@@ -73,6 +73,20 @@
                                         </ImageView>
                                     </graphic>
                                 </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <Menu mnemonicParsing="false" text="Theme">
+                                    <items>
+                                        <RadioMenuItem fx:id="mnuDarkTheme" mnemonicParsing="false"
+                                                       onAction="#mnuDarkThemeAction" selected="true" text="Dark">
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="mnuTheme"/>
+                                            </toggleGroup>
+                                        </RadioMenuItem>
+                                        <RadioMenuItem fx:id="mnuLightTheme" mnemonicParsing="false"
+                                                       onAction="#mnuLightThemeAction" text="Light"
+                                                       toggleGroup="$mnuTheme"/>
+                                    </items>
+                                </Menu>
                             </items>
                         </Menu>
                         <Menu fx:id="mnuTools" mnemonicParsing="false" text="Tools">
@@ -122,7 +136,7 @@
                                 <Button fx:id="cmdNext" contentDisplay="RIGHT" disable="true"
                                         maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                                         mnemonicParsing="false" onAction="#cmdNextAction" prefWidth="87.0"
-                                        styleClass="right-pill" text="Zuruck">
+                                        styleClass="right-pill" text="Next">
                                     <graphic>
                                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" smooth="false">
                                             <image>

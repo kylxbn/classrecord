@@ -27,6 +27,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -72,6 +73,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private Locale language = Locale.ENGLISH;
     private ResourceBundle bundle = null; // ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings", language);
     private Stage stage;
+    private Scene scene;
 
     private String username;
     private String password;
@@ -136,18 +138,30 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     @Override
     public void start(Stage stage) {
         this.stage = stage;
-        Scene scene = new Scene(rootNotification);
-
+        scene = new Scene(rootNotification);
         Platform.setImplicitExit(true);
+        setDarkTheme();
         stage.setOnCloseRequest(e -> {
             if (Dialogs.confirm("Close Application", "Are you sure you want to leave?", "Any unsaved changes will be lost.") == ButtonType.CANCEL)
                 e.consume();
         });
+        this.stage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_16px.png")));
+        this.stage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_30px.png")));
+        this.stage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_40px.png")));
+        this.stage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_80px.png")));
 
         this.stage.setScene(scene);
         this.stage.setTitle("Class Record"); //bundle.getString("classrecord"));
 
         mayBeShown();
+    }
+
+    public void setDarkTheme() {
+        scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+    }
+
+    public void setLightTheme() {
+        scene.getStylesheets().clear();
     }
 
     @Override
@@ -169,7 +183,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         //rootNotification.setCloseButtonVisible(false);
         rootNotification.setOnShown(e -> {
             LOGGER.log(Level.INFO, "Notification show listener triggered");
-            PauseTransition delay = new PauseTransition(Duration.seconds(5));
+            PauseTransition delay = new PauseTransition(Duration.seconds(3));
             delay.setOnFinished(event -> {
                 LOGGER.log(Level.INFO, "Hiding notification");
                 rootNotification.hide();

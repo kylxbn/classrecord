@@ -13,17 +13,18 @@
 <?import javafx.scene.text.Font?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
            maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="100.0" prefHeight="694.0" prefWidth="932.0"
-           xmlns="http://javafx.com/javafx/9.0.1"
-           fx:controller="com.orthocube.classrecord.about.AboutController">
+           xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.about.AboutController">
     <items>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-              minWidth="-Infinity" spacing="8.0">
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="100.0"
+              spacing="8.0">
             <children>
                 <HBox alignment="TOP_CENTER">
                     <children>
-                        <Label alignment="CENTER_RIGHT" text="Class Record">
+                        <Label alignment="CENTER_RIGHT"
+                               style="-fx-fill: #818181; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );"
+                               text="Class Record">
                             <font>
-                                <Font name="System Bold" size="36.0"/>
+                                <Font name="Monospaced Bold" size="36.0"/>
                             </font>
                         </Label>
                     </children>

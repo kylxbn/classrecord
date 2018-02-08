@@ -29,6 +29,8 @@ import java.util.ResourceBundle;
  * @author OrthoCube
  */
 public class MainController implements Initializable {
+    boolean dark = true;
+
     // <editor-fold defaultstate="collapsed" desc="Controls">
     @FXML
     Label lblMemory;
@@ -130,6 +132,22 @@ public class MainController implements Initializable {
     @FXML
     void mnuAboutAction(ActionEvent event) {
         mainApp.showAbout();
+    }
+
+    @FXML
+    void mnuDarkThemeAction(ActionEvent event) {
+        if (!dark) {
+            mainApp.setDarkTheme();
+            dark = true;
+        }
+    }
+
+    @FXML
+    void mnuLightThemeAction(ActionEvent event) {
+        if (dark) {
+            mainApp.setLightTheme();
+            dark = false;
+        }
     }
 
     public void setMainApp(MainApp mainApp) {

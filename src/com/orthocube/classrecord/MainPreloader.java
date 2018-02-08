@@ -14,6 +14,7 @@ import javafx.application.Preloader;
 import javafx.application.Preloader.StateChangeNotification.Type;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -34,11 +35,26 @@ public class MainPreloader extends Preloader {
         VBox root = loader.load();
         loadercontroller = loader.getController();
         loadercontroller.setMainPreloader(this);
-        Scene scene = new Scene(root);
+        scene = new Scene(root);
+        this.preloaderStage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_16px.png")));
+        this.preloaderStage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_30px.png")));
+        this.preloaderStage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_40px.png")));
+        this.preloaderStage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_80px.png")));
+
+        setDarkTheme();
         preloaderStage.setTitle("ClassRecord - Log In");
         preloaderStage.setScene(scene);
         preloaderStage.show();
     }
+
+    public void setDarkTheme() {
+        scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+    }
+
+    public void setLightTheme() {
+        scene.getStylesheets().clear();
+    }
+
 
     public void loginAction(String username, String password) {
         this.username = username;

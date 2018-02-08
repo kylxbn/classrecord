@@ -19,6 +19,8 @@ import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,6 +29,7 @@ import javafx.scene.control.*;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +40,15 @@ public class ClassesController implements Initializable {
     private MainApp mainApp;
 
     private ObservableList<Clazz> classes;
+    private FilteredList<Clazz> filteredClasses;
     private Clazz currentClass;
+
+    private String namefilter = "", syfilter = "", semfilter = "", coursefilter = "";
+    private int timefilter = 0, levelfilter = 2, sortfilter = 0;
+
+    private ToggleGroup timeGroup = null;
+    private ToggleGroup levelGroup = null;
+    private ToggleGroup sortingGroup = null;
 
     private ObservableList<String> collegeYears = FXCollections.observableArrayList("1st", "2nd", "3rd", "4th", "5th");
     private ObservableList<String> shsYears = FXCollections.observableArrayList("11", "12");
@@ -444,7 +455,106 @@ public class ClassesController implements Initializable {
 
     public void setModel(ObservableList<Clazz> model) {
         classes = model;
-        tblClasses.setItems(classes);
+
+        filteredClasses = new FilteredList<>(model, p -> true);
+        txtClassSearch.textProperty().addListener((obs, oldv, newv) -> {
+            namefilter = newv;
+            updateFilters();
+        });
+        txtSYSearch.textProperty().addListener((obs, oldv, newv) -> {
+            syfilter = newv;
+            updateFilters();
+        });
+        txtSemSearch.textProperty().addListener((obs, oldv, newv) -> {
+            semfilter = newv;
+            updateFilters();
+        });
+        txtCourseSearch.textProperty().addListener((obs, oldv, newv) -> {
+            coursefilter = newv;
+            updateFilters();
+        });
+        timeGroup.selectedToggleProperty().addListener((obs, ov, nv) -> {
+            if (timeGroup.getSelectedToggle().equals(rdoTimeThisSemester))
+                timefilter = 0;
+            else if (timeGroup.getSelectedToggle().equals(rdoTimeToday))
+                timefilter = 1;
+            else
+                timefilter = 2;
+            updateFilters();
+        });
+        levelGroup.selectedToggleProperty().addListener((obs, ov, nv) -> {
+            if (levelGroup.getSelectedToggle().equals(rdoLevelCollege))
+                levelfilter = 0;
+            else if (levelGroup.getSelectedToggle().equals(rdoLevelSHS))
+                levelfilter = 1;
+            else
+                levelfilter = 2;
+            updateFilters();
+        });
+        sortingGroup.selectedToggleProperty().addListener((obs, ov, nv) -> {
+            if (sortingGroup.getSelectedToggle().equals(rdoSortingChronological))
+                sortfilter = 0;
+            else
+                sortfilter = 1;
+            updateFilters();
+        });
+        updateFilters();
+
+        SortedList<Clazz> sortedClasses = new SortedList<>(filteredClasses);
+        sortedClasses.comparatorProperty().bind(tblClasses.comparatorProperty());
+        tblClasses.setItems(sortedClasses);
+    }
+
+    private void updateFilters() {
+        filteredClasses.setPredicate(clazz -> {
+            int include = 1;
+
+            if (namefilter.length() > 0) {
+                include &= clazz.getName().toLowerCase().contains(namefilter.toLowerCase()) ? 1 : 0;
+            }
+
+            if (syfilter.length() > 0) {
+                try {
+                    int sy = Integer.parseInt(syfilter);
+                    include &= clazz.getSY() == sy ? 1 : 0;
+                } catch (Exception e) {
+                    include &= 1;
+                }
+            }
+
+            if (semfilter.length() > 0) {
+                try {
+                    int sem = Integer.parseInt(semfilter);
+                    include &= clazz.getSem() == sem ? 1 : 0;
+                } catch (Exception e) {
+                    include &= 1;
+                }
+            }
+
+            if (coursefilter.length() > 0) {
+                include &= clazz.getCourse().toLowerCase().contains(coursefilter.toLowerCase()) ? 1 : 0;
+            }
+
+            if (timefilter == 0) {
+                include &= (clazz.getDays() & (1 << (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1))) > 0 ? 1 : 0;
+            } else if (timefilter == 1) {
+                int month = Calendar.getInstance().get(Calendar.MONTH);
+                if ((month >= 5) && (month < 9))
+                    include &= (clazz.getSem() == 1) ? 1 : 0;
+                else if (month == 3 || month == 4)
+                    include &= (clazz.getSem() == 3) ? 1 : 0;
+                else
+                    include &= (clazz.getSem() == 2) ? 1 : 0;
+            }
+
+            if (levelfilter == 0) {
+                include &= clazz.isSHS() ? 0 : 1;
+            } else if (levelfilter == 1) {
+                include &= clazz.isSHS() ? 1 : 0;
+            }
+
+            return include > 0;
+        });
     }
 
     @Override
@@ -510,9 +620,9 @@ public class ClassesController implements Initializable {
                 }
         );
 
-        final ToggleGroup timeGroup = new ToggleGroup();
-        final ToggleGroup levelGroup = new ToggleGroup();
-        final ToggleGroup sortingGroup = new ToggleGroup();
+        timeGroup = new ToggleGroup();
+        levelGroup = new ToggleGroup();
+        sortingGroup = new ToggleGroup();
 
         rdoTimeToday.setToggleGroup(timeGroup);
         rdoTimeThisSemester.setToggleGroup(timeGroup);
