@@ -166,6 +166,7 @@ public class CriteriasController implements Initializable {
         currentCriteria = new Criteria();
         currentCriteria.setClass(currentClass);
         showCriteriaInfo();
+        cmdSave.setDisable(false);
         cmdSave.setText("Save as new");
         cmdAdd.setDisable(true);
     }
@@ -322,6 +323,7 @@ public class CriteriasController implements Initializable {
         chkFinals.setSelected((terms & 8) > 0);
 
         cmdSave.setDisable(true);
+        cmdAdd.setDisable(false);
         cmdSave.setText("Save");
     }
 

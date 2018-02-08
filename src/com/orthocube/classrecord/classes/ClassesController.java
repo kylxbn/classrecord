@@ -334,6 +334,7 @@ public class ClassesController implements Initializable {
 
         currentClass = new Clazz();
         showClassInfo();
+        cmdSave.setDisable(false);
         cmdSave.setText("Save as new");
         cmdAdd.setDisable(true);
     }
@@ -448,6 +449,7 @@ public class ClassesController implements Initializable {
         }
 
         cmdSave.setDisable(true);
+        cmdAdd.setDisable(false);
         cmdSave.setText("Save");
     }
 

@@ -256,7 +256,10 @@ public class StudentsController implements Initializable {
             txtNotes.setText("");
             cmdSave.setDisable(true);
         }
+
         cmdSave.setDisable(true);
+        cmdAdd.setDisable(false);
+        cmdSave.setText("Save");
     }
 
     public String getTitle() {

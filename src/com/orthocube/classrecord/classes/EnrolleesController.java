@@ -105,7 +105,10 @@ public class EnrolleesController implements Initializable {
         txtClassCard.setText(Integer.toString(currentEnrollee.getClasscard()));
         txtNotes.setText(currentEnrollee.getNotes());
         txtCourse.setText(currentEnrollee.getCourse());
+
         cmdSave.setDisable(true);
+        cmdAdd.setDisable(false);
+        cmdSave.setText("Save");
     }
 
     public String getTitle() {
