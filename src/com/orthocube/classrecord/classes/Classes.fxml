@@ -131,7 +131,8 @@
                                     <items>
                                         <MenuItem mnemonicParsing="false" text="Quick add"/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <MenuItem mnemonicParsing="false" text="View attendance days"/>
+                                        <MenuItem fx:id="mnuViewAttendance" mnemonicParsing="false"
+                                                  onAction="#mnuViewAttendanceAction" text="View attendance days"/>
                                         <MenuItem mnemonicParsing="false" text="Summarize attendance"/>
                                     </items>
                                 </Menu>
@@ -205,27 +206,30 @@
                                                 <Label fx:id="lblRoom" text="Room:" GridPane.rowIndex="5"/>
                                                 <Label fx:id="lblLevel" text="Level:" GridPane.rowIndex="6"/>
                                                 <Label fx:id="lblNotes" text="Notes:" GridPane.rowIndex="7"/>
-                                                <TextField fx:id="txtName" GridPane.columnIndex="1"
+                                                <TextField fx:id="txtName" disable="true" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2"/>
-                                                <TextField fx:id="txtSY" GridPane.columnIndex="1"
+                                                <TextField fx:id="txtSY" disable="true" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="1"/>
-                                                <TextField fx:id="txtCourse" GridPane.columnIndex="1"
+                                                <TextField fx:id="txtCourse" disable="true" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2" GridPane.rowIndex="4"/>
-                                                <TextField fx:id="txtRoom" GridPane.columnIndex="1"
+                                                <TextField fx:id="txtRoom" disable="true" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2" GridPane.rowIndex="5"/>
-                                                <TextField fx:id="txtNotes" GridPane.columnIndex="1"
+                                                <TextField fx:id="txtNotes" disable="true" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2" GridPane.rowIndex="7"/>
-                                                <ChoiceBox fx:id="cboLevel" maxHeight="1.7976931348623157E308"
+                                                <ChoiceBox fx:id="cboLevel" disable="true"
+                                                           maxHeight="1.7976931348623157E308"
                                                            maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                                                            minWidth="-Infinity" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2" GridPane.rowIndex="6"/>
                                                 <Label fx:id="lblSY2" text="- 2017" GridPane.columnIndex="2"
                                                        GridPane.rowIndex="1"/>
-                                                <ChoiceBox fx:id="cboSemester" maxHeight="1.7976931348623157E308"
+                                                <ChoiceBox fx:id="cboSemester" disable="true"
+                                                           maxHeight="1.7976931348623157E308"
                                                            maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                                                            minWidth="-Infinity" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2" GridPane.rowIndex="2"/>
-                                                <ChoiceBox fx:id="cboYear" maxHeight="1.7976931348623157E308"
+                                                <ChoiceBox fx:id="cboYear" disable="true"
+                                                           maxHeight="1.7976931348623157E308"
                                                            maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                                                            minWidth="-Infinity" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2" GridPane.rowIndex="3"/>
@@ -269,31 +273,32 @@
                                                                 vgrow="SOMETIMES"/>
                                             </rowConstraints>
                                             <children>
-                                                <CheckBox fx:id="chkSunday" mnemonicParsing="false" text="Sunday"/>
-                                                <CheckBox fx:id="chkFriday" mnemonicParsing="false" text="Friday"
-                                                          GridPane.rowIndex="5"/>
-                                                <CheckBox fx:id="chkSaturday" mnemonicParsing="false" text="Saturday"
-                                                          GridPane.rowIndex="6"/>
-                                                <CheckBox fx:id="chkThursday" mnemonicParsing="false" text="Thursday"
-                                                          GridPane.rowIndex="4"/>
-                                                <CheckBox fx:id="chkWednesday" mnemonicParsing="false" text="Wednesday"
-                                                          GridPane.rowIndex="3"/>
-                                                <CheckBox fx:id="chkTuesday" mnemonicParsing="false" text="Tuesday"
-                                                          GridPane.rowIndex="2"/>
-                                                <CheckBox fx:id="chkMonday" mnemonicParsing="false" text="Monday"
-                                                          GridPane.rowIndex="1"/>
-                                                <TextField fx:id="txtSunday" GridPane.columnIndex="1"/>
-                                                <TextField fx:id="txtMonday" GridPane.columnIndex="1"
+                                                <CheckBox fx:id="chkSunday" disable="true" mnemonicParsing="false"
+                                                          text="Sunday"/>
+                                                <CheckBox fx:id="chkFriday" disable="true" mnemonicParsing="false"
+                                                          text="Friday" GridPane.rowIndex="5"/>
+                                                <CheckBox fx:id="chkSaturday" disable="true" mnemonicParsing="false"
+                                                          text="Saturday" GridPane.rowIndex="6"/>
+                                                <CheckBox fx:id="chkThursday" disable="true" mnemonicParsing="false"
+                                                          text="Thursday" GridPane.rowIndex="4"/>
+                                                <CheckBox fx:id="chkWednesday" disable="true" mnemonicParsing="false"
+                                                          text="Wednesday" GridPane.rowIndex="3"/>
+                                                <CheckBox fx:id="chkTuesday" disable="true" mnemonicParsing="false"
+                                                          text="Tuesday" GridPane.rowIndex="2"/>
+                                                <CheckBox fx:id="chkMonday" disable="true" mnemonicParsing="false"
+                                                          text="Monday" GridPane.rowIndex="1"/>
+                                                <TextField fx:id="txtSunday" disable="true" GridPane.columnIndex="1"/>
+                                                <TextField fx:id="txtMonday" disable="true" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="1"/>
-                                                <TextField fx:id="txtTuesday" GridPane.columnIndex="1"
+                                                <TextField fx:id="txtTuesday" disable="true" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="2"/>
-                                                <TextField fx:id="txtWednesday" GridPane.columnIndex="1"
+                                                <TextField fx:id="txtWednesday" disable="true" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="3"/>
-                                                <TextField fx:id="txtThursday" GridPane.columnIndex="1"
+                                                <TextField fx:id="txtThursday" disable="true" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="4"/>
-                                                <TextField fx:id="txtFriday" GridPane.columnIndex="1"
+                                                <TextField fx:id="txtFriday" disable="true" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="5"/>
-                                                <TextField fx:id="txtSaturday" GridPane.columnIndex="1"
+                                                <TextField fx:id="txtSaturday" disable="true" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="6"/>
                                                 <Label text=" - " GridPane.columnIndex="2"/>
                                                 <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="1"/>
@@ -302,18 +307,18 @@
                                                 <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="4"/>
                                                 <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="5"/>
                                                 <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="6"/>
-                                                <TextField fx:id="txtSunday2" GridPane.columnIndex="3"/>
-                                                <TextField fx:id="txtMonday2" GridPane.columnIndex="3"
+                                                <TextField fx:id="txtSunday2" disable="true" GridPane.columnIndex="3"/>
+                                                <TextField fx:id="txtMonday2" disable="true" GridPane.columnIndex="3"
                                                            GridPane.rowIndex="1"/>
-                                                <TextField fx:id="txtTuesday2" GridPane.columnIndex="3"
+                                                <TextField fx:id="txtTuesday2" disable="true" GridPane.columnIndex="3"
                                                            GridPane.rowIndex="2"/>
-                                                <TextField fx:id="txtWednesday2" GridPane.columnIndex="3"
+                                                <TextField fx:id="txtWednesday2" disable="true" GridPane.columnIndex="3"
                                                            GridPane.rowIndex="3"/>
-                                                <TextField fx:id="txtThursday2" GridPane.columnIndex="3"
+                                                <TextField fx:id="txtThursday2" disable="true" GridPane.columnIndex="3"
                                                            GridPane.rowIndex="4"/>
-                                                <TextField fx:id="txtFriday2" GridPane.columnIndex="3"
+                                                <TextField fx:id="txtFriday2" disable="true" GridPane.columnIndex="3"
                                                            GridPane.rowIndex="5"/>
-                                                <TextField fx:id="txtSaturday2" GridPane.columnIndex="3"
+                                                <TextField fx:id="txtSaturday2" disable="true" GridPane.columnIndex="3"
                                                            GridPane.rowIndex="6"/>
                                             </children>
                                         </GridPane>

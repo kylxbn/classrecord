@@ -106,6 +106,10 @@ public class EnrolleesController implements Initializable {
         txtNotes.setText(currentEnrollee.getNotes());
         txtCourse.setText(currentEnrollee.getCourse());
 
+        txtClassCard.setDisable(false);
+        txtCourse.setDisable(false);
+        txtNotes.setDisable(false);
+
         cmdSave.setDisable(true);
         cmdAdd.setDisable(false);
         cmdSave.setText("Save");
@@ -150,13 +154,19 @@ public class EnrolleesController implements Initializable {
 
         // <editor-fold defaultstate="collapsed" desc="Change listeners">
         txtClassCard.textProperty().addListener(
-                (obs, ov, nv) -> cmdSave.setDisable(false)
+                (obs, ov, nv) -> {
+                    if (currentEnrollee != null) cmdSave.setDisable(false);
+                }
         );
         txtCourse.textProperty().addListener(
-                (obs, ov, nv) -> cmdSave.setDisable(false)
+                (obs, ov, nv) -> {
+                    if (currentEnrollee != null) cmdSave.setDisable(false);
+                }
         );
         txtNotes.textProperty().addListener(
-                (obs, ov, nv) -> cmdSave.setDisable(false)
+                (obs, ov, nv) -> {
+                    if (currentEnrollee != null) cmdSave.setDisable(false);
+                }
         );
         // </editor-fold>
 

@@ -7,10 +7,7 @@
 
 package com.orthocube.classrecord.util;
 
-import com.orthocube.classrecord.data.Clazz;
-import com.orthocube.classrecord.data.Criteria;
-import com.orthocube.classrecord.data.Enrollee;
-import com.orthocube.classrecord.data.Student;
+import com.orthocube.classrecord.data.*;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -83,7 +80,7 @@ public class DB {
 
             try {
                 s.executeUpdate("CREATE TABLE Students (StudentID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                        "SID VARCHAR(20) UNIQUE, " +
+                        "SID VARCHAR(20), " +
                         "FN VARCHAR(64), " +
                         "MN VARCHAR(64), " +
                         "LN VARCHAR(64), " +
@@ -759,6 +756,148 @@ public class DB {
         }
         prep.setLong(1, c.getID());
         prep.executeUpdate();
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Attendance Day">
+    public static ObservableList<AttendanceDay> getAttendanceDays(Clazz c) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Attendance Day...");
+        ResultSet r;
+
+        PreparedStatement prep;
+        prep = con.prepareStatement("SELECT DayID, Date, Notes FROM AttendanceDays WHERE ClassID = ?");
+        prep.setLong(1, c.getID());
+        r = prep.executeQuery();
+
+        ArrayList<AttendanceDay> days = new ArrayList<>();
+        while (r.next()) {
+            AttendanceDay temp = new AttendanceDay(r.getLong(1));
+            temp.setDate(r.getDate(2).toLocalDate());
+            temp.setClass(c);
+            temp.setNotes(r.getString(3));
+            temp.setAttendanceList(getAttendanceList(temp));
+            days.add(temp);
+        }
+        return FXCollections.observableList(days, (AttendanceDay ad) -> new Observable[]{ad.dateProperty()});
+    }
+
+    public static boolean save(AttendanceDay ad) throws SQLException {
+        PreparedStatement prep;
+        if (ad.getID() == -1) {
+            LOGGER.log(Level.INFO, "Saving new Attendance Day...");
+            prep = con.prepareStatement("INSERT INTO AttendanceDays (Date, ClassID, Notes) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            prep.setDate(1, ad.getDate());
+            prep.setLong(2, ad.getClazz().getID());
+            prep.setString(3, ad.getNotes());
+            prep.executeUpdate();
+            ResultSet rs = prep.getGeneratedKeys();
+            rs.next();
+            ad.setID(rs.getLong(1));
+            ad.setAttendanceList(buildAttendanceList(ad.getClazz(), ad));
+            return true;
+        } else {
+            LOGGER.log(Level.INFO, "Saving Attendance List...");
+            prep = con.prepareStatement("UPDATE AttendanceDays SET Date = ?, Notes = ? WHERE DayID = ?");
+            prep.setDate(1, ad.getDate());
+            prep.setString(2, ad.getNotes());
+            prep.setLong(3, ad.getID());
+            prep.executeUpdate();
+            return false;
+        }
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Attendance List">
+    private static ObservableList<AttendanceList> buildAttendanceList(Clazz c, AttendanceDay ad) throws SQLException {
+        PreparedStatement prep;
+        if (c.isSHS()) {
+            prep = con.prepareStatement("SELECT EnrolleeID FROM SHSEnrollees WHERE ClassID = ?");
+        } else {
+            prep = con.prepareStatement("SELECT EnrolleeID FROM Enrollees WHERE ClassID = ?");
+        }
+        prep.setLong(1, c.getID());
+        ResultSet enrolleesResult = prep.executeQuery();
+
+        PreparedStatement prep2;
+        long did = ad.getID();
+        if (c.isSHS()) {
+            prep2 = con.prepareStatement("INSERT INTO SHSAttendanceList (DayID, EnrolleeID, Remarks, Notes) VALUES (" + did + ", ?, '', '')", Statement.RETURN_GENERATED_KEYS);
+        } else {
+            prep2 = con.prepareStatement("INSERT INTO AttendanceList (DayID, EnrolleeID, Remarks, Notes) VALUES (" + did + ", ?, '', '')", Statement.RETURN_GENERATED_KEYS);
+        }
+        ArrayList<AttendanceList> list = new ArrayList<>();
+        while (enrolleesResult.next()) {
+            prep2.setLong(1, enrolleesResult.getLong(1));
+            prep2.executeUpdate();
+        }
+        return getAttendanceList(ad);
+    }
+
+    private static ObservableList<AttendanceList> getAttendanceList(AttendanceDay ad) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Attendance List...");
+        ResultSet r;
+
+        PreparedStatement prep;
+        if (ad.getClazz().isSHS()) {
+            prep = con.prepareStatement("SELECT SHSAttendanceList.AttendanceID, SHSEnrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, SHSAttendanceList.Remarks, SHSAttendanceList.Notes "
+                    + "FROM (Students INNER JOIN SHSEnrollees ON Students.StudentID = SHSEnrollees.StudentID) "
+                    + "INNER JOIN SHSAttendanceList ON SHSEnrollees.EnrolleeID = SHSAttendanceList.EnrolleeID "
+                    + "WHERE SHSAttendanceList.DayID = ?");
+        } else {
+            prep = con.prepareStatement("SELECT AttendanceList.AttendanceID, Enrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, AttendanceList.Remarks, AttendanceList.Notes "
+                    + "FROM (Students INNER JOIN Enrollees ON Students.StudentID = Enrollees.StudentID) "
+                    + "INNER JOIN AttendanceList ON Enrollees.EnrolleeID = AttendanceList.EnrolleeID "
+                    + "WHERE AttendanceList.DayID = ?");
+        }
+        prep.setLong(1, ad.getID());
+        r = prep.executeQuery();
+
+        ArrayList<AttendanceList> list = new ArrayList<>();
+        while (r.next()) {
+            AttendanceList al = new AttendanceList(r.getLong(1));
+            al.setAttendanceDay(ad);
+            al.setEnrollee(new Enrollee(r.getLong(2)));
+            al.getEnrollee().setStudent(new Student(r.getLong(3)));
+            al.getEnrollee().getStudent().setFN(r.getString(4));
+            al.getEnrollee().getStudent().setLN(r.getString(5));
+            al.setRemarks(r.getString(6));
+            al.setNotes(r.getString(7));
+            list.add(al);
+        }
+        return FXCollections.observableList(list, (AttendanceList al) -> new Observable[]{al.remarksProperty()});
+    }
+
+    public static boolean save(AttendanceList al) throws SQLException {
+        PreparedStatement prep;
+        if (al.getID() == -1) {
+            LOGGER.log(Level.INFO, "Saving new Attendance List...");
+            if (al.getAttendanceDay().getClazz().isSHS()) {
+                prep = con.prepareStatement("INSERT INTO SHSAttendanceList (DayID, EnrolleeID, Remarks, Notes) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            } else {
+                prep = con.prepareStatement("INSERT INTO AttendanceList (DayID, EnrolleeID, Remarks, Notes) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            }
+            prep.setLong(1, al.getAttendanceDay().getID());
+            prep.setLong(2, al.getEnrollee().getID());
+            prep.setString(3, al.getRemarks());
+            prep.setString(4, al.getNotes());
+            prep.executeUpdate();
+            ResultSet rs = prep.getGeneratedKeys();
+            rs.next();
+            al.setID(rs.getLong(1));
+            return true;
+        } else {
+            LOGGER.log(Level.INFO, "Saving Attendance List...");
+            if (al.getAttendanceDay().getClazz().isSHS()) {
+                prep = con.prepareStatement("UPDATE SHSAttendanceList SET Remarks = ?, Notes = ? WHERE AttendanceID = ?");
+            } else {
+                prep = con.prepareStatement("UPDATE AttendanceList SET Remarks = ?, Notes = ? WHERE AttendanceID = ?");
+            }
+            prep.setString(1, al.getRemarks());
+            prep.setString(2, al.getNotes());
+            prep.setLong(3, al.getID());
+            prep.executeUpdate();
+            return false;
+        }
     }
     // </editor-fold>
 }

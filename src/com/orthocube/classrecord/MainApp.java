@@ -8,6 +8,7 @@
 package com.orthocube.classrecord;
 
 import com.orthocube.classrecord.about.AboutController;
+import com.orthocube.classrecord.classes.AttendanceController;
 import com.orthocube.classrecord.classes.ClassesController;
 import com.orthocube.classrecord.classes.CriteriasController;
 import com.orthocube.classrecord.classes.EnrolleesController;
@@ -388,9 +389,22 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         SplitPane enrollees = loader.load();
         CriteriasController controller = loader.getController();
         controller.setMainApp(this);
-        controller.showClass(currentClass);
+        controller.setClass(currentClass);
 
         trimHistoryThenAdd(enrollees, controller.getTitle());
+        currentHistory++;
+        updateNavigation();
+    }
+
+    public void showAttendance(Clazz currentClass) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("classes/Attendance.fxml"));
+        loader.setResources(bundle);
+        SplitPane attendance = loader.load();
+        AttendanceController controller = loader.getController();
+        controller.setMainApp(this);
+        controller.setClass(currentClass);
+
+        trimHistoryThenAdd(attendance, controller.getTitle());
         currentHistory++;
         updateNavigation();
     }

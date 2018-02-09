@@ -257,6 +257,15 @@ public class StudentsController implements Initializable {
             cmdSave.setDisable(true);
         }
 
+        txtSID.setDisable(false);
+        txtLN.setDisable(false);
+        txtFN.setDisable(false);
+        txtMN.setDisable(false);
+        cboGender.setDisable(false);
+        txtContact.setDisable(false);
+        txtAddress.setDisable(false);
+        txtNotes.setDisable(false);
+
         cmdSave.setDisable(true);
         cmdAdd.setDisable(false);
         cmdSave.setText("Save");
@@ -324,14 +333,30 @@ public class StudentsController implements Initializable {
         Utils.setupClearButtonField(txtSearch);
 
         // <editor-fold defaultstate="collapsed" desc="change listeners">
-        txtSID.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
-        txtLN.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
-        txtFN.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
-        txtMN.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
-        cboGender.valueProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
-        txtContact.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
-        txtAddress.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
-        txtNotes.textProperty().addListener((ob, ov, nv) -> cmdSave.setDisable(false));
+        txtSID.textProperty().addListener((ob, ov, nv) -> {
+            if (currentStudent != null) cmdSave.setDisable(false);
+        });
+        txtLN.textProperty().addListener((ob, ov, nv) -> {
+            if (currentStudent != null) cmdSave.setDisable(false);
+        });
+        txtFN.textProperty().addListener((ob, ov, nv) -> {
+            if (currentStudent != null) cmdSave.setDisable(false);
+        });
+        txtMN.textProperty().addListener((ob, ov, nv) -> {
+            if (currentStudent != null) cmdSave.setDisable(false);
+        });
+        cboGender.valueProperty().addListener((ob, ov, nv) -> {
+            if (currentStudent != null) cmdSave.setDisable(false);
+        });
+        txtContact.textProperty().addListener((ob, ov, nv) -> {
+            if (currentStudent != null) cmdSave.setDisable(false);
+        });
+        txtAddress.textProperty().addListener((ob, ov, nv) -> {
+            if (currentStudent != null) cmdSave.setDisable(false);
+        });
+        txtNotes.textProperty().addListener((ob, ov, nv) -> {
+            if (currentStudent != null) cmdSave.setDisable(false);
+        });
         // </editor-fold>
     }
 

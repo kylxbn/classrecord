@@ -239,7 +239,7 @@ public class CriteriasController implements Initializable {
             }
     }
 
-    public void showClass(Clazz c) {
+    public void setClass(Clazz c) {
         currentClass = c;
         try {
             if (currentClass.isSHS()) {
@@ -321,6 +321,13 @@ public class CriteriasController implements Initializable {
         chkMidterms.setSelected((terms & 2) > 0);
         chkSemis.setSelected((terms & 4) > 0);
         chkFinals.setSelected((terms & 8) > 0);
+
+        txtName.setDisable(false);
+        txtPercent.setDisable(false);
+        chkPrelims.setDisable(false);
+        chkMidterms.setDisable(false);
+        chkSemis.setDisable(false);
+        chkFinals.setDisable(false);
 
         cmdSave.setDisable(true);
         cmdAdd.setDisable(false);
@@ -444,12 +451,24 @@ public class CriteriasController implements Initializable {
                 }
         );
 
-        txtName.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtPercent.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkPrelims.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkMidterms.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkSemis.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkFinals.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
+        txtName.textProperty().addListener((obs, ov, nv) -> {
+            if (currentCriteria != null) cmdSave.setDisable(false);
+        });
+        txtPercent.textProperty().addListener((obs, ov, nv) -> {
+            if (currentCriteria != null) cmdSave.setDisable(false);
+        });
+        chkPrelims.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentCriteria != null) cmdSave.setDisable(false);
+        });
+        chkMidterms.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentCriteria != null) cmdSave.setDisable(false);
+        });
+        chkSemis.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentCriteria != null) cmdSave.setDisable(false);
+        });
+        chkFinals.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentCriteria != null) cmdSave.setDisable(false);
+        });
 
         validationSupport = new ValidationSupport();
 

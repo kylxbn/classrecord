@@ -28,6 +28,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.controlsfx.control.textfield.CustomTextField;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -369,6 +370,18 @@ public class ClassesController implements Initializable {
             }
     }
 
+    @FXML
+    void mnuViewAttendanceAction(ActionEvent event) {
+        try {
+            mainApp.showAttendance(currentClass);
+        } catch (IOException e) {
+            Dialogs.exception(e);
+        }
+    }
+
+
+
+
     public void showClass(Clazz c) {
         for (Clazz test : classes) {
             if (test.getID() == c.getID()) {
@@ -447,6 +460,36 @@ public class ClassesController implements Initializable {
             txtSaturday.setText(times.get(12));
             txtSaturday2.setText(times.get(13));
         }
+
+        txtName.setDisable(false);
+        txtSY.setDisable(false);
+        cboSemester.setDisable(false);
+        cboYear.setDisable(false);
+        txtCourse.setDisable(false);
+        txtRoom.setDisable(false);
+        cboLevel.setDisable(false);
+        txtNotes.setDisable(false);
+        chkSunday.setDisable(false);
+        chkMonday.setDisable(false);
+        chkTuesday.setDisable(false);
+        chkWednesday.setDisable(false);
+        chkThursday.setDisable(false);
+        chkFriday.setDisable(false);
+        chkSaturday.setDisable(false);
+        txtSunday.setDisable(false);
+        txtMonday.setDisable(false);
+        txtTuesday.setDisable(false);
+        txtWednesday.setDisable(false);
+        txtThursday.setDisable(false);
+        txtFriday.setDisable(false);
+        txtSaturday.setDisable(false);
+        txtSunday2.setDisable(false);
+        txtMonday2.setDisable(false);
+        txtTuesday2.setDisable(false);
+        txtWednesday2.setDisable(false);
+        txtThursday2.setDisable(false);
+        txtFriday2.setDisable(false);
+        txtSaturday2.setDisable(false);
 
         cmdSave.setDisable(true);
         cmdAdd.setDisable(false);
@@ -651,35 +694,93 @@ public class ClassesController implements Initializable {
         Utils.setupClearButtonField(txtCourseSearch);
 
         // <editor-fold defaultstate="collapsed" desc="Change listeners">
-        txtName.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtSY.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        cboSemester.valueProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        cboYear.valueProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtCourse.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtRoom.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        cboLevel.valueProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtNotes.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkSunday.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkMonday.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkTuesday.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkWednesday.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkThursday.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkFriday.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        chkSaturday.selectedProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtSunday.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtMonday.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtTuesday.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtWednesday.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtThursday.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtFriday.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtSaturday.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtSunday2.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtMonday2.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtTuesday2.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtWednesday2.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtThursday2.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtFriday2.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
-        txtSaturday2.textProperty().addListener((obs, ov, nv) -> cmdSave.setDisable(false));
+        txtName.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtSY.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        cboSemester.valueProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        cboYear.valueProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtCourse.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtRoom.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        cboLevel.valueProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtNotes.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        chkSunday.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        chkMonday.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        chkTuesday.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        chkWednesday.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        chkThursday.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        chkFriday.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        chkSaturday.selectedProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtSunday.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtMonday.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtTuesday.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtWednesday.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtThursday.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtFriday.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtSaturday.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtSunday2.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtMonday2.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtTuesday2.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtWednesday2.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtThursday2.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtFriday2.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
+        txtSaturday2.textProperty().addListener((obs, ov, nv) -> {
+            if (currentClass != null) cmdSave.setDisable(false);
+        });
 
         // </editor-fold>
     }

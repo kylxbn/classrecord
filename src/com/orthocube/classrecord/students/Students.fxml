@@ -16,12 +16,14 @@
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" prefHeight="678.0" prefWidth="904.0"
            xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.students.StudentsController">
     <items>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-              minWidth="-Infinity" spacing="8.0">
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="100.0"
+              spacing="8.0">
             <children>
                 <HBox alignment="CENTER_LEFT" spacing="8.0"/>
-                <CustomTextField fx:id="txtSearch" promptText="Search for name or Student ID..."/>
-                <TableView fx:id="tblStudents" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                <CustomTextField fx:id="txtSearch" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                 minHeight="-Infinity" minWidth="100.0" promptText="Search for name or Student ID..."/>
+                <TableView fx:id="tblStudents" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                           minWidth="100.0" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colID" prefWidth="75.0" resizable="false" text="ID"/>
                         <TableColumn fx:id="colName" prefWidth="75.0" resizable="false" text="Name"/>
@@ -59,7 +61,7 @@
                     <children>
                         <Label fx:id="lblTotalStudents" text="current"/>
                         <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                              minWidth="-Infinity" prefHeight="1.0" prefWidth="1.0" HBox.hgrow="ALWAYS"/>
+                              minWidth="100.0" HBox.hgrow="ALWAYS"/>
                         <Button fx:id="cmdAdd" mnemonicParsing="false" onAction="#cmdNewStudentAction" text="Add"/>
                     </children>
                 </HBox>
@@ -123,23 +125,25 @@
                                                         <Label fx:id="lblAddress" text="Address:"
                                                                GridPane.rowIndex="7"/>
                                                         <Label fx:id="lblNotes" text="Notes:" GridPane.rowIndex="8"/>
-                                                        <TextField fx:id="txtSID" GridPane.columnIndex="1"
-                                                                   GridPane.rowIndex="1"/>
-                                                        <TextField fx:id="txtLN" GridPane.columnIndex="1"
+                                                        <TextField fx:id="txtSID" disable="true"
+                                                                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                                        <TextField fx:id="txtLN" disable="true" GridPane.columnIndex="1"
                                                                    GridPane.rowIndex="2"/>
-                                                        <TextField fx:id="txtFN" GridPane.columnIndex="1"
+                                                        <TextField fx:id="txtFN" disable="true" GridPane.columnIndex="1"
                                                                    GridPane.rowIndex="3"/>
-                                                        <TextField fx:id="txtMN" GridPane.columnIndex="1"
+                                                        <TextField fx:id="txtMN" disable="true" GridPane.columnIndex="1"
                                                                    GridPane.rowIndex="4"/>
-                                                        <ChoiceBox fx:id="cboGender" maxWidth="1.7976931348623157E308"
+                                                        <ChoiceBox fx:id="cboGender" disable="true"
+                                                                   maxWidth="1.7976931348623157E308"
                                                                    GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-                                                        <TextField fx:id="txtContact" GridPane.columnIndex="1"
-                                                                   GridPane.rowIndex="6"/>
-                                                        <TextArea fx:id="txtAddress" prefHeight="200.0"
+                                                        <TextField fx:id="txtContact" disable="true"
+                                                                   GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                                                        <TextArea fx:id="txtAddress" disable="true" prefHeight="200.0"
                                                                   prefWidth="200.0" GridPane.columnIndex="1"
                                                                   GridPane.rowIndex="7"/>
-                                                        <TextArea fx:id="txtNotes" prefHeight="200.0" prefWidth="200.0"
-                                                                  GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                                                        <TextArea fx:id="txtNotes" disable="true" prefHeight="200.0"
+                                                                  prefWidth="200.0" GridPane.columnIndex="1"
+                                                                  GridPane.rowIndex="8"/>
                                                         <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308"
                                                               maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                                                               minWidth="-Infinity" GridPane.columnSpan="2">
@@ -160,9 +164,11 @@
                                                                               spacing="8.0">
                                                                             <children>
                                                                                 <Button fx:id="cmdChangeImage"
+                                                                                        disable="true"
                                                                                         mnemonicParsing="false"
                                                                                         text="Change"/>
                                                                                 <Button fx:id="cmdRemoveImage"
+                                                                                        disable="true"
                                                                                         mnemonicParsing="false"
                                                                                         text="Remove"/>
                                                                             </children>

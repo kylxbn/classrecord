@@ -7,16 +7,12 @@
   ~ Written by Kyle Alexander Buan <orthocube@protonmail.com>, 2018.
   -->
 
-
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.StackedBarChart?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.7338235294117647" maxHeight="1.7976931348623157E308"
-           maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="200.0" orientation="VERTICAL"
-           prefHeight="682.0" prefWidth="882.0" xmlns="http://javafx.com/javafx/9.0.1"
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" fx:id="pnlSplit" dividerPositions="0.7338235294117647"
+           maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="200.0"
+           orientation="VERTICAL" prefHeight="682.0" prefWidth="882.0" xmlns="http://javafx.com/javafx/9.0.1"
            fx:controller="com.orthocube.classrecord.classes.AttendanceController">
     <items>
         <SplitPane prefHeight="200.0" prefWidth="200.0">
@@ -68,12 +64,14 @@
                                                     <children>
                                                         <Label text="Date:"/>
                                                         <Label text="Notes:" GridPane.rowIndex="1"/>
-                                                        <DatePicker fx:id="dpkDate" maxWidth="1.7976931348623157E308"
+                                                        <DatePicker fx:id="dpkDate" disable="true"
+                                                                    maxWidth="1.7976931348623157E308"
                                                                     minHeight="-Infinity" minWidth="-Infinity"
                                                                     GridPane.columnIndex="1" GridPane.columnSpan="2"/>
-                                                        <TextField fx:id="txtDaysNotes" minHeight="-Infinity"
-                                                                   minWidth="-Infinity" GridPane.columnIndex="1"
-                                                                   GridPane.columnSpan="2" GridPane.rowIndex="1"/>
+                                                        <TextField fx:id="txtDaysNotes" disable="true"
+                                                                   minHeight="-Infinity" minWidth="-Infinity"
+                                                                   GridPane.columnIndex="1" GridPane.columnSpan="2"
+                                                                   GridPane.rowIndex="1"/>
                                                         <Button fx:id="cmdSaveDay" defaultButton="true" disable="true"
                                                                 mnemonicParsing="false" onAction="#cmdSaveDayAction"
                                                                 text="Save" GridPane.columnIndex="2"
@@ -145,10 +143,11 @@
                                                 <Label text="Remarks:"/>
                                                 <Label text="Notes:" GridPane.rowIndex="1"/>
                                                 <Label text="Last meeting:" GridPane.rowIndex="2"/>
-                                                <ChoiceBox fx:id="cboRemarks" maxWidth="1.7976931348623157E308"
-                                                           minHeight="-Infinity" minWidth="-Infinity"
-                                                           GridPane.columnIndex="1" GridPane.columnSpan="2"/>
-                                                <TextField fx:id="txtListNotes" GridPane.columnIndex="1"
+                                                <ChoiceBox fx:id="cboRemarks" disable="true"
+                                                           maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                                           minWidth="-Infinity" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2"/>
+                                                <TextField fx:id="txtListNotes" disable="true" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2" GridPane.rowIndex="1"/>
                                                 <Label fx:id="lblLastMeeting" text="Label" GridPane.columnIndex="1"
                                                        GridPane.columnSpan="2" GridPane.rowIndex="2"/>
@@ -194,17 +193,19 @@
                 </SplitPane>
             </items>
         </SplitPane>
-        <VBox prefHeight="200.0" prefWidth="100.0">
-            <children>
-                <StackedBarChart fx:id="chtHistory" title="Attendance History">
-                    <xAxis>
-                        <CategoryAxis side="BOTTOM"/>
-                    </xAxis>
-                    <yAxis>
-                        <NumberAxis side="LEFT"/>
-                    </yAxis>
-                </StackedBarChart>
-            </children>
-        </VBox>
+        <TabPane side="LEFT">
+            <tabs>
+                <Tab closable="false" text="Days">
+                    <content>
+                        <VBox fx:id="pnlVbox" prefHeight="200.0" prefWidth="100.0"/>
+                    </content>
+                </Tab>
+                <Tab closable="false" text="Students">
+                    <content>
+                        <VBox fx:id="pnlVboxStudents" prefHeight="200.0" prefWidth="100.0"/>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
     </items>
 </SplitPane>

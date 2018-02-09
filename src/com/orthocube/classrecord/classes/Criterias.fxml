@@ -180,10 +180,10 @@
                                                         <Label fx:id="lblName" text="Name:"/>
                                                         <Label fx:id="lblPercent" text="Percent:"
                                                                GridPane.rowIndex="1"/>
-                                                        <TextField fx:id="txtName" GridPane.columnIndex="1"
-                                                                   GridPane.columnSpan="2"/>
-                                                        <TextField fx:id="txtPercent" GridPane.columnIndex="1"
-                                                                   GridPane.rowIndex="1"/>
+                                                        <TextField fx:id="txtName" disable="true"
+                                                                   GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+                                                        <TextField fx:id="txtPercent" disable="true"
+                                                                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                                                         <Label text="\%" GridPane.columnIndex="2"
                                                                GridPane.rowIndex="1"/>
                                                     </children>
@@ -198,14 +198,14 @@
                                                       maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                                                       minWidth="-Infinity" spacing="4.0">
                                                     <children>
-                                                        <CheckBox fx:id="chkPrelims" mnemonicParsing="false"
-                                                                  text="Prelims"/>
-                                                        <CheckBox fx:id="chkMidterms" mnemonicParsing="false"
-                                                                  text="Midterms"/>
-                                                        <CheckBox fx:id="chkSemis" mnemonicParsing="false"
-                                                                  text="Semis"/>
-                                                        <CheckBox fx:id="chkFinals" mnemonicParsing="false"
-                                                                  text="Finals"/>
+                                                        <CheckBox fx:id="chkPrelims" disable="true"
+                                                                  mnemonicParsing="false" text="Prelims"/>
+                                                        <CheckBox fx:id="chkMidterms" disable="true"
+                                                                  mnemonicParsing="false" text="Midterms"/>
+                                                        <CheckBox fx:id="chkSemis" disable="true"
+                                                                  mnemonicParsing="false" text="Semis"/>
+                                                        <CheckBox fx:id="chkFinals" disable="true"
+                                                                  mnemonicParsing="false" text="Finals"/>
                                                     </children>
                                                 </VBox>
                                             </content>
