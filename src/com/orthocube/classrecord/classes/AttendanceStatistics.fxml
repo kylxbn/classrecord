@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright © Kyle Alexander Buan - All Rights Reserved.
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited.
+  ~ Proprietary and confidential.
+  ~ Written by Kyle Alexander Buan <orthocube@protonmail.com>, 2018.
+  -->
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.VBox?>
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+           minHeight="100.0" minWidth="100.0" prefHeight="568.0" prefWidth="784.0"
+           xmlns="http://javafx.com/javafx/9.0.1"
+           fx:controller="com.orthocube.classrecord.classes.AttendanceStatisticsController">
+    <items>
+        <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+            <items>
+                <VBox fx:id="pnlVbox" prefHeight="200.0" prefWidth="100.0"/>
+                <VBox fx:id="pnlVboxStudents" prefHeight="200.0" prefWidth="100.0"/>
+            </items>
+        </SplitPane>
+    </items>
+</SplitPane>

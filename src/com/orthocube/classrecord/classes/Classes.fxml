@@ -134,6 +134,9 @@
                                         <MenuItem fx:id="mnuViewAttendance" mnemonicParsing="false"
                                                   onAction="#mnuViewAttendanceAction" text="View attendance days"/>
                                         <MenuItem mnemonicParsing="false" text="Summarize attendance"/>
+                                        <MenuItem fx:id="mnuAttendanceStatistics" mnemonicParsing="false"
+                                                  onAction="#mnuAttendanceStatisticsAction"
+                                                  text="Attendance Statistics"/>
                                     </items>
                                 </Menu>
                                 <MenuItem mnemonicParsing="false" text="Tasks"/>

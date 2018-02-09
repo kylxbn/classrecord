@@ -379,7 +379,14 @@ public class ClassesController implements Initializable {
         }
     }
 
-
+    @FXML
+    void mnuAttendanceStatisticsAction(ActionEvent event) {
+        try {
+            mainApp.showAttendanceStatistics(currentClass);
+        } catch (IOException e) {
+            Dialogs.exception(e);
+        }
+    }
 
 
     public void showClass(Clazz c) {
