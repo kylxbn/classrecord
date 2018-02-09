@@ -78,6 +78,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private String username;
     private String password;
 
+    private boolean isDark = true;
 
     public NotificationPane getRootNotification() {
         return rootNotification;
@@ -158,10 +159,12 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void setDarkTheme() {
         scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+        isDark = true;
     }
 
     public void setLightTheme() {
         scene.getStylesheets().clear();
+        isDark = false;
     }
 
     @Override
@@ -298,6 +301,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(stage);
             Scene scene = new Scene(studentChooser);
+            if (isDark) scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
             dialogStage.setScene(scene);
 
             studentChooserController.setDialogStage(dialogStage);
