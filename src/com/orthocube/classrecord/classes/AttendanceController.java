@@ -358,6 +358,18 @@ public class AttendanceController implements Initializable {
     }
 
     @FXML
+    void mnuRemoveAction(ActionEvent event) {
+        if (Dialogs.confirm("Delete Attendance day", "Are you sure you want to delete this Attendance day?", (new SimpleDateFormat("yyyy-MM-dd")).format(currentDay.getDate())) == ButtonType.OK)
+            try {
+                DB.delete(currentDay);
+                attendanceDays.remove(currentDay);
+                mainApp.getRootNotification().show("Attendance day deleted.");
+            } catch (SQLException e) {
+                Dialogs.exception(e);
+            }
+    }
+
+    @FXML
     void cmdSaveDayAction(ActionEvent event) {
         try {
             currentDay.setDate(dpkDate.getValue());

@@ -805,6 +805,14 @@ public class DB {
             return false;
         }
     }
+
+    public static void delete(AttendanceDay ad) throws SQLException {
+        LOGGER.log(Level.INFO, "Deleting Attendance day...");
+        PreparedStatement prep;
+        prep = con.prepareStatement("DELETE FROM AttendanceDays WHERE DayID = ?");
+        prep.setLong(1, ad.getID());
+        prep.executeUpdate();
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Attendance List">

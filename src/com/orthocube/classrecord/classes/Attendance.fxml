@@ -36,6 +36,14 @@
                                                         <TableColumn fx:id="colDaysNotes" prefWidth="75.0"
                                                                      text="Notes"/>
                                                     </columns>
+                                                    <contextMenu>
+                                                        <ContextMenu>
+                                                            <items>
+                                                                <MenuItem fx:id="mnuRemove" mnemonicParsing="false"
+                                                                          onAction="#mnuRemoveAction" text="Remove"/>
+                                                            </items>
+                                                        </ContextMenu>
+                                                    </contextMenu>
                                                 </TableView>
                                             </content>
                                         </TitledPane>
