@@ -769,7 +769,7 @@ public class DB {
         prep.setLong(1, c.getID());
         r = prep.executeQuery();
 
-        ArrayList<AttendanceDay> days = new ArrayList<>();
+        ObservableList<AttendanceDay> days = FXCollections.observableArrayList();
         while (r.next()) {
             AttendanceDay temp = new AttendanceDay(r.getLong(1));
             temp.setDate(r.getDate(2).toLocalDate());
@@ -778,7 +778,7 @@ public class DB {
             temp.setAttendanceList(getAttendanceList(temp));
             days.add(temp);
         }
-        return FXCollections.observableList(days, (AttendanceDay ad) -> new Observable[]{ad.dateProperty()});
+        return days;
     }
 
     public static boolean save(AttendanceDay ad) throws SQLException {
@@ -860,7 +860,7 @@ public class DB {
         prep.setLong(1, ad.getID());
         r = prep.executeQuery();
 
-        ArrayList<AttendanceList> list = new ArrayList<>();
+        ObservableList<AttendanceList> list = FXCollections.observableArrayList();
         while (r.next()) {
             AttendanceList al = new AttendanceList(r.getLong(1));
             al.setAttendanceDay(ad);
@@ -872,7 +872,7 @@ public class DB {
             al.setNotes(r.getString(7));
             list.add(al);
         }
-        return FXCollections.observableList(list, (AttendanceList al) -> new Observable[]{al.remarksProperty()});
+        return list;
     }
 
     public static boolean save(AttendanceList al) throws SQLException {
