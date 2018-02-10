@@ -101,7 +101,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         this.stage = stage;
         mayBeShown();
 
-        setDarkTheme();
+        //setDarkTheme();
         Platform.setImplicitExit(true);
         stage.setOnCloseRequest(e -> {
             if (Dialogs.confirm("Close Application", "Are you sure you want to leave?", "Any unsaved changes will be lost.") == ButtonType.CANCEL)

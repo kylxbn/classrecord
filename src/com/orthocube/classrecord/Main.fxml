@@ -149,21 +149,30 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="8.0">
                             <children>
-                                <Label fx:id="lblClassRecord" text="Class Record">
-                                    <font>
-                                        <Font size="24.0"/>
-                                    </font>
-                                </Label>
-                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
-                                    <image>
-                                        <Image url="@res/Sort_Right_16px.png"/>
-                                    </image>
-                                </ImageView>
-                                <Label fx:id="lblLocation" layoutX="10.0" layoutY="13.0" text="Dashboard">
-                                    <font>
-                                        <Font name="System Bold" size="24.0"/>
-                                    </font>
-                                </Label>
+                                <VBox>
+                                    <children>
+                                        <Label fx:id="lblClassRecord" text="Class Record">
+                                            <font>
+                                                <Font size="14.0"/>
+                                            </font>
+                                        </Label>
+                                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                            <children>
+                                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                           smooth="false">
+                                                    <image>
+                                                        <Image url="@res/Sort_Right_16px.png"/>
+                                                    </image>
+                                                </ImageView>
+                                                <Label fx:id="lblLocation" text="Dashboard">
+                                                    <font>
+                                                        <Font size="24.0"/>
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
                             </children>
                         </HBox>
                         <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="5.0"

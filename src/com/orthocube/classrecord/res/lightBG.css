@@ -1,0 +1,6 @@
+#mystackpane {
+-fx-background-image: url("light.jpg");
+-fx-background-position: center;
+-fx-background-repeat: no-repeat;
+-fx-background-size: auto;
+}

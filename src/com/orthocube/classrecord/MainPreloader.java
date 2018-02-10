@@ -17,7 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.NotificationPane;
@@ -32,7 +32,7 @@ public class MainPreloader extends Preloader {
     private MainPreloaderController loadercontroller;
 
     Group topGroup;
-    VBox preloaderParent;
+    StackPane preloaderParent;
     StateChangeNotification evt;
 
     @Override
@@ -40,7 +40,7 @@ public class MainPreloader extends Preloader {
         this.preloaderStage = stage;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("preloader/Preloader.fxml"));
-        VBox root = loader.load();
+        StackPane root = loader.load();
         loadercontroller = loader.getController();
         loadercontroller.setMainPreloader(this);
         preloaderParent = root;
@@ -52,23 +52,32 @@ public class MainPreloader extends Preloader {
         this.preloaderStage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_80px.png")));
 
         preloaderStage.setTitle("ClassRecord - Log In");
-        preloaderStage.setMaximized(true);
+        //preloaderStage.setMaximized(true);
+        preloaderStage.setWidth(1024);
+        preloaderStage.setHeight(768);
+        preloaderStage.setMinWidth(1024);
+        preloaderStage.setMinHeight(768);
         scene = new Scene(topGroup);
         setDarkTheme();
         preloaderStage.setScene(scene);
 
         preloaderParent.prefHeightProperty().bind(preloaderStage.getScene().heightProperty());
         preloaderParent.prefWidthProperty().bind(preloaderStage.getScene().widthProperty());
+
+        loadercontroller.startOpeningAnimation();
         preloaderStage.show();
     }
 
     public void setDarkTheme() {
         scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
-        preloaderParent.setStyle("-fx-background-color: #323232;"); // 0x323232");
+        //preloaderParent.setStyle("-fx-background-color: #323232;"); // 0x323232");
+        preloaderParent.getStylesheets().add(getClass().getResource("res/darkBG.css").toExternalForm());
     }
 
     public void setLightTheme() {
         scene.getStylesheets().clear();
+        //preloaderParent.setStyle("-fx-background-color: #323232;"); // 0x323232");
+        preloaderParent.getStylesheets().add(getClass().getResource("res/lightBG.css").toExternalForm());
     }
 
 
@@ -115,16 +124,14 @@ public class MainPreloader extends Preloader {
                 preloaderParent);
         ft1.setFromValue(1.0);
         ft1.setToValue(1.0);
+        ft1.setOnFinished(t -> loadercontroller.startClosingAnimation());
 
         FadeTransition ft2 = new FadeTransition(
                 Duration.millis(1000),
                 preloaderParent);
         ft2.setFromValue(1.0);
         ft2.setToValue(0.0);
-        ft2.setOnFinished(t -> {
-            //After fade is done, remove preloader content
-            topGroup.getChildren().remove(preloaderParent);
-        });
+        ft2.setOnFinished(t -> topGroup.getChildren().remove(preloaderParent));
 
         SequentialTransition st = new SequentialTransition();
         st.getChildren().addAll(ft1, ft2);
