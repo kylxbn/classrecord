@@ -10,6 +10,7 @@ package com.orthocube.classrecord;
 import com.orthocube.classrecord.preloader.MainPreloaderController;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.animation.FadeTransition;
+import javafx.animation.SequentialTransition;
 import javafx.application.Preloader;
 import javafx.application.Preloader.StateChangeNotification.Type;
 import javafx.fxml.FXMLLoader;
@@ -63,6 +64,7 @@ public class MainPreloader extends Preloader {
 
     public void setDarkTheme() {
         scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+        preloaderParent.setStyle("-fx-background-color: #323232;"); // 0x323232");
     }
 
     public void setLightTheme() {
@@ -108,16 +110,25 @@ public class MainPreloader extends Preloader {
 
         //setup fade transition for preloader part of scene
         // fade out over 5s
-        FadeTransition ft = new FadeTransition(
-                Duration.millis(1500),
+        FadeTransition ft1 = new FadeTransition(
+                Duration.millis(250),
                 preloaderParent);
-        ft.setFromValue(1.0);
-        ft.setToValue(0.0);
-        ft.setOnFinished(t -> {
+        ft1.setFromValue(1.0);
+        ft1.setToValue(1.0);
+
+        FadeTransition ft2 = new FadeTransition(
+                Duration.millis(1000),
+                preloaderParent);
+        ft2.setFromValue(1.0);
+        ft2.setToValue(0.0);
+        ft2.setOnFinished(t -> {
             //After fade is done, remove preloader content
             topGroup.getChildren().remove(preloaderParent);
         });
-        ft.play();
+
+        SequentialTransition st = new SequentialTransition();
+        st.getChildren().addAll(ft1, ft2);
+        st.play();
     }
 
     @Override

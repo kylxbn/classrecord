@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright © Kyle Alexander Buan - All Rights Reserved.
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited.
+  ~ Proprietary and confidential.
+  ~ Written by Kyle Alexander Buan <orthocube@protonmail.com>, 2018.
+  -->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
+           maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="200.0" prefHeight="601.0" prefWidth="863.0"
+           xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.classes.TasksController">
+    <items>
+        <VBox>
+            <children>
+                <Accordion VBox.vgrow="ALWAYS">
+                    <panes>
+                        <TitledPane prefHeight="200.0" prefWidth="200.0" text="Prelims">
+                            <content>
+                                <TableView fx:id="tblPrelims" prefHeight="200.0" prefWidth="200.0">
+                                    <columns>
+                                        <TableColumn fx:id="colPName" prefWidth="75.0" text="Name"/>
+                                        <TableColumn fx:id="colPCriteria" prefWidth="75.0" text="Criteria"/>
+                                        <TableColumn fx:id="colPItems" prefWidth="75.0" text="Items"/>
+                                    </columns>
+                                </TableView>
+                            </content>
+                        </TitledPane>
+                        <TitledPane text="Midterms">
+                            <content>
+                                <TableView fx:id="tblMidterms" prefHeight="200.0" prefWidth="200.0">
+                                    <columns>
+                                        <TableColumn fx:id="colMName" prefWidth="75.0" text="Name"/>
+                                        <TableColumn fx:id="colMCriteria" prefWidth="75.0" text="Criteria"/>
+                                        <TableColumn fx:id="colMItems" prefWidth="75.0" text="Items"/>
+                                    </columns>
+                                </TableView>
+                            </content>
+                        </TitledPane>
+                        <TitledPane text="Semis">
+                            <content>
+                                <TableView fx:id="tblSemis" prefHeight="200.0" prefWidth="200.0">
+                                    <columns>
+                                        <TableColumn fx:id="colSName" prefWidth="75.0" text="Name"/>
+                                        <TableColumn fx:id="colSCriteria" prefWidth="75.0" text="Criteria"/>
+                                        <TableColumn fx:id="colSItems" prefWidth="75.0" text="Items"/>
+                                    </columns>
+                                </TableView>
+                            </content>
+                        </TitledPane>
+                        <TitledPane prefHeight="200.0" prefWidth="200.0" text="Finals">
+                            <content>
+                                <TableView fx:id="tblFinals" prefHeight="200.0" prefWidth="200.0">
+                                    <columns>
+                                        <TableColumn fx:id="colFName" prefWidth="75.0" text="Name"/>
+                                        <TableColumn fx:id="colFCriteria" prefWidth="75.0" text="Criteria"/>
+                                        <TableColumn fx:id="colFItems" prefWidth="75.0" text="Items"/>
+                                    </columns>
+                                </TableView>
+                            </content>
+                        </TitledPane>
+                    </panes>
+                </Accordion>
+                <TitledPane animated="false" collapsible="false" maxHeight="1.7976931348623157E308"
+                            maxWidth="1.7976931348623157E308" minWidth="100.0" text="Info">
+                    <content>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                              minWidth="-Infinity">
+                            <children>
+                                <GridPane hgap="4.0" vgap="4.0" VBox.vgrow="ALWAYS">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER"
+                                                           maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                    <children>
+                                        <Label text="Name:"/>
+                                        <Label text="Items:" GridPane.rowIndex="1"/>
+                                        <Label text="Term:" GridPane.rowIndex="2"/>
+                                        <Label text="Criteria:" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="txtTName" GridPane.columnIndex="1"/>
+                                        <TextField fx:id="txtTItems" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <ChoiceBox fx:id="cboTTerm" maxWidth="1.7976931348623157E308"
+                                                   minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="2"/>
+                                        <ChoiceBox fx:id="cboTCriteria" maxWidth="1.7976931348623157E308"
+                                                   minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="3"/>
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets/>
+                                    </VBox.margin>
+                                </GridPane>
+                                <HBox alignment="TOP_RIGHT" maxHeight="1.7976931348623157E308"
+                                      maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
+                                      spacing="8.0">
+                                    <children>
+                                        <Button fx:id="cmdTAdd" mnemonicParsing="false" onAction="#cmdTAddAction"
+                                                text="Add"/>
+                                        <Button fx:id="cmdTSave" defaultButton="true" disable="true"
+                                                mnemonicParsing="false" onAction="#cmdTSaveAction" text="Save"/>
+                                    </children>
+                                    <padding>
+                                        <Insets top="8.0"/>
+                                    </padding>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </TitledPane>
+            </children>
+        </VBox>
+        <VBox prefHeight="200.0" prefWidth="100.0">
+            <children>
+                <TableView fx:id="tblScores" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colScoreName" prefWidth="75.0" text="Name"/>
+                        <TableColumn fx:id="colSScore" prefWidth="75.0" text="Score"/>
+                        <TableColumn fx:id="colSNotes" prefWidth="75.0" text="Notes"/>
+                    </columns>
+                </TableView>
+                <TitledPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                            minWidth="-Infinity" text="Info">
+                    <content>
+                        <VBox>
+                            <children>
+                                <GridPane hgap="4.0" vgap="4.0" VBox.vgrow="ALWAYS">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308"
+                                                           minWidth="-Infinity"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308"
+                                                           minWidth="-Infinity"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                    <children>
+                                        <Label text="Score:"/>
+                                        <Label text="Notes:" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="txtSScore" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+                                        <TextField fx:id="txtSNotes" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <Label fx:id="lblScore" text="/ 20" GridPane.columnIndex="2"
+                                               GridPane.rowIndex="1"/>
+                                    </children>
+                                </GridPane>
+                                <HBox alignment="TOP_RIGHT" maxHeight="1.7976931348623157E308"
+                                      maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
+                                      spacing="8.0">
+                                    <children>
+                                        <Button fx:id="cmdSAdd" mnemonicParsing="false" onAction="#cmdSAddAction"
+                                                text="Add"/>
+                                        <Button fx:id="cmdSSave" defaultButton="true" disable="true"
+                                                mnemonicParsing="false" onAction="#cmdSSaveAction" text="Save"/>
+                                    </children>
+                                    <padding>
+                                        <Insets top="8.0"/>
+                                    </padding>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </TitledPane>
+            </children>
+        </VBox>
+    </items>
+</SplitPane>
