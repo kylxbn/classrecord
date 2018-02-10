@@ -796,7 +796,7 @@ public class DB {
             ad.setAttendanceList(buildAttendanceList(ad.getClazz(), ad));
             return true;
         } else {
-            LOGGER.log(Level.INFO, "Saving Attendance List...");
+            LOGGER.log(Level.INFO, "Saving Attendance Day...");
             prep = con.prepareStatement("UPDATE AttendanceDays SET Date = ?, Notes = ? WHERE DayID = ?");
             prep.setDate(1, ad.getDate());
             prep.setString(2, ad.getNotes());
@@ -906,6 +906,165 @@ public class DB {
             prep.executeUpdate();
             return false;
         }
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Tasks">
+    public static ObservableList<Task> getTasks(Clazz c) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Tasks...");
+        ResultSet r;
+
+        PreparedStatement prep;
+        if (c.isSHS()) {
+            prep = con.prepareStatement("SELECT SHSTasks.TaskID, SHSTasks.Name, SHSTasks.Term, SHSTasks.Items, SHSCriterias.CriteriaID, SHSCriterias.Name FROM SHSTasks INNER JOIN SHSCriterias ON SHSTasks.CriteriaID = SHSCriterias.CriteriaID WHERE SHSTasks.ClassID = ?");
+        } else {
+            prep = con.prepareStatement("SELECT Tasks.TaskID, Tasks.Name, Tasks.Term, Tasks.Items, Criterias.CriteriaID, Criterias.Name FROM Tasks INNER JOIN Criterias ON Tasks.CriteriaID = Criterias.CriteriaID WHERE Tasks.ClassID = ?");
+        }
+        prep.setLong(1, c.getID());
+        r = prep.executeQuery();
+
+        ObservableList<Task> tasks = FXCollections.observableArrayList();
+        while (r.next()) {
+            Task temp = new Task(r.getLong(1));
+            temp.setName(r.getString(2));
+            temp.setTerm(r.getInt(3));
+            temp.setItems(r.getInt(4));
+            temp.setClass(c);
+            temp.setCriteria(new Criteria(r.getLong(5)));
+            temp.getCriteria().setName(r.getString(6));
+            tasks.add(temp);
+        }
+        return tasks;
+    }
+
+    public static boolean save(Task t) throws SQLException {
+        if (t.getID() == -1) {
+            LOGGER.log(Level.INFO, "Saving new Task...");
+            PreparedStatement prep;
+            if (t.getClazz().isSHS()) {
+                prep = con.prepareStatement("INSERT INTO SHSTasks (Name, ClassID, CriteriaID, Term, Items) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            } else {
+                prep = con.prepareStatement("INSERT INTO Tasks (Name, ClassID, CriteriaID, Term, Items) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            }
+            prep.setString(1, t.getName());
+            prep.setLong(2, t.getClazz().getID());
+            prep.setLong(3, t.getCriteria().getID());
+            prep.setInt(4, t.getTerm());
+            prep.setInt(5, t.getItems());
+            prep.executeUpdate();
+            ResultSet rs = prep.getGeneratedKeys();
+            rs.next();
+            t.setID(rs.getLong(1));
+            return true;
+        } else {
+            LOGGER.log(Level.INFO, "Saving Task...");
+            PreparedStatement prep;
+            if (t.getClazz().isSHS()) {
+                prep = con.prepareStatement("Update SHSTasks SET Name = ?, CriteriaID = ?, Term = ?, Items = ? WHERE TaskID = ?");
+            } else {
+                prep = con.prepareStatement("Update Tasks SET Name = ?, CriteriaID = ?, Term = ?, Items = ? WHERE TaskID = ?");
+            }
+            prep.setString(1, t.getName());
+            prep.setLong(2, t.getCriteria().getID());
+            prep.setInt(3, t.getTerm());
+            prep.setInt(4, t.getItems());
+            prep.setLong(5, t.getID());
+            prep.executeUpdate();
+            return false;
+        }
+    }
+
+    public static void delete(Task t) throws SQLException {
+        LOGGER.log(Level.INFO, "Deleting Task...");
+        PreparedStatement prep;
+        if (t.getClazz().isSHS()) {
+            prep = con.prepareStatement("DELETE FROM SHSTasks WHERE TaskID = ?");
+        } else {
+            prep = con.prepareStatement("DELETE FROM Tasks WHERE TaskID = ?");
+        }
+        prep.setLong(1, t.getID());
+        prep.executeUpdate();
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Scores">
+    public static ObservableList<Score> getScores(Task t) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Scores...");
+        ResultSet r;
+
+        PreparedStatement prep;
+        if (t.getClazz().isSHS()) {
+            prep = con.prepareStatement("SELECT SHSScores.ScoreID, SHSEnrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, SHSScores.Score, SHSScores.Notes "
+                    + "FROM (Students INNER JOIN SHSEnrollees ON Students.StudentID = SHSEnrollees.StudentID) "
+                    + "INNER JOIN SHSScores ON SHSEnrollees.EnrolleeID = SHSScores.EnrolleeID "
+                    + "WHERE SHSScores.TaskID = ?");
+        } else {
+            prep = con.prepareStatement("SELECT Scores.ScoreID, Enrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, Scores.Score, Scores.Notes "
+                    + "FROM (Students INNER JOIN Enrollees ON Students.StudentID = Enrollees.StudentID) "
+                    + "INNER JOIN Scores ON Enrollees.EnrolleeID = Scores.EnrolleeID "
+                    + "WHERE Scores.TaskID = ?");
+        }
+        prep.setLong(1, t.getID());
+        r = prep.executeQuery();
+
+        ObservableList<Score> scores = FXCollections.observableArrayList();
+        while (r.next()) {
+            Score temp = new Score(r.getLong(1));
+            temp.setEnrollee(new Enrollee(r.getLong(2)));
+            temp.getEnrollee().setStudent(new Student(r.getLong(3)));
+            temp.getEnrollee().getStudent().setFN(r.getString(4));
+            temp.getEnrollee().getStudent().setLN(r.getString(5));
+            temp.setScore(r.getInt(6));
+            temp.setNotes(r.getString(7));
+            scores.add(temp);
+        }
+        return scores;
+    }
+
+    public static boolean save(Score s) throws SQLException {
+        if (s.getID() == -1) {
+            LOGGER.log(Level.INFO, "Saving new Score...");
+            PreparedStatement prep;
+            if (s.getTask().getClazz().isSHS()) {
+                prep = con.prepareStatement("INSERT INTO SHSScores (EnrolleeID, TaskID, Score, Notes) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            } else {
+                prep = con.prepareStatement("INSERT INTO Scores (EnrolleeID, TaskID, Score, Notes) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            }
+            prep.setLong(1, s.getEnrollee().getID());
+            prep.setLong(2, s.getTask().getID());
+            prep.setInt(3, s.getScore());
+            prep.setString(4, s.getNotes());
+            prep.executeUpdate();
+            ResultSet rs = prep.getGeneratedKeys();
+            rs.next();
+            s.setID(rs.getLong(1));
+            return true;
+        } else {
+            LOGGER.log(Level.INFO, "Saving Score...");
+            PreparedStatement prep;
+            if (s.getTask().getClazz().isSHS()) {
+                prep = con.prepareStatement("UPDATE SHSScores SET EnrolleeID = ?, Score = ?, Notes = ? WHERE ScoreID = ?");
+            } else {
+                prep = con.prepareStatement("UPDATE Scores SET EnrolleeID = ?, Score = ?, Notes = ? WHERE ScoreID = ?");
+            }
+            prep.setLong(1, s.getEnrollee().getID());
+            prep.setInt(2, s.getScore());
+            prep.setString(3, s.getNotes());
+            prep.executeUpdate();
+            return false;
+        }
+    }
+
+    public static void delete(Score s) throws SQLException {
+        LOGGER.log(Level.INFO, "Deleting Score...");
+        PreparedStatement prep;
+        if (s.getTask().getClazz().isSHS()) {
+            prep = con.prepareStatement("DELETE FROM SHSScores WHERE ScoreID = ?");
+        } else {
+            prep = con.prepareStatement("DELETE FROM Scores WHERE ScoreID = ?");
+        }
+        prep.setLong(1, s.getID());
+        prep.executeUpdate();
     }
     // </editor-fold>
 }
