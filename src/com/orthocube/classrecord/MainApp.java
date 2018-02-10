@@ -25,7 +25,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -44,7 +43,7 @@ import java.util.logging.Logger;
 /**
  * @author OrthoCube
  */
-public class MainApp extends Application implements MainPreloader.CredentialsConsumer {
+public class MainApp extends Application implements MainPreloader.CredentialsConsumer, MainPreloader.SharedScene {
     private final static Logger LOGGER = Logger.getLogger(MainApp.class.getName());
 
     private ArrayList<SplitPane> history = new ArrayList<>();
@@ -82,19 +81,35 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         return rootNotification;
     }
 
+    public NotificationPane getParentNode() {
+        return rootNotification;
+    }
+
     private void mayBeShown() {
-        if (stage != null) {//username != null && stage != null) {
+        if (stage != null && username != null) {
             Platform.runLater(() -> {
-                stage.show();
-                rootNotification.show("Welcome, OrthoCube!");
+                //stage.show();
+                rootNotification.show("Welcome, " + username + "!");
             });
         }
     }
 
-    public void setCredential(String username, String password) {
+    public void setCredential(String username, String password, Stage stage, Scene scene) {
         this.username = username;
         this.password = password;
+        this.scene = scene;
+        this.stage = stage;
         mayBeShown();
+
+        setDarkTheme();
+        Platform.setImplicitExit(true);
+        stage.setOnCloseRequest(e -> {
+            if (Dialogs.confirm("Close Application", "Are you sure you want to leave?", "Any unsaved changes will be lost.") == ButtonType.CANCEL)
+                e.consume();
+        });
+
+        this.stage.setTitle("Class Record"); //bundle.getString("classrecord"));
+
     }
 
     private static void changeLoggingLevel(Level l) {
@@ -136,21 +151,6 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     @Override
     public void start(Stage stage) {
-        this.stage = stage;
-        scene = new Scene(rootNotification);
-        Platform.setImplicitExit(true);
-        setDarkTheme();
-        stage.setOnCloseRequest(e -> {
-            if (Dialogs.confirm("Close Application", "Are you sure you want to leave?", "Any unsaved changes will be lost.") == ButtonType.CANCEL)
-                e.consume();
-        });
-        this.stage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_16px.png")));
-        this.stage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_30px.png")));
-        this.stage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_40px.png")));
-        this.stage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_80px.png")));
-
-        this.stage.setScene(scene);
-        this.stage.setTitle("Class Record"); //bundle.getString("classrecord"));
 
         mayBeShown();
     }
@@ -181,6 +181,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         rootLoader.setResources(bundle);
         root = rootLoader.load();
         rootNotification = new NotificationPane(root);
+        rootNotification.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         //rootNotification.setCloseButtonVisible(false);
         rootNotification.setOnShown(e -> {
             LOGGER.log(Level.INFO, "Notification show listener triggered");
