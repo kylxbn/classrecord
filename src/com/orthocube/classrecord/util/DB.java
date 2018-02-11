@@ -114,7 +114,7 @@ public class DB {
             }
 
             try {
-                s.executeUpdate("CREATE TABLE Criterias (CriteriaID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                s.executeUpdate("CREATE TABLE Criteria (CriterionID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                         "ClassID BIGINT REFERENCES Classes(ClassID) ON DELETE CASCADE, " +
                         "Name VARCHAR(20), " +
                         "Percent SMALLINT, " +
@@ -126,7 +126,7 @@ public class DB {
             }
 
             try {
-                s.executeUpdate("CREATE TABLE SHSCriterias (CriteriaID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                s.executeUpdate("CREATE TABLE SHSCriteria (CriterionID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                         "ClassID BIGINT REFERENCES Classes(ClassID) ON DELETE CASCADE, " +
                         "Name VARCHAR(20), " +
                         "Percent SMALLINT, " +
@@ -201,7 +201,7 @@ public class DB {
                 s.executeUpdate("CREATE TABLE Tasks (TaskID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                         "Name VARCHAR(20), " +
                         "ClassID BIGINT REFERENCES Classes(ClassID) ON DELETE CASCADE, " +
-                        "CriteriaID BIGINT REFERENCES Criterias(CriteriaID) ON DELETE CASCADE, " +
+                        "CriterionID BIGINT REFERENCES Criteria(CriterionID) ON DELETE CASCADE, " +
                         "Term SMALLINT NOT NULL, " +
                         "Items SMALLINT NOT NULL)");
             } catch (SQLException e) {
@@ -214,7 +214,7 @@ public class DB {
                 s.executeUpdate("CREATE TABLE SHSTasks (TaskID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                         "Name VARCHAR(20), " +
                         "ClassID BIGINT REFERENCES Classes(ClassID) ON DELETE CASCADE, " +
-                        "CriteriaID BIGINT REFERENCES SHSCriterias(CriteriaID) ON DELETE CASCADE, " +
+                        "CriterionID BIGINT REFERENCES SHSCriteria(CriterionID) ON DELETE CASCADE, " +
                         "Term SMALLINT NOT NULL, " +
                         "Items SMALLINT NOT NULL)");
             } catch (SQLException e) {
@@ -680,44 +680,44 @@ public class DB {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Criterias">
-    public static ObservableList<Criteria> getCriterias(Clazz c) throws SQLException {
-        LOGGER.log(Level.INFO, "Getting Criterias...");
+    // <editor-fold defaultstate="collapsed" desc="Criteria">
+    public static ObservableList<Criterion> getCriteria(Clazz c) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Criteria...");
         ResultSet r;
 
         PreparedStatement prep;
 
         boolean shs = c.isSHS();
         if (shs)
-            prep = con.prepareStatement("SELECT SHSCriterias.CriteriaID, SHSCriterias.Name, SHSCriterias.Percent, SHSCriterias.Terms FROM SHSCriterias WHERE SHSCriterias.ClassID = ?");
+            prep = con.prepareStatement("SELECT SHSCriteria.CriterionID, SHSCriteria.Name, SHSCriteria.Percent, SHSCriteria.Terms FROM SHSCriteria WHERE SHSCriteria.ClassID = ?");
         else {
-            prep = con.prepareStatement("SELECT Criterias.CriteriaID, Criterias.Name, Criterias.Percent, Criterias.Terms FROM Criterias WHERE Criterias.ClassID = ?");
+            prep = con.prepareStatement("SELECT Criteria.CriterionID, Criteria.Name, Criteria.Percent, Criteria.Terms FROM Criteria WHERE Criteria.ClassID = ?");
         }
 
         prep.setLong(1, c.getID());
         r = prep.executeQuery();
 
-        ArrayList<Criteria> criterias = new ArrayList<>();
+        ArrayList<Criterion> criteria = new ArrayList<>();
         while (r.next()) {
-            Criteria temp = new Criteria(r.getLong(1));
+            Criterion temp = new Criterion(r.getLong(1));
             temp.setClass(c);
             temp.setName(r.getString(2));
             temp.setPercentage(r.getInt(3));
             temp.setTerms(r.getInt(4));
-            criterias.add(temp);
+            criteria.add(temp);
         }
 
-        return FXCollections.observableList(criterias, (Criteria cr) -> new Observable[]{cr.nameProperty(), cr.percentageProperty(), cr.termsProperty()});
+        return FXCollections.observableList(criteria, (Criterion cr) -> new Observable[]{cr.nameProperty(), cr.percentageProperty(), cr.termsProperty()});
     }
 
-    public static boolean save(Criteria c) throws SQLException {
+    public static boolean save(Criterion c) throws SQLException {
         if (c.getID() == -1) {
-            LOGGER.log(Level.WARNING, "Creating new Criteria");
+            LOGGER.log(Level.WARNING, "Creating new Criterion");
             PreparedStatement preps;
             if (c.getClazz().isSHS()) {
-                preps = con.prepareStatement("INSERT INTO SHSCriterias (ClassID, Name, Percent, Terms) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                preps = con.prepareStatement("INSERT INTO SHSCriteria (ClassID, Name, Percent, Terms) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             } else {
-                preps = con.prepareStatement("INSERT INTO Criterias (ClassID, Name, Percent, Terms) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                preps = con.prepareStatement("INSERT INTO Criteria (ClassID, Name, Percent, Terms) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             }
             preps.setLong(1, c.getClazz().getID());
             preps.setString(2, c.getName());
@@ -729,12 +729,12 @@ public class DB {
             c.setID(res.getLong(1));
             return true;
         } else {
-            LOGGER.log(Level.INFO, "Updating criteria...");
+            LOGGER.log(Level.INFO, "Updating Criterion...");
             PreparedStatement prep;
             if (c.getClazz().isSHS()) {
-                prep = con.prepareStatement("UPDATE SHSCriterias SET ClassID = ?, Name = ?, Percent = ?, Terms = ? WHERE CriteriaID = ?");
+                prep = con.prepareStatement("UPDATE SHSCriteria SET ClassID = ?, Name = ?, Percent = ?, Terms = ? WHERE CriterionID = ?");
             } else {
-                prep = con.prepareStatement("UPDATE Criterias SET ClassID = ?, Name = ?, Percent = ?, Terms = ? WHERE CriteriaID = ?");
+                prep = con.prepareStatement("UPDATE Criteria SET ClassID = ?, Name = ?, Percent = ?, Terms = ? WHERE CriterionID = ?");
             }
             prep.setLong(1, c.getClazz().getID());
             prep.setString(2, c.getName());
@@ -746,13 +746,13 @@ public class DB {
         }
     }
 
-    public static void delete(Criteria c) throws SQLException {
-        LOGGER.log(Level.INFO, "Deleting criteria...");
+    public static void delete(Criterion c) throws SQLException {
+        LOGGER.log(Level.INFO, "Deleting Criterion...");
         PreparedStatement prep;
         if (c.getClazz().isSHS()) {
-            prep = con.prepareStatement("DELETE FROM SHSCriterias WHERE CriteriaID = ?");
+            prep = con.prepareStatement("DELETE FROM SHSCriteria WHERE CriterionID = ?");
         } else {
-            prep = con.prepareStatement("DELETE FROM Criterias WHERE CriteriaID = ?");
+            prep = con.prepareStatement("DELETE FROM Criteria WHERE CriterionID = ?");
         }
         prep.setLong(1, c.getID());
         prep.executeUpdate();
@@ -916,9 +916,9 @@ public class DB {
 
         PreparedStatement prep;
         if (c.isSHS()) {
-            prep = con.prepareStatement("SELECT SHSTasks.TaskID, SHSTasks.Name, SHSTasks.Term, SHSTasks.Items, SHSCriterias.CriteriaID, SHSCriterias.Name FROM SHSTasks INNER JOIN SHSCriterias ON SHSTasks.CriteriaID = SHSCriterias.CriteriaID WHERE SHSTasks.ClassID = ?");
+            prep = con.prepareStatement("SELECT SHSTasks.TaskID, SHSTasks.Name, SHSTasks.Term, SHSTasks.Items, SHSCriteria.CriterionID, SHSCriteria.Name FROM SHSTasks INNER JOIN SHSCriteria ON SHSTasks.CriterionID = SHSCriteria.CriterionID WHERE SHSTasks.ClassID = ?");
         } else {
-            prep = con.prepareStatement("SELECT Tasks.TaskID, Tasks.Name, Tasks.Term, Tasks.Items, Criterias.CriteriaID, Criterias.Name FROM Tasks INNER JOIN Criterias ON Tasks.CriteriaID = Criterias.CriteriaID WHERE Tasks.ClassID = ?");
+            prep = con.prepareStatement("SELECT Tasks.TaskID, Tasks.Name, Tasks.Term, Tasks.Items, Criteria.CriterionID, Criteria.Name FROM Tasks INNER JOIN Criteria ON Tasks.CriterionID = Criteria.CriterionID WHERE Tasks.ClassID = ?");
         }
         prep.setLong(1, c.getID());
         r = prep.executeQuery();
@@ -930,8 +930,8 @@ public class DB {
             temp.setTerm(r.getInt(3));
             temp.setItems(r.getInt(4));
             temp.setClass(c);
-            temp.setCriteria(new Criteria(r.getLong(5)));
-            temp.getCriteria().setName(r.getString(6));
+            temp.setCriterion(new Criterion(r.getLong(5)));
+            temp.getCriterion().setName(r.getString(6));
             tasks.add(temp);
         }
         return tasks;
@@ -942,13 +942,13 @@ public class DB {
             LOGGER.log(Level.INFO, "Saving new Task...");
             PreparedStatement prep;
             if (t.getClazz().isSHS()) {
-                prep = con.prepareStatement("INSERT INTO SHSTasks (Name, ClassID, CriteriaID, Term, Items) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                prep = con.prepareStatement("INSERT INTO SHSTasks (Name, ClassID, CriterionID, Term, Items) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             } else {
-                prep = con.prepareStatement("INSERT INTO Tasks (Name, ClassID, CriteriaID, Term, Items) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                prep = con.prepareStatement("INSERT INTO Tasks (Name, ClassID, CriterionID, Term, Items) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             }
             prep.setString(1, t.getName());
             prep.setLong(2, t.getClazz().getID());
-            prep.setLong(3, t.getCriteria().getID());
+            prep.setLong(3, t.getCriterion().getID());
             prep.setInt(4, t.getTerm());
             prep.setInt(5, t.getItems());
             prep.executeUpdate();
@@ -960,12 +960,12 @@ public class DB {
             LOGGER.log(Level.INFO, "Saving Task...");
             PreparedStatement prep;
             if (t.getClazz().isSHS()) {
-                prep = con.prepareStatement("Update SHSTasks SET Name = ?, CriteriaID = ?, Term = ?, Items = ? WHERE TaskID = ?");
+                prep = con.prepareStatement("Update SHSTasks SET Name = ?, CriterionID = ?, Term = ?, Items = ? WHERE TaskID = ?");
             } else {
-                prep = con.prepareStatement("Update Tasks SET Name = ?, CriteriaID = ?, Term = ?, Items = ? WHERE TaskID = ?");
+                prep = con.prepareStatement("Update Tasks SET Name = ?, CriterionID = ?, Term = ?, Items = ? WHERE TaskID = ?");
             }
             prep.setString(1, t.getName());
-            prep.setLong(2, t.getCriteria().getID());
+            prep.setLong(2, t.getCriterion().getID());
             prep.setInt(3, t.getTerm());
             prep.setInt(4, t.getItems());
             prep.setLong(5, t.getID());

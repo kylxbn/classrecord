@@ -23,7 +23,7 @@
                                 <TableView fx:id="tblPrelims" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
                                         <TableColumn fx:id="colPName" prefWidth="75.0" text="Name"/>
-                                        <TableColumn fx:id="colPCriteria" prefWidth="75.0" text="Criteria"/>
+                                        <TableColumn fx:id="colPCriterion" prefWidth="75.0" text="Criterion"/>
                                         <TableColumn fx:id="colPItems" prefWidth="75.0" text="Items"/>
                                     </columns>
                                 </TableView>
@@ -34,7 +34,7 @@
                                 <TableView fx:id="tblMidterms" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
                                         <TableColumn fx:id="colMName" prefWidth="75.0" text="Name"/>
-                                        <TableColumn fx:id="colMCriteria" prefWidth="75.0" text="Criteria"/>
+                                        <TableColumn fx:id="colMCriterion" prefWidth="75.0" text="Criterion"/>
                                         <TableColumn fx:id="colMItems" prefWidth="75.0" text="Items"/>
                                     </columns>
                                 </TableView>
@@ -45,7 +45,7 @@
                                 <TableView fx:id="tblSemis" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
                                         <TableColumn fx:id="colSName" prefWidth="75.0" text="Name"/>
-                                        <TableColumn fx:id="colSCriteria" prefWidth="75.0" text="Criteria"/>
+                                        <TableColumn fx:id="colSCriterion" prefWidth="75.0" text="Criterion"/>
                                         <TableColumn fx:id="colSItems" prefWidth="75.0" text="Items"/>
                                     </columns>
                                 </TableView>
@@ -56,7 +56,7 @@
                                 <TableView fx:id="tblFinals" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
                                         <TableColumn fx:id="colFName" prefWidth="75.0" text="Name"/>
-                                        <TableColumn fx:id="colFCriteria" prefWidth="75.0" text="Criteria"/>
+                                        <TableColumn fx:id="colFCriterion" prefWidth="75.0" text="Criterion"/>
                                         <TableColumn fx:id="colFItems" prefWidth="75.0" text="Items"/>
                                     </columns>
                                 </TableView>
@@ -86,13 +86,13 @@
                                         <Label text="Name:"/>
                                         <Label text="Items:" GridPane.rowIndex="1"/>
                                         <Label text="Term:" GridPane.rowIndex="2"/>
-                                        <Label text="Criteria:" GridPane.rowIndex="3"/>
+                                        <Label text="Criterion:" GridPane.rowIndex="3"/>
                                         <TextField fx:id="txtTName" GridPane.columnIndex="1"/>
                                         <TextField fx:id="txtTItems" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                                         <ChoiceBox fx:id="cboTTerm" maxWidth="1.7976931348623157E308"
                                                    minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1"
                                                    GridPane.rowIndex="2"/>
-                                        <ChoiceBox fx:id="cboTCriteria" maxWidth="1.7976931348623157E308"
+                                        <ChoiceBox fx:id="cboTCriterion" maxWidth="1.7976931348623157E308"
                                                    minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1"
                                                    GridPane.rowIndex="3"/>
                                     </children>

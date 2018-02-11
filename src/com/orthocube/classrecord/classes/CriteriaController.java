@@ -9,7 +9,7 @@ package com.orthocube.classrecord.classes;
 
 import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
-import com.orthocube.classrecord.data.Criteria;
+import com.orthocube.classrecord.data.Criterion;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.beans.binding.Bindings;
@@ -32,27 +32,27 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CriteriasController implements Initializable {
+public class CriteriaController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(EnrolleesController.class.getName());
 
     private ResourceBundle bundle;
 
     private MainApp mainApp;
-    private ObservableList<Criteria> criterias;
+    private ObservableList<Criterion> criteria;
     private Clazz currentClass;
-    private Criteria currentCriteria;
+    private Criterion currentCriterion;
 
     ValidationSupport validationSupport;
 
     // <editor-fold defaultstate="collapsed" desc="controls">
     @FXML
-    private TableView<Criteria> tblCriterias;
+    private TableView<Criterion> tblCriteria;
 
     @FXML
-    private TableColumn<Criteria, String> colName;
+    private TableColumn<Criterion, String> colName;
 
     @FXML
-    private TableColumn<Criteria, String> colPercent;
+    private TableColumn<Criterion, String> colPercent;
 
     @FXML
     private MenuItem mnuDelete;
@@ -158,14 +158,14 @@ public class CriteriasController implements Initializable {
     @FXML
     void cmdAddAction(ActionEvent event) {
         if (!cmdSave.isDisable()) {
-            if (Dialogs.confirm("New criteria", "You have unsaved changes. Discard changes?", "Creating another criteria will discard\nyour current unsaved changes.") == ButtonType.CANCEL) {
+            if (Dialogs.confirm("New criterion", "You have unsaved changes. Discard changes?", "Creating another criterion will discard\nyour current unsaved changes.") == ButtonType.CANCEL) {
                 return;
             }
         }
 
-        currentCriteria = new Criteria();
-        currentCriteria.setClass(currentClass);
-        showCriteriaInfo();
+        currentCriterion = new Criterion();
+        currentCriterion.setClass(currentClass);
+        showCriterionInfo();
         cmdSave.setDisable(false);
         cmdSave.setText("Save as new");
         cmdAdd.setDisable(true);
@@ -194,29 +194,29 @@ public class CriteriasController implements Initializable {
         }
 
         try {
-            currentCriteria.setName(txtName.getText());
-            currentCriteria.setPercentage(Integer.parseInt(txtPercent.getText()));
+            currentCriterion.setName(txtName.getText());
+            currentCriterion.setPercentage(Integer.parseInt(txtPercent.getText()));
 
             int terms = 0;
             terms |= chkPrelims.isSelected() ? 1 : 0;
             terms |= chkMidterms.isSelected() ? 2 : 0;
             terms |= chkSemis.isSelected() ? 4 : 0;
             terms |= chkFinals.isSelected() ? 8 : 0;
-            currentCriteria.setTerms(terms);
+            currentCriterion.setTerms(terms);
 
-            boolean newEntry = DB.save(currentCriteria);
+            boolean newEntry = DB.save(currentCriterion);
 
             cmdSave.setDisable(true);
             if (newEntry) {
-                criterias.add(currentCriteria);
-                tblCriterias.getSelectionModel().select(currentCriteria);
-                tblCriterias.scrollTo(currentCriteria);
+                criteria.add(currentCriterion);
+                tblCriteria.getSelectionModel().select(currentCriterion);
+                tblCriteria.scrollTo(currentCriterion);
 
                 cmdSave.setText("Save");
                 cmdAdd.setDisable(false);
             }
 
-            mainApp.getRootNotification().show("Criteria saved.");
+            mainApp.getRootNotification().show("Criterion saved.");
         } catch (Exception e) {
             Dialogs.exception(e);
         }
@@ -229,11 +229,11 @@ public class CriteriasController implements Initializable {
 
     @FXML
     void mnuDeleteAction(ActionEvent event) {
-        if (Dialogs.confirm("Delete Criteria", "Are you sure you want to delete this criteria?", currentCriteria.getName()) == ButtonType.OK)
+        if (Dialogs.confirm("Delete Criterion", "Are you sure you want to delete this criterion?", currentCriterion.getName()) == ButtonType.OK)
             try {
-                DB.delete(currentCriteria);
-                criterias.remove(currentCriteria);
-                mainApp.getRootNotification().show("Criteria deleted.");
+                DB.delete(currentCriterion);
+                criteria.remove(currentCriterion);
+                mainApp.getRootNotification().show("Criterion deleted.");
             } catch (SQLException e) {
                 Dialogs.exception(e);
             }
@@ -252,14 +252,14 @@ public class CriteriasController implements Initializable {
                 lblRPrelims.setDisable(true);
                 lblRSemis.setDisable(true);
             }
-            criterias = DB.getCriterias(currentClass);
-            criterias.addListener((ListChangeListener<Criteria>) change -> {
+            criteria = DB.getCriteria(currentClass);
+            criteria.addListener((ListChangeListener<Criterion>) change -> {
                 computePercentages();
                 updateChart();
             });
             computePercentages();
 
-            tblCriterias.setItems(criterias);
+            tblCriteria.setItems(criteria);
 
             if (c.isSHS()) {
                 cboTerms.setItems(FXCollections.observableArrayList("Midterms", "Finals"));
@@ -275,18 +275,18 @@ public class CriteriasController implements Initializable {
 
     private void computePercentages() {
         int ptv = 0, mtv = 0, stv = 0, ftv = 0;
-        for (Criteria criteria : criterias) {
-            if (((criteria.getTerms() & 1)) > 0) {
-                ptv += criteria.getPercentage();
+        for (Criterion criterion : criteria) {
+            if (((criterion.getTerms() & 1)) > 0) {
+                ptv += criterion.getPercentage();
             }
-            if (((criteria.getTerms() & 2)) > 0) {
-                mtv += criteria.getPercentage();
+            if (((criterion.getTerms() & 2)) > 0) {
+                mtv += criterion.getPercentage();
             }
-            if (((criteria.getTerms() & 4)) > 0) {
-                stv += criteria.getPercentage();
+            if (((criterion.getTerms() & 4)) > 0) {
+                stv += criterion.getPercentage();
             }
-            if (((criteria.getTerms() & 8)) > 0) {
-                ftv += criteria.getPercentage();
+            if (((criterion.getTerms() & 8)) > 0) {
+                ftv += criterion.getPercentage();
             }
         }
 
@@ -311,11 +311,11 @@ public class CriteriasController implements Initializable {
         }
     }
 
-    private void showCriteriaInfo() {
-        txtName.setText(currentCriteria.getName());
-        txtPercent.setText(Integer.toString(currentCriteria.getPercentage()));
+    private void showCriterionInfo() {
+        txtName.setText(currentCriterion.getName());
+        txtPercent.setText(Integer.toString(currentCriterion.getPercentage()));
 
-        int terms = currentCriteria.getTerms();
+        int terms = currentCriterion.getTerms();
 
         chkPrelims.setSelected((terms & 1) > 0);
         chkMidterms.setSelected((terms & 2) > 0);
@@ -339,13 +339,13 @@ public class CriteriasController implements Initializable {
         if (currentClass.isSHS()) {
             switch (cboTerms.getSelectionModel().getSelectedIndex()) {
                 case 0:
-                    for (Criteria c : criterias) {
+                    for (Criterion c : criteria) {
                         if ((c.getTerms() & 2) > 0)
                             data.add(new PieChart.Data(c.getName(), c.getPercentage()));
                     }
                     break;
                 case 1:
-                    for (Criteria c : criterias) {
+                    for (Criterion c : criteria) {
                         if ((c.getTerms() & 8) > 0)
                             data.add(new PieChart.Data(c.getName(), c.getPercentage()));
                     }
@@ -354,25 +354,25 @@ public class CriteriasController implements Initializable {
         } else {
             switch (cboTerms.getSelectionModel().getSelectedIndex()) {
                 case 0:
-                    for (Criteria c : criterias) {
+                    for (Criterion c : criteria) {
                         if ((c.getTerms() & 1) > 0)
                             data.add(new PieChart.Data(c.getName(), c.getPercentage()));
                     }
                     break;
                 case 1:
-                    for (Criteria c : criterias) {
+                    for (Criterion c : criteria) {
                         if ((c.getTerms() & 2) > 0)
                             data.add(new PieChart.Data(c.getName(), c.getPercentage()));
                     }
                     break;
                 case 2:
-                    for (Criteria c : criterias) {
+                    for (Criterion c : criteria) {
                         if ((c.getTerms() & 4) > 0)
                             data.add(new PieChart.Data(c.getName(), c.getPercentage()));
                     }
                     break;
                 case 3:
-                    for (Criteria c : criterias) {
+                    for (Criterion c : criteria) {
                         if ((c.getTerms() & 8) > 0)
                             data.add(new PieChart.Data(c.getName(), c.getPercentage()));
                     }
@@ -383,17 +383,17 @@ public class CriteriasController implements Initializable {
         chtPie.setData(data);
         for (final PieChart.Data item : chtPie.getData()) {
             item.getNode().setOnMouseClicked(e -> {
-                for (Criteria c : criterias) {
+                for (Criterion c : criteria) {
                     if (currentClass.isSHS()) {
                         if (c.getName().equals(item.getName())) {
                             switch (cboTerms.getSelectionModel().getSelectedIndex()) {
                                 case 0:
                                     if ((c.getTerms() & 2) > 0)
-                                        tblCriterias.getSelectionModel().select(c);
+                                        tblCriteria.getSelectionModel().select(c);
                                     break;
                                 case 1:
                                     if ((c.getTerms() & 8) > 0)
-                                        tblCriterias.getSelectionModel().select(c);
+                                        tblCriteria.getSelectionModel().select(c);
                                     break;
                             }
                         }
@@ -402,19 +402,19 @@ public class CriteriasController implements Initializable {
                             switch (cboTerms.getSelectionModel().getSelectedIndex()) {
                                 case 0:
                                     if ((c.getTerms() & 1) > 0)
-                                        tblCriterias.getSelectionModel().select(c);
+                                        tblCriteria.getSelectionModel().select(c);
                                     break;
                                 case 1:
                                     if ((c.getTerms() & 2) > 0)
-                                        tblCriterias.getSelectionModel().select(c);
+                                        tblCriteria.getSelectionModel().select(c);
                                     break;
                                 case 2:
                                     if ((c.getTerms() & 4) > 0)
-                                        tblCriterias.getSelectionModel().select(c);
+                                        tblCriteria.getSelectionModel().select(c);
                                     break;
                                 case 3:
                                     if ((c.getTerms() & 8) > 0)
-                                        tblCriterias.getSelectionModel().select(c);
+                                        tblCriteria.getSelectionModel().select(c);
                                     break;
                             }
                         }
@@ -434,15 +434,15 @@ public class CriteriasController implements Initializable {
         //colPercent.setCellValueFactory(cellData -> cellData.getValue().percentageProperty().asString());
         colPercent.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().percentageProperty(), "%"));
 
-        tblCriterias.getSelectionModel().selectedItemProperty().addListener(
+        tblCriteria.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldV, newV) -> {
                     if (cmdSave.isDisable()) {
-                        currentCriteria = newV;
-                        showCriteriaInfo();
+                        currentCriterion = newV;
+                        showCriterionInfo();
                     } else {
-                        if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another enrollee will discard your current unsaved changes.") == ButtonType.OK) {
-                            currentCriteria = newV;
-                            showCriteriaInfo();
+                        if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another criterion will discard your current unsaved changes.") == ButtonType.OK) {
+                            currentCriterion = newV;
+                            showCriterionInfo();
                             cmdAdd.setDisable(false);
                             cmdSave.setDisable(true);
                             cmdSave.setText("Save");
@@ -452,22 +452,22 @@ public class CriteriasController implements Initializable {
         );
 
         txtName.textProperty().addListener((obs, ov, nv) -> {
-            if (currentCriteria != null) cmdSave.setDisable(false);
+            if (currentCriterion != null) cmdSave.setDisable(false);
         });
         txtPercent.textProperty().addListener((obs, ov, nv) -> {
-            if (currentCriteria != null) cmdSave.setDisable(false);
+            if (currentCriterion != null) cmdSave.setDisable(false);
         });
         chkPrelims.selectedProperty().addListener((obs, ov, nv) -> {
-            if (currentCriteria != null) cmdSave.setDisable(false);
+            if (currentCriterion != null) cmdSave.setDisable(false);
         });
         chkMidterms.selectedProperty().addListener((obs, ov, nv) -> {
-            if (currentCriteria != null) cmdSave.setDisable(false);
+            if (currentCriterion != null) cmdSave.setDisable(false);
         });
         chkSemis.selectedProperty().addListener((obs, ov, nv) -> {
-            if (currentCriteria != null) cmdSave.setDisable(false);
+            if (currentCriterion != null) cmdSave.setDisable(false);
         });
         chkFinals.selectedProperty().addListener((obs, ov, nv) -> {
-            if (currentCriteria != null) cmdSave.setDisable(false);
+            if (currentCriterion != null) cmdSave.setDisable(false);
         });
 
         validationSupport = new ValidationSupport();
@@ -500,6 +500,6 @@ public class CriteriasController implements Initializable {
     }
 
     public String getTitle() {
-        return "Criterias for " + currentClass.getName();
+        return "Criteria for " + currentClass.getName();
     }
 }

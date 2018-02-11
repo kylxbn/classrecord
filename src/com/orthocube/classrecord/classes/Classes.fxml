@@ -125,8 +125,8 @@
                             <items>
                                 <MenuItem fx:id="mnuEnrollees" mnemonicParsing="false" onAction="#mnuEnrolleesAction"
                                           text="Enrollees"/>
-                                <MenuItem fx:id="mnuCriterias" mnemonicParsing="false" onAction="#mnuCriteriasAction"
-                                          text="Criterias"/>
+                                <MenuItem fx:id="mnuCriteria" mnemonicParsing="false" onAction="#mnuCriteriaAction"
+                                          text="Criteria"/>
                                 <Menu mnemonicParsing="false" text="Attendance">
                                     <items>
                                         <MenuItem mnemonicParsing="false" text="Quick add"/>

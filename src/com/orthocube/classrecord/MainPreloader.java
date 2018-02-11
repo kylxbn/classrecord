@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.NotificationPane;
 
+import java.util.Calendar;
+
 public class MainPreloader extends Preloader {
     CredentialsConsumer consumer = null;
 
@@ -52,11 +54,11 @@ public class MainPreloader extends Preloader {
         this.preloaderStage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_80px.png")));
 
         preloaderStage.setTitle("ClassRecord - Log In");
-        //preloaderStage.setMaximized(true);
         preloaderStage.setWidth(1024);
         preloaderStage.setHeight(768);
         preloaderStage.setMinWidth(1024);
         preloaderStage.setMinHeight(768);
+        preloaderStage.setMaximized(true);
         scene = new Scene(topGroup);
         setDarkTheme();
         preloaderStage.setScene(scene);
@@ -71,13 +73,62 @@ public class MainPreloader extends Preloader {
     public void setDarkTheme() {
         scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
         //preloaderParent.setStyle("-fx-background-color: #323232;"); // 0x323232");
-        preloaderParent.getStylesheets().add(getClass().getResource("res/darkBG.css").toExternalForm());
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+        switch (month) {
+            case Calendar.MARCH:
+            case Calendar.APRIL:
+            case Calendar.MAY:
+                preloaderParent.getStylesheets().add(getClass().getResource("res/spring_dark.css").toExternalForm());
+                break;
+            case Calendar.JUNE:
+            case Calendar.JULY:
+            case Calendar.AUGUST:
+                preloaderParent.getStylesheets().add(getClass().getResource("res/summer_dark.css").toExternalForm());
+                break;
+            case Calendar.SEPTEMBER:
+            case Calendar.OCTOBER:
+            case Calendar.NOVEMBER:
+                preloaderParent.getStylesheets().add(getClass().getResource("res/fall_dark.css").toExternalForm());
+                break;
+            case Calendar.DECEMBER:
+            case Calendar.JANUARY:
+            case Calendar.FEBRUARY:
+                preloaderParent.getStylesheets().add(getClass().getResource("res/winter_dark.css").toExternalForm());
+                break;
+        }
+        loadercontroller.setDark();
     }
 
     public void setLightTheme() {
         scene.getStylesheets().clear();
         //preloaderParent.setStyle("-fx-background-color: #323232;"); // 0x323232");
-        preloaderParent.getStylesheets().add(getClass().getResource("res/lightBG.css").toExternalForm());
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+        switch (month) {
+            case Calendar.MARCH:
+            case Calendar.APRIL:
+            case Calendar.MAY:
+                preloaderParent.getStylesheets().add(getClass().getResource("res/spring_light.css").toExternalForm());
+                break;
+            case Calendar.JUNE:
+            case Calendar.JULY:
+            case Calendar.AUGUST:
+                preloaderParent.getStylesheets().add(getClass().getResource("res/summer_light.css").toExternalForm());
+                break;
+            case Calendar.SEPTEMBER:
+            case Calendar.OCTOBER:
+            case Calendar.NOVEMBER:
+                preloaderParent.getStylesheets().add(getClass().getResource("res/fall_light.css").toExternalForm());
+                break;
+            case Calendar.DECEMBER:
+            case Calendar.JANUARY:
+            case Calendar.FEBRUARY:
+                preloaderParent.getStylesheets().add(getClass().getResource("res/winter_light.css").toExternalForm());
+                break;
+        }
+        loadercontroller.setLight();
+
     }
 
 
@@ -101,6 +152,7 @@ public class MainPreloader extends Preloader {
                 //Platform.runLater(() -> preloaderStage.hide());
                 SharedScene appScene = (SharedScene) evt.getApplication();
                 fadeInTo(appScene.getParentNode());
+
             } else {
                 Dialogs.error("Login Error", "Invalid username or password.", "The username you provided might be non-existent,\nor that is not the password for that username.");
                 loadercontroller.disableLogin(false);
@@ -120,7 +172,7 @@ public class MainPreloader extends Preloader {
         //setup fade transition for preloader part of scene
         // fade out over 5s
         FadeTransition ft1 = new FadeTransition(
-                Duration.millis(250),
+                Duration.millis(500),
                 preloaderParent);
         ft1.setFromValue(1.0);
         ft1.setToValue(1.0);

@@ -9,14 +9,14 @@ package com.orthocube.classrecord.data;
 
 import javafx.beans.property.*;
 
-public class Criteria {
+public class Criterion {
     private final LongProperty id = new SimpleLongProperty();
     private final ObjectProperty<Clazz> clazz = new SimpleObjectProperty<>();
     private final StringProperty name = new SimpleStringProperty();
     private final IntegerProperty percentage = new SimpleIntegerProperty();
     private final IntegerProperty terms = new SimpleIntegerProperty();
 
-    public Criteria(long id, Clazz clazz, String name, int percentage, int terms) {
+    public Criterion(long id, Clazz clazz, String name, int percentage, int terms) {
         this.id.set(id);
         this.clazz.set(clazz);
         this.name.set(name);
@@ -24,11 +24,11 @@ public class Criteria {
         this.terms.set(terms);
     }
 
-    public Criteria(long id) {
+    public Criterion(long id) {
         this(id, null, "", 0, 0);
     }
 
-    public Criteria() {
+    public Criterion() {
         this(-1);
     }
 

@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
@@ -30,8 +31,13 @@ import java.util.ResourceBundle;
  */
 public class MainController implements Initializable {
     boolean dark = true;
+    String username;
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    Label lblUser;
+    @FXML
+    ImageView pboUser;
     @FXML
     Label lblMemory;
     @FXML
@@ -221,4 +227,9 @@ public class MainController implements Initializable {
 
     }
 
+    public void setUser(String user) {
+        this.username = user;
+        lblUser.setText(username);
+
+    }
 }

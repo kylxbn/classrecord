@@ -254,7 +254,7 @@ public class ClassesController implements Initializable {
     private Button cmdSave;
 
     @FXML
-    private MenuItem mnuCriterias;
+    private MenuItem mnuCriteria;
     // </editor-fold>
 
     public void setMainApp(MainApp mainApp) {
@@ -350,9 +350,9 @@ public class ClassesController implements Initializable {
     }
 
     @FXML
-    void mnuCriteriasAction(ActionEvent event) {
+    void mnuCriteriaAction(ActionEvent event) {
         try {
-            mainApp.showCriterias(currentClass);
+            mainApp.showCriteria(currentClass);
         } catch (Exception e) {
             Dialogs.exception(e);
         }

@@ -9,7 +9,7 @@ package com.orthocube.classrecord.classes;
 
 import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
-import com.orthocube.classrecord.data.Criteria;
+import com.orthocube.classrecord.data.Criterion;
 import com.orthocube.classrecord.data.Score;
 import com.orthocube.classrecord.data.Task;
 import com.orthocube.classrecord.util.Dialogs;
@@ -46,7 +46,7 @@ public class TasksController implements Initializable {
     private TableColumn<Task, String> colPName;
 
     @FXML
-    private TableColumn<Task, String> colPCriteria;
+    private TableColumn<Task, String> colPCriterion;
 
     @FXML
     private TableColumn<Task, Number> colPItems;
@@ -58,7 +58,7 @@ public class TasksController implements Initializable {
     private TableColumn<Task, String> colMName;
 
     @FXML
-    private TableColumn<Task, String> colMCriteria;
+    private TableColumn<Task, String> colMCriterion;
 
     @FXML
     private TableColumn<Task, Number> colMItems;
@@ -70,7 +70,7 @@ public class TasksController implements Initializable {
     private TableColumn<Task, String> colSName;
 
     @FXML
-    private TableColumn<Task, String> colSCriteria;
+    private TableColumn<Task, String> colSCriterion;
 
     @FXML
     private TableColumn<Task, Number> colSItems;
@@ -82,7 +82,7 @@ public class TasksController implements Initializable {
     private TableColumn<Task, String> colFName;
 
     @FXML
-    private TableColumn<Task, String> colFCriteria;
+    private TableColumn<Task, String> colFCriterion;
 
     @FXML
     private TableColumn<Task, Number> colFItems;
@@ -97,7 +97,7 @@ public class TasksController implements Initializable {
     private ChoiceBox<String> cboTTerm;
 
     @FXML
-    private ChoiceBox<Criteria> cboTCriteria;
+    private ChoiceBox<Criterion> cboTCriterion;
 
     @FXML
     private TableView<Score> tblScores;
@@ -181,22 +181,22 @@ public class TasksController implements Initializable {
             txtTItems.setText(Integer.toString(currentTask.getItems()));
             // TODO: show task info
             cboTTerm.getSelectionModel().select(-1);
-            cboTCriteria.getSelectionModel().select(-1);
+            cboTCriterion.getSelectionModel().select(-1);
 
             txtTName.setDisable(true);
             txtTItems.setDisable(true);
             cboTTerm.setDisable(true);
-            cboTCriteria.setDisable(true);
+            cboTCriterion.setDisable(true);
         } else {
             txtTName.setText("");
             txtTItems.setText("");
             cboTTerm.getSelectionModel().select(-1);
-            cboTCriteria.getSelectionModel().select(-1);
+            cboTCriterion.getSelectionModel().select(-1);
 
             txtTName.setDisable(true);
             txtTItems.setDisable(true);
             cboTTerm.setDisable(true);
-            cboTCriteria.setDisable(true);
+            cboTCriterion.setDisable(true);
         }
     }
 
@@ -206,19 +206,19 @@ public class TasksController implements Initializable {
         bundle = resources;
 
         colPName.setCellValueFactory(cellValue -> cellValue.getValue().nameProperty());
-        colPCriteria.setCellValueFactory(cellValue -> cellValue.getValue().getCriteria().nameProperty());
+        colPCriterion.setCellValueFactory(cellValue -> cellValue.getValue().getCriterion().nameProperty());
         colPItems.setCellValueFactory(cellValue -> cellValue.getValue().itemsProperty());
 
         colMName.setCellValueFactory(cellValue -> cellValue.getValue().nameProperty());
-        colMCriteria.setCellValueFactory(cellValue -> cellValue.getValue().getCriteria().nameProperty());
+        colMCriterion.setCellValueFactory(cellValue -> cellValue.getValue().getCriterion().nameProperty());
         colMItems.setCellValueFactory(cellValue -> cellValue.getValue().itemsProperty());
 
         colSName.setCellValueFactory(cellValue -> cellValue.getValue().nameProperty());
-        colSCriteria.setCellValueFactory(cellValue -> cellValue.getValue().getCriteria().nameProperty());
+        colSCriterion.setCellValueFactory(cellValue -> cellValue.getValue().getCriterion().nameProperty());
         colSItems.setCellValueFactory(cellValue -> cellValue.getValue().itemsProperty());
 
         colFName.setCellValueFactory(cellValue -> cellValue.getValue().nameProperty());
-        colFCriteria.setCellValueFactory(cellValue -> cellValue.getValue().getCriteria().nameProperty());
+        colFCriterion.setCellValueFactory(cellValue -> cellValue.getValue().getCriterion().nameProperty());
         colFItems.setCellValueFactory(cellValue -> cellValue.getValue().itemsProperty());
 
         tblPrelims.getSelectionModel().selectedItemProperty().addListener((obs, oldv, newv) -> {
@@ -314,7 +314,7 @@ public class TasksController implements Initializable {
         cboTTerm.valueProperty().addListener((obs, ov, nv) -> {
             if (currentTask != null) cmdTSave.setDisable(false);
         });
-        cboTCriteria.valueProperty().addListener((obs, ov, nv) -> {
+        cboTCriterion.valueProperty().addListener((obs, ov, nv) -> {
             if (currentTask != null) cmdTSave.setDisable(false);
         });
         txtSScore.textProperty().addListener((obs, ov, nv) -> {

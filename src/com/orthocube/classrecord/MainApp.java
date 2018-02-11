@@ -87,8 +87,10 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     private void mayBeShown() {
         if (stage != null && username != null) {
+            mainController.setUser(username);
             Platform.runLater(() -> {
                 //stage.show();
+
                 rootNotification.show("Welcome, " + username + "!");
             });
         }
@@ -381,11 +383,11 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         updateNavigation();
     }
 
-    public void showCriterias(Clazz currentClass) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("classes/Criterias.fxml"));
+    public void showCriteria(Clazz currentClass) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("classes/Criteria.fxml"));
         loader.setResources(bundle);
         SplitPane enrollees = loader.load();
-        CriteriasController controller = loader.getController();
+        CriteriaController controller = loader.getController();
         controller.setMainApp(this);
         controller.setClass(currentClass);
 

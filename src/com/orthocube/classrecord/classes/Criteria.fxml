@@ -14,11 +14,11 @@
 <?import javafx.scene.text.*?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
            maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="200.0" prefHeight="571.0" prefWidth="847.0"
-           xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.classes.CriteriasController">
+           xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.classes.CriteriaController">
     <items>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="100.0" spacing="8.0">
             <children>
-                <TableView fx:id="tblCriterias" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                <TableView fx:id="tblCriteria" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                            minHeight="50.0" minWidth="50.0" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colName" minWidth="-1.0" prefWidth="108.79995155334473" text="Name"/>

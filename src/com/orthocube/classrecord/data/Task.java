@@ -13,15 +13,15 @@ public class Task {
     private final LongProperty id = new SimpleLongProperty();
     private final StringProperty name = new SimpleStringProperty();
     private final ObjectProperty<Clazz> clazz = new SimpleObjectProperty<>();
-    private final ObjectProperty<Criteria> criteria = new SimpleObjectProperty<>();
+    private final ObjectProperty<Criterion> criterion = new SimpleObjectProperty<>();
     private final IntegerProperty term = new SimpleIntegerProperty();
     private final IntegerProperty items = new SimpleIntegerProperty();
 
-    public Task(long id, String name, Clazz clazz, Criteria criteria, int term, int items) {
+    public Task(long id, String name, Clazz clazz, Criterion criterion, int term, int items) {
         this.id.set(id);
         this.name.set(name);
         this.clazz.set(clazz);
-        this.criteria.set(criteria);
+        this.criterion.set(criterion);
         this.term.set(term);
         this.items.set(items);
     }
@@ -70,16 +70,16 @@ public class Task {
         this.clazz.set(clazz);
     }
 
-    public Criteria getCriteria() {
-        return criteria.get();
+    public Criterion getCriterion() {
+        return criterion.get();
     }
 
-    public void setCriteria(Criteria criteria) {
-        this.criteria.set(criteria);
+    public void setCriterion(Criterion criteria) {
+        this.criterion.set(criteria);
     }
 
-    public ObjectProperty<Criteria> criteriaProperty() {
-        return criteria;
+    public ObjectProperty<Criterion> criterionProperty() {
+        return criterion;
     }
 
     public int getTerm() {
