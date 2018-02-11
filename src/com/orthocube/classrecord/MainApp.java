@@ -420,4 +420,17 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         currentHistory++;
         updateNavigation();
     }
+
+    public void showTasks(Clazz currentClass) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("classes/Tasks.fxml"));
+        loader.setResources(bundle);
+        SplitPane tasks = loader.load();
+        TasksController controller = loader.getController();
+        controller.setMainApp(this);
+        controller.setClass(currentClass);
+
+        trimHistoryThenAdd(tasks, controller.getTitle());
+        currentHistory++;
+        updateNavigation();
+    }
 }

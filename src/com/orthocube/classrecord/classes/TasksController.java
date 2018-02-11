@@ -12,16 +12,21 @@ import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.data.Criterion;
 import com.orthocube.classrecord.data.Score;
 import com.orthocube.classrecord.data.Task;
+import com.orthocube.classrecord.util.CriterionConverter;
+import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,8 +42,15 @@ public class TasksController implements Initializable {
 
     private ObservableList<Task> tasks;
     private ObservableList<Score> scores;
-
+    FilteredList<Criterion> filteredCriteria;
+    int warningShowCount = 0;
+    boolean saveInProgress = false;
+    boolean nullifyPending = false;
+    private ObservableList<Criterion> criteria;
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    private Accordion accTasks;
+
     @FXML
     private TableView<Task> tblPrelims;
 
@@ -131,6 +143,15 @@ public class TasksController implements Initializable {
 
     @FXML
     private Button cmdSSave;
+
+    @FXML
+    private TitledPane tpnPrelims;
+    @FXML
+    private TitledPane tpnMidterms;
+    @FXML
+    private TitledPane tpnSemis;
+    @FXML
+    private TitledPane tpnFinals;
     // </editor-fold>
 
     public void setMainApp(MainApp mainApp) {
@@ -142,17 +163,28 @@ public class TasksController implements Initializable {
     }
 
     public void setClass(Clazz c) {
-//        try {
-//            currentClass = c;
-//            tasks = DB.getTasks(c);
-//
-//            tblPrelims.setItems(tasks);
-//            tblMidterms.setItems(tasks);
-//            tblSemis.setItems(tasks);
-//            tblFinals.setItems(tasks);
-//        } catch (SQLException e) {
-//            Dialogs.exception(e);
-//        }
+        try {
+            currentClass = c;
+            tasks = DB.getTasks(c);
+            criteria = DB.getCriteria(c);
+
+            FilteredList<Task> prelimTasks = new FilteredList<>(tasks, p -> (p.getTerm() & 1) > 0);
+            FilteredList<Task> midtermTasks = new FilteredList<>(tasks, p -> (p.getTerm() & 2) > 0);
+            FilteredList<Task> semisTasks = new FilteredList<>(tasks, p -> (p.getTerm() & 4) > 0);
+            FilteredList<Task> finalsTasks = new FilteredList<>(tasks, p -> (p.getTerm() & 8) > 0);
+
+            tblPrelims.setItems(prelimTasks);
+            tblMidterms.setItems(midtermTasks);
+            tblSemis.setItems(semisTasks);
+            tblFinals.setItems(finalsTasks);
+
+            filteredCriteria = new FilteredList<>(criteria, p -> false);
+            cboTCriterion.setItems(filteredCriteria);
+
+            cboTTerm.getSelectionModel().select(0);
+        } catch (SQLException e) {
+            Dialogs.exception(e);
+        }
     }
 
     @FXML
@@ -167,26 +199,108 @@ public class TasksController implements Initializable {
 
     @FXML
     void cmdTAddAction(ActionEvent event) {
+        if (!cmdTSave.isDisable()) {
+            if (Dialogs.confirm("New task", "You have unsaved changes. Discard changes?", "Creating another task will discard\nyour current unsaved changes.") == ButtonType.CANCEL) {
+                return;
+            }
+        }
 
+        currentTask = new Task();
+        currentTask.setClass(currentClass);
+        showTaskInfo();
+        cmdTSave.setDisable(false);
+        cmdTSave.setText("Save as new");
+        cmdTAdd.setDisable(true);
     }
 
     @FXML
     void cmdTSaveAction(ActionEvent event) {
+        saveInProgress = true;
+        try {
+            currentTask.setName(txtTName.getText());
+            currentTask.setItems(Integer.parseInt(txtTItems.getText()));
+            currentTask.setTerm(1 << cboTTerm.getSelectionModel().getSelectedIndex());
+            currentTask.setCriterion(cboTCriterion.getSelectionModel().getSelectedItem());
 
+            boolean newentry = DB.save(currentTask);
+
+            cmdTSave.setDisable(true);
+            if (newentry) {
+                tasks.add(currentTask);
+                if ((currentTask.getTerm() & 1) > 0) {
+                    accTasks.setExpandedPane(tpnPrelims);
+                    tblPrelims.getSelectionModel().select(currentTask);
+                    tblPrelims.scrollTo(currentTask);
+                } else if ((currentTask.getTerm() & 2) > 0) {
+                    accTasks.setExpandedPane(tpnMidterms);
+                    tblMidterms.getSelectionModel().select(currentTask);
+                    tblMidterms.scrollTo(currentTask);
+                } else if ((currentTask.getTerm() & 4) > 0) {
+                    accTasks.setExpandedPane(tpnSemis);
+                    tblSemis.getSelectionModel().select(currentTask);
+                    tblSemis.scrollTo(currentTask);
+                } else if ((currentTask.getTerm() & 8) > 0) {
+                    accTasks.setExpandedPane(tpnFinals);
+                    tblFinals.getSelectionModel().select(currentTask);
+                    tblFinals.scrollTo(currentTask);
+                }
+
+                cmdTSave.setText("Save");
+                cmdTAdd.setDisable(false);
+            } else {
+                if ((currentTask.getTerm() & 1) > 0) {
+                    accTasks.setExpandedPane(tpnPrelims);
+                    tblPrelims.getSelectionModel().select(currentTask);
+                    tblPrelims.scrollTo(currentTask);
+                } else if ((currentTask.getTerm() & 2) > 0) {
+                    accTasks.setExpandedPane(tpnMidterms);
+                    tblMidterms.getSelectionModel().select(currentTask);
+                    tblMidterms.scrollTo(currentTask);
+                } else if ((currentTask.getTerm() & 4) > 0) {
+                    accTasks.setExpandedPane(tpnSemis);
+                    tblSemis.getSelectionModel().select(currentTask);
+                    tblSemis.scrollTo(currentTask);
+                } else if ((currentTask.getTerm() & 8) > 0) {
+                    accTasks.setExpandedPane(tpnFinals);
+                    tblFinals.getSelectionModel().select(currentTask);
+                    tblFinals.scrollTo(currentTask);
+                }
+            }
+
+            mainApp.getRootNotification().show("Task saved.");
+        } catch (Exception e) {
+            Dialogs.exception(e);
+        }
+
+        saveInProgress = false;
     }
 
     private void showTaskInfo() {
         if (currentTask != null) {
             txtTName.setText(currentTask.getName());
             txtTItems.setText(Integer.toString(currentTask.getItems()));
-            // TODO: show task info
-            cboTTerm.getSelectionModel().select(-1);
-            cboTCriterion.getSelectionModel().select(-1);
+            if ((currentTask.getTerm() & 1) > 0)
+                cboTTerm.getSelectionModel().select(0);
+            else if ((currentTask.getTerm() & 2) > 0)
+                cboTTerm.getSelectionModel().select(1);
+            else if ((currentTask.getTerm() & 4) > 0)
+                cboTTerm.getSelectionModel().select(2);
+            else if ((currentTask.getTerm() & 8) > 0)
+                cboTTerm.getSelectionModel().select(3);
+            else
+                cboTTerm.getSelectionModel().select(-1);
 
-            txtTName.setDisable(true);
-            txtTItems.setDisable(true);
-            cboTTerm.setDisable(true);
-            cboTCriterion.setDisable(true);
+            for (Criterion c : filteredCriteria) {
+                if (c.getID() == currentTask.getCriterion().getID()) {
+                    cboTCriterion.getSelectionModel().select(c);
+                    break;
+                }
+            }
+
+            txtTName.setDisable(false);
+            txtTItems.setDisable(false);
+            cboTTerm.setDisable(false);
+            cboTCriterion.setDisable(false);
         } else {
             txtTName.setText("");
             txtTItems.setText("");
@@ -198,6 +312,10 @@ public class TasksController implements Initializable {
             cboTTerm.setDisable(true);
             cboTCriterion.setDisable(true);
         }
+
+        cmdTSave.setDisable(true);
+        cmdTAdd.setDisable(false);
+        cmdTSave.setText("Save");
     }
 
     @Override
@@ -222,65 +340,102 @@ public class TasksController implements Initializable {
         colFItems.setCellValueFactory(cellValue -> cellValue.getValue().itemsProperty());
 
         tblPrelims.getSelectionModel().selectedItemProperty().addListener((obs, oldv, newv) -> {
-            if (cmdTSave.isDisable()) {
-                currentTask = newv;
-                showTaskInfo();
-            } else {
-                if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
+            if (!saveInProgress) {
+                if (cmdTSave.isDisable()) {
                     currentTask = newv;
                     showTaskInfo();
-                    cmdTAdd.setDisable(false);
-                    cmdTSave.setDisable(true);
-                    cmdTSave.setText("Save");
+                } else {
+                    if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
+                        currentTask = newv;
+                        showTaskInfo();
+                        cmdTAdd.setDisable(false);
+                        cmdTSave.setDisable(true);
+                        cmdTSave.setText("Save");
+                    }
                 }
             }
         });
 
         tblMidterms.getSelectionModel().selectedItemProperty().addListener((obs, oldv, newv) -> {
-            if (cmdTSave.isDisable()) {
-                currentTask = newv;
-                showTaskInfo();
-            } else {
-                if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
+            if (!saveInProgress) {
+                if (cmdTSave.isDisable()) {
                     currentTask = newv;
                     showTaskInfo();
-                    cmdTAdd.setDisable(false);
-                    cmdTSave.setDisable(true);
-                    cmdTSave.setText("Save");
+                } else {
+                    if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
+                        currentTask = newv;
+                        showTaskInfo();
+                        cmdTAdd.setDisable(false);
+                        cmdTSave.setDisable(true);
+                        cmdTSave.setText("Save");
+                    }
                 }
             }
         });
 
         tblSemis.getSelectionModel().selectedItemProperty().addListener((obs, oldv, newv) -> {
-            if (cmdTSave.isDisable()) {
-                currentTask = newv;
-                showTaskInfo();
-            } else {
-                if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
+            if (!saveInProgress) {
+                if (cmdTSave.isDisable()) {
                     currentTask = newv;
                     showTaskInfo();
-                    cmdTAdd.setDisable(false);
-                    cmdTSave.setDisable(true);
-                    cmdTSave.setText("Save");
+                } else {
+                    if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
+                        currentTask = newv;
+                        showTaskInfo();
+                        cmdTAdd.setDisable(false);
+                        cmdTSave.setDisable(true);
+                        cmdTSave.setText("Save");
+                    }
                 }
             }
         });
 
         tblFinals.getSelectionModel().selectedItemProperty().addListener((obs, oldv, newv) -> {
-            if (cmdTSave.isDisable()) {
-                currentTask = newv;
-                showTaskInfo();
-            } else {
-                if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
+            if (!saveInProgress) {
+                if (cmdTSave.isDisable()) {
                     currentTask = newv;
                     showTaskInfo();
-                    cmdTAdd.setDisable(false);
-                    cmdTSave.setDisable(true);
-                    cmdTSave.setText("Save");
+                } else {
+                    if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
+                        currentTask = newv;
+                        showTaskInfo();
+                        cmdTAdd.setDisable(false);
+                        cmdTSave.setDisable(true);
+                        cmdTSave.setText("Save");
+                    }
                 }
             }
         });
 
+        accTasks.expandedPaneProperty().addListener((obs, oldv, newv) -> {
+            // TODO: fix double warning
+            if (!saveInProgress) {
+                if (cmdTSave.isDisable()) {
+                    if (newv != null)
+                        currentTask = ((TableView<Task>) newv.getContent()).getSelectionModel().getSelectedItem();
+                    else
+                        currentTask = null;
+                    showTaskInfo();
+                } else {
+                    if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
+                        if (newv != null)
+                            currentTask = ((TableView<Task>) newv.getContent()).getSelectionModel().getSelectedItem();
+                        else
+                            currentTask = null;
+                        showTaskInfo();
+                        cmdTAdd.setDisable(false);
+                        cmdTSave.setDisable(true);
+                        cmdTSave.setText("Save");
+                    }
+                }
+            }
+        });
+
+        cboTTerm.getSelectionModel().selectedIndexProperty().addListener((obs, oldv, newv) -> {
+            filteredCriteria.setPredicate(p -> (p.getTerms() & (1 << newv.intValue())) > 0);
+        });
+
+        cboTCriterion.setConverter(new CriterionConverter());
 
         //---- SCORES -----------
         colScoreName.setCellValueFactory(cv -> Bindings.concat(cv.getValue().getEnrollee().getStudent().lnProperty(), ", ", cv.getValue().getEnrollee().getStudent().fnProperty()));
@@ -303,6 +458,39 @@ public class TasksController implements Initializable {
         });
 
         cboTTerm.setItems(FXCollections.observableArrayList("Prelim", "Midterms", "Semis", "Finals"));
+
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DATE);
+        switch (month) {
+            case Calendar.JULY:
+            case Calendar.DECEMBER:
+                if (day < 20)
+                    accTasks.setExpandedPane(tpnPrelims);
+                else
+                    accTasks.setExpandedPane(tpnMidterms);
+                break;
+            case Calendar.AUGUST:
+            case Calendar.JANUARY:
+                if (day < 20)
+                    accTasks.setExpandedPane(tpnMidterms);
+                else
+                    accTasks.setExpandedPane(tpnSemis);
+                break;
+            case Calendar.SEPTEMBER:
+            case Calendar.FEBRUARY:
+                if (day < 20)
+                    accTasks.setExpandedPane(tpnSemis);
+                else
+                    accTasks.setExpandedPane(tpnFinals);
+                break;
+            default:
+                if (day < 20)
+                    accTasks.setExpandedPane(tpnFinals);
+                else
+                    accTasks.setExpandedPane(tpnPrelims);
+                break;
+        }
 
         // <editor-fold defaultstate="collapsed" desc="Listeners">
         txtTName.textProperty().addListener((obs, ov, nv) -> {

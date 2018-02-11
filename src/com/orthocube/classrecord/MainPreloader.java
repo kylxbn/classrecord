@@ -29,8 +29,8 @@ public class MainPreloader extends Preloader {
 
     private Stage preloaderStage;
     private Scene scene;
-    String username = null;
-    String password = null;
+    String username = "orthocube";
+    String password = "vurshfki";
     private MainPreloaderController loadercontroller;
 
     Group topGroup;

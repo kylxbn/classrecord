@@ -16,9 +16,9 @@
     <items>
         <VBox>
             <children>
-                <Accordion VBox.vgrow="ALWAYS">
+                <Accordion fx:id="accTasks" VBox.vgrow="ALWAYS">
                     <panes>
-                        <TitledPane prefHeight="200.0" prefWidth="200.0" text="Prelims">
+                        <TitledPane fx:id="tpnPrelims" prefHeight="200.0" prefWidth="200.0" text="Prelims">
                             <content>
                                 <TableView fx:id="tblPrelims" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
@@ -29,7 +29,7 @@
                                 </TableView>
                             </content>
                         </TitledPane>
-                        <TitledPane text="Midterms">
+                        <TitledPane fx:id="tpnMidterms" text="Midterms">
                             <content>
                                 <TableView fx:id="tblMidterms" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
@@ -40,7 +40,7 @@
                                 </TableView>
                             </content>
                         </TitledPane>
-                        <TitledPane text="Semis">
+                        <TitledPane fx:id="tpnSemis" text="Semis">
                             <content>
                                 <TableView fx:id="tblSemis" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
@@ -51,7 +51,7 @@
                                 </TableView>
                             </content>
                         </TitledPane>
-                        <TitledPane prefHeight="200.0" prefWidth="200.0" text="Finals">
+                        <TitledPane fx:id="tpnFinals" prefHeight="200.0" prefWidth="200.0" text="Finals">
                             <content>
                                 <TableView fx:id="tblFinals" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
@@ -87,14 +87,15 @@
                                         <Label text="Items:" GridPane.rowIndex="1"/>
                                         <Label text="Term:" GridPane.rowIndex="2"/>
                                         <Label text="Criterion:" GridPane.rowIndex="3"/>
-                                        <TextField fx:id="txtTName" GridPane.columnIndex="1"/>
-                                        <TextField fx:id="txtTItems" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                                        <ChoiceBox fx:id="cboTTerm" maxWidth="1.7976931348623157E308"
+                                        <TextField fx:id="txtTName" disable="true" GridPane.columnIndex="1"/>
+                                        <TextField fx:id="txtTItems" disable="true" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="1"/>
+                                        <ChoiceBox fx:id="cboTTerm" disable="true" maxWidth="1.7976931348623157E308"
                                                    minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1"
                                                    GridPane.rowIndex="2"/>
-                                        <ChoiceBox fx:id="cboTCriterion" maxWidth="1.7976931348623157E308"
-                                                   minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1"
-                                                   GridPane.rowIndex="3"/>
+                                        <ChoiceBox fx:id="cboTCriterion" disable="true"
+                                                   maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                                   minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                                     </children>
                                     <VBox.margin>
                                         <Insets/>
@@ -148,8 +149,10 @@
                                     <children>
                                         <Label text="Score:"/>
                                         <Label text="Notes:" GridPane.rowIndex="1"/>
-                                        <TextField fx:id="txtSScore" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
-                                        <TextField fx:id="txtSNotes" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="txtSScore" disable="true" GridPane.columnIndex="1"
+                                                   GridPane.columnSpan="2"/>
+                                        <TextField fx:id="txtSNotes" disable="true" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="1"/>
                                         <Label fx:id="lblScore" text="/ 20" GridPane.columnIndex="2"
                                                GridPane.rowIndex="1"/>
                                     </children>

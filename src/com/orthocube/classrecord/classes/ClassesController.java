@@ -350,6 +350,15 @@ public class ClassesController implements Initializable {
     }
 
     @FXML
+    void mnuTasksAction(ActionEvent event) {
+        try {
+            mainApp.showTasks(currentClass);
+        } catch (Exception e) {
+            Dialogs.exception(e);
+        }
+    }
+
+    @FXML
     void mnuCriteriaAction(ActionEvent event) {
         try {
             mainApp.showCriteria(currentClass);
@@ -425,6 +434,36 @@ public class ClassesController implements Initializable {
             txtThursday.setText("");
             txtFriday.setText("");
             txtSaturday.setText("");
+
+            txtName.setDisable(true);
+            txtSY.setDisable(true);
+            cboSemester.setDisable(true);
+            cboYear.setDisable(true);
+            txtCourse.setDisable(true);
+            txtRoom.setDisable(true);
+            cboLevel.setDisable(true);
+            txtNotes.setDisable(true);
+            chkSunday.setDisable(true);
+            chkMonday.setDisable(true);
+            chkTuesday.setDisable(true);
+            chkWednesday.setDisable(true);
+            chkThursday.setDisable(true);
+            chkFriday.setDisable(true);
+            chkSaturday.setDisable(true);
+            txtSunday.setDisable(true);
+            txtMonday.setDisable(true);
+            txtTuesday.setDisable(true);
+            txtWednesday.setDisable(true);
+            txtThursday.setDisable(true);
+            txtFriday.setDisable(true);
+            txtSaturday.setDisable(true);
+            txtSunday2.setDisable(true);
+            txtMonday2.setDisable(true);
+            txtTuesday2.setDisable(true);
+            txtWednesday2.setDisable(true);
+            txtThursday2.setDisable(true);
+            txtFriday2.setDisable(true);
+            txtSaturday2.setDisable(true);
         } else {
             txtName.setText(currentClass.getName());
             txtSY.setText(Integer.toString(currentClass.getSY()));
@@ -466,37 +505,37 @@ public class ClassesController implements Initializable {
             txtFriday2.setText(times.get(11));
             txtSaturday.setText(times.get(12));
             txtSaturday2.setText(times.get(13));
-        }
 
-        txtName.setDisable(false);
-        txtSY.setDisable(false);
-        cboSemester.setDisable(false);
-        cboYear.setDisable(false);
-        txtCourse.setDisable(false);
-        txtRoom.setDisable(false);
-        cboLevel.setDisable(false);
-        txtNotes.setDisable(false);
-        chkSunday.setDisable(false);
-        chkMonday.setDisable(false);
-        chkTuesday.setDisable(false);
-        chkWednesday.setDisable(false);
-        chkThursday.setDisable(false);
-        chkFriday.setDisable(false);
-        chkSaturday.setDisable(false);
-        txtSunday.setDisable(false);
-        txtMonday.setDisable(false);
-        txtTuesday.setDisable(false);
-        txtWednesday.setDisable(false);
-        txtThursday.setDisable(false);
-        txtFriday.setDisable(false);
-        txtSaturday.setDisable(false);
-        txtSunday2.setDisable(false);
-        txtMonday2.setDisable(false);
-        txtTuesday2.setDisable(false);
-        txtWednesday2.setDisable(false);
-        txtThursday2.setDisable(false);
-        txtFriday2.setDisable(false);
-        txtSaturday2.setDisable(false);
+            txtName.setDisable(false);
+            txtSY.setDisable(false);
+            cboSemester.setDisable(false);
+            cboYear.setDisable(false);
+            txtCourse.setDisable(false);
+            txtRoom.setDisable(false);
+            cboLevel.setDisable(false);
+            txtNotes.setDisable(false);
+            chkSunday.setDisable(false);
+            chkMonday.setDisable(false);
+            chkTuesday.setDisable(false);
+            chkWednesday.setDisable(false);
+            chkThursday.setDisable(false);
+            chkFriday.setDisable(false);
+            chkSaturday.setDisable(false);
+            txtSunday.setDisable(false);
+            txtMonday.setDisable(false);
+            txtTuesday.setDisable(false);
+            txtWednesday.setDisable(false);
+            txtThursday.setDisable(false);
+            txtFriday.setDisable(false);
+            txtSaturday.setDisable(false);
+            txtSunday2.setDisable(false);
+            txtMonday2.setDisable(false);
+            txtTuesday2.setDisable(false);
+            txtWednesday2.setDisable(false);
+            txtThursday2.setDisable(false);
+            txtFriday2.setDisable(false);
+            txtSaturday2.setDisable(false);
+        }
 
         cmdSave.setDisable(true);
         cmdAdd.setDisable(false);

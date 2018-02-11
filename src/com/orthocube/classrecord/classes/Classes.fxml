@@ -139,7 +139,8 @@
                                                   text="Attendance Statistics"/>
                                     </items>
                                 </Menu>
-                                <MenuItem mnemonicParsing="false" text="Tasks"/>
+                                <MenuItem fx:id="mnuTasks" mnemonicParsing="false" onAction="#mnuTasksAction"
+                                          text="Tasks"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem mnemonicParsing="false" text="Grades"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>

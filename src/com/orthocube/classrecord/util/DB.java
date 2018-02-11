@@ -923,7 +923,7 @@ public class DB {
         prep.setLong(1, c.getID());
         r = prep.executeQuery();
 
-        ObservableList<Task> tasks = FXCollections.observableArrayList();
+        ArrayList<Task> tasks = new ArrayList<>();
         while (r.next()) {
             Task temp = new Task(r.getLong(1));
             temp.setName(r.getString(2));
@@ -934,7 +934,7 @@ public class DB {
             temp.getCriterion().setName(r.getString(6));
             tasks.add(temp);
         }
-        return tasks;
+        return FXCollections.observableList(tasks, (Task t) -> new Observable[]{t.termProperty()});
     }
 
     public static boolean save(Task t) throws SQLException {
