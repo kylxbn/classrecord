@@ -241,30 +241,40 @@ public class StudentsController implements Initializable {
             txtContact.setText(currentStudent.getContact());
             txtAddress.setText(currentStudent.getAddress());
             txtNotes.setText(currentStudent.getNotes());
-            cmdSave.setDisable(false);
             BufferedImage picture = currentStudent.getPicture();
             if (picture != null)
                 pboPicture.setImage(SwingFXUtils.toFXImage(picture, null));
+
+            txtSID.setDisable(false);
+            txtLN.setDisable(false);
+            txtFN.setDisable(false);
+            txtMN.setDisable(false);
+            cboGender.setDisable(false);
+            txtContact.setDisable(false);
+            txtAddress.setDisable(false);
+            txtNotes.setDisable(false);
+            
         } else {
             txtSID.setText("");
             txtFN.setText("");
             txtMN.setText("");
             txtLN.setText("");
-            cboGender.getSelectionModel().select(0);
+            cboGender.getSelectionModel().select(-1);
             txtContact.setText("");
             txtAddress.setText("");
             txtNotes.setText("");
-            cmdSave.setDisable(true);
+
+            txtSID.setDisable(true);
+            txtLN.setDisable(true);
+            txtFN.setDisable(true);
+            txtMN.setDisable(true);
+            cboGender.setDisable(true);
+            txtContact.setDisable(true);
+            txtAddress.setDisable(true);
+            txtNotes.setDisable(true);
+
         }
 
-        txtSID.setDisable(false);
-        txtLN.setDisable(false);
-        txtFN.setDisable(false);
-        txtMN.setDisable(false);
-        cboGender.setDisable(false);
-        txtContact.setDisable(false);
-        txtAddress.setDisable(false);
-        txtNotes.setDisable(false);
 
         cmdSave.setDisable(true);
         cmdAdd.setDisable(false);

@@ -233,7 +233,7 @@
                                                            maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                                                            minWidth="-Infinity" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2" GridPane.rowIndex="6"/>
-                                                <Label fx:id="lblSY2" text="- 2017" GridPane.columnIndex="2"
+                                                <Label fx:id="lblSY2" text="- ????" GridPane.columnIndex="2"
                                                        GridPane.rowIndex="1"/>
                                                 <ChoiceBox fx:id="cboSemester" disable="true"
                                                            maxHeight="1.7976931348623157E308"
