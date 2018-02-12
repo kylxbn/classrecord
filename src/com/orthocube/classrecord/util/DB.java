@@ -678,6 +678,22 @@ public class DB {
         prep.executeUpdate();
     }
 
+    public static boolean enrolleeHasScoreIn(Enrollee e, Task t) throws SQLException {
+        LOGGER.log(Level.INFO, "Checking if enrollee already has a score in this task...");
+        ResultSet r;
+        PreparedStatement ps;
+        if (e.getClazz().isSHS()) {
+            ps = con.prepareStatement("SELECT ScoreID FROM SHSScores WHERE EnrolleeID = ? AND TaskID = ?");
+            ps.setLong(1, e.getID());
+            ps.setLong(2, t.getID());
+        } else {
+            ps = con.prepareStatement("SELECT ScoreID FROM Scores WHERE EnrolleeID = ? AND TaskID = ?");
+            ps.setLong(1, e.getID());
+            ps.setLong(2, t.getID());
+        }
+        r = ps.executeQuery();
+        return r.next();
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Criteria">
@@ -932,6 +948,7 @@ public class DB {
             temp.setClass(c);
             temp.setCriterion(new Criterion(r.getLong(5)));
             temp.getCriterion().setName(r.getString(6));
+            temp.setScores(getScores(temp));
             tasks.add(temp);
         }
         return FXCollections.observableList(tasks, (Task t) -> new Observable[]{t.termProperty()});

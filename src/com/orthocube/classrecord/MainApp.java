@@ -10,7 +10,9 @@ package com.orthocube.classrecord;
 import com.orthocube.classrecord.about.AboutController;
 import com.orthocube.classrecord.classes.*;
 import com.orthocube.classrecord.data.Clazz;
+import com.orthocube.classrecord.data.Enrollee;
 import com.orthocube.classrecord.data.Student;
+import com.orthocube.classrecord.data.Task;
 import com.orthocube.classrecord.students.StudentChooserController;
 import com.orthocube.classrecord.students.StudentEnrolledInController;
 import com.orthocube.classrecord.students.StudentsController;
@@ -432,5 +434,30 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         trimHistoryThenAdd(tasks, controller.getTitle());
         currentHistory++;
         updateNavigation();
+    }
+
+    public Enrollee showEnrolleeChooserDialog(Clazz c, Task t) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("classes/EnrolleeChooser.fxml"));
+            SplitPane enrolleeChooser = loader.load();
+            EnrolleeChooserController enrolleeChooserController = loader.getController();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Choose enrollee");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(stage);
+            Scene scene = new Scene(enrolleeChooser);
+            if (isDark) scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+            dialogStage.setScene(scene);
+
+            enrolleeChooserController.setDialogStage(dialogStage);
+            enrolleeChooserController.setClass(c, t);
+
+            dialogStage.showAndWait();
+            return enrolleeChooserController.getResult();
+        } catch (IOException e) {
+            Dialogs.exception(e);
+        }
+        return null;
     }
 }

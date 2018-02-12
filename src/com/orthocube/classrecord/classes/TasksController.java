@@ -8,10 +8,7 @@
 package com.orthocube.classrecord.classes;
 
 import com.orthocube.classrecord.MainApp;
-import com.orthocube.classrecord.data.Clazz;
-import com.orthocube.classrecord.data.Criterion;
-import com.orthocube.classrecord.data.Score;
-import com.orthocube.classrecord.data.Task;
+import com.orthocube.classrecord.data.*;
 import com.orthocube.classrecord.util.CriterionConverter;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
@@ -187,14 +184,68 @@ public class TasksController implements Initializable {
         }
     }
 
+    private void showScoreInfo() {
+        if (currentScore != null) {
+            txtSScore.setText(Integer.toString(currentScore.getScore()));
+            txtSNotes.setText(currentScore.getNotes());
+
+            txtSScore.setDisable(false);
+            txtSNotes.setDisable(false);
+        } else {
+            txtSScore.setText("");
+            txtSNotes.setText("");
+
+            txtSScore.setDisable(true);
+            txtSNotes.setDisable(true);
+        }
+
+        cmdSSave.setDisable(true);
+        cmdSAdd.setDisable(false);
+        cmdSSave.setText("Save");
+    }
+
     @FXML
     void cmdSAddAction(ActionEvent event) {
+        if (!cmdSSave.isDisable()) {
+            if (Dialogs.confirm("New score", "You have unsaved changes. Discard changes?", "Creating another score will discard\nyour current unsaved changes.") == ButtonType.CANCEL) {
+                return;
+            }
+        }
 
+        Enrollee chosenEnrollee = mainApp.showEnrolleeChooserDialog(currentClass, currentTask);
+        if (chosenEnrollee != null) {
+            currentScore = new Score();
+            currentScore.setTask(currentTask);
+            currentScore.setEnrollee(chosenEnrollee);
+            showScoreInfo();
+            cmdSSave.setDisable(false);
+            cmdSSave.setText("Save as new");
+            cmdSAdd.setDisable(true);
+        }
     }
 
     @FXML
     void cmdSSaveAction(ActionEvent event) {
+        try {
+            currentScore.setScore(Integer.parseInt(txtSScore.getText()));
+            currentScore.setNotes(txtSNotes.getText());
 
+            boolean newentry = DB.save(currentScore);
+
+            cmdSSave.setDisable(true);
+            if (newentry) {
+                scores.add(currentScore);
+                tblScores.getSelectionModel().select(currentScore);
+                tblScores.scrollTo(currentScore);
+
+                cmdSSave.setText("Save");
+                cmdSAdd.setDisable(false);
+            }
+
+            mainApp.getRootNotification().show("Score saved.");
+        } catch (Exception e) {
+            Dialogs.exception(e);
+        }
     }
 
     @FXML
@@ -344,10 +395,14 @@ public class TasksController implements Initializable {
                 if (cmdTSave.isDisable()) {
                     currentTask = newv;
                     showTaskInfo();
+                    scores = currentTask.getScores();
+                    tblScores.setItems(scores);
                 } else {
                     if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
                         currentTask = newv;
                         showTaskInfo();
+                        scores = currentTask.getScores();
+                        tblScores.setItems(scores);
                         cmdTAdd.setDisable(false);
                         cmdTSave.setDisable(true);
                         cmdTSave.setText("Save");
@@ -361,10 +416,16 @@ public class TasksController implements Initializable {
                 if (cmdTSave.isDisable()) {
                     currentTask = newv;
                     showTaskInfo();
+                    scores = currentTask.getScores();
+                    tblScores.setItems(scores);
+
                 } else {
                     if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
                         currentTask = newv;
                         showTaskInfo();
+                        scores = currentTask.getScores();
+                        tblScores.setItems(scores);
+
                         cmdTAdd.setDisable(false);
                         cmdTSave.setDisable(true);
                         cmdTSave.setText("Save");
@@ -378,10 +439,16 @@ public class TasksController implements Initializable {
                 if (cmdTSave.isDisable()) {
                     currentTask = newv;
                     showTaskInfo();
+                    scores = currentTask.getScores();
+                    tblScores.setItems(scores);
+
                 } else {
                     if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
                         currentTask = newv;
                         showTaskInfo();
+                        scores = currentTask.getScores();
+                        tblScores.setItems(scores);
+
                         cmdTAdd.setDisable(false);
                         cmdTSave.setDisable(true);
                         cmdTSave.setText("Save");
@@ -395,10 +462,16 @@ public class TasksController implements Initializable {
                 if (cmdTSave.isDisable()) {
                     currentTask = newv;
                     showTaskInfo();
+                    scores = currentTask.getScores();
+                    tblScores.setItems(scores);
+
                 } else {
                     if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
                         currentTask = newv;
                         showTaskInfo();
+                        scores = currentTask.getScores();
+                        tblScores.setItems(scores);
+
                         cmdTAdd.setDisable(false);
                         cmdTSave.setDisable(true);
                         cmdTSave.setText("Save");
@@ -416,6 +489,12 @@ public class TasksController implements Initializable {
                     else
                         currentTask = null;
                     showTaskInfo();
+                    if (currentTask != null)
+                        scores = currentTask.getScores();
+                    else
+                        scores = null;
+                    tblScores.setItems(scores);
+
                 } else {
                     if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
                         if (newv != null)
@@ -423,6 +502,12 @@ public class TasksController implements Initializable {
                         else
                             currentTask = null;
                         showTaskInfo();
+                        if (currentTask != null)
+                            scores = currentTask.getScores();
+                        else
+                            scores = null;
+                        tblScores.setItems(scores);
+
                         cmdTAdd.setDisable(false);
                         cmdTSave.setDisable(true);
                         cmdTSave.setText("Save");
@@ -445,7 +530,7 @@ public class TasksController implements Initializable {
         tblScores.getSelectionModel().selectedItemProperty().addListener((obs, oldv, newv) -> {
             if (cmdSSave.isDisable()) {
                 currentScore = newv;
-                //showScoreInfo();
+                showScoreInfo();
             } else {
                 if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another score will discard your current unsaved changes.") == ButtonType.OK) {
                     currentScore = newv;

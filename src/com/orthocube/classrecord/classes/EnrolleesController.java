@@ -101,6 +101,7 @@ public class EnrolleesController implements Initializable {
         }
     }
 
+
     private void showEnrolleeInfo() {
         txtClassCard.setText(Integer.toString(currentEnrollee.getClasscard()));
         txtNotes.setText(currentEnrollee.getNotes());
