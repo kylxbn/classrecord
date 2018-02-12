@@ -29,8 +29,12 @@ import java.util.logging.Logger;
 public class DB {
     private final static Logger LOGGER = Logger.getLogger(DB.class.getName());
     private static String url = "jdbc:derby:database;create=true";
-    private static boolean isFirstRun = true;
+    private static boolean isFirstRun = false;
     private static Connection con = null;
+
+    public static boolean isFirstRun() {
+        return isFirstRun;
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Tools">
     static {
@@ -50,11 +54,6 @@ public class DB {
             r = s.executeQuery("SELECT * FROM Settings WHERE SettingKey = 'db_version'");
             if (!r.next())
                 s.executeUpdate("INSERT INTO Settings VALUES ('db_version', '4')");
-
-            r = s.executeQuery("SELECT COUNT(*) FROM Users");
-            r.next();
-            int users = r.getInt(1);
-            isFirstRun = users == 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -68,8 +67,11 @@ public class DB {
             try {
                 s.executeUpdate("CREATE TABLE Users (UserID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                         "Username VARCHAR(64) UNIQUE, " +
+                        "Nickname VARCHAR(64), " +
                         "Password VARCHAR(64) NOT NULL, " +
-                        "Caps SMALLINT NOT NULL DEFAULT 0)");
+                        "Picture BLOB(64000), " +
+                        "AccessLevel SMALLINT NOT NULL DEFAULT 0, " +
+                        "PasswordHint VARCHAR(255))");
             } catch (SQLException e) {
                 if (!("X0Y32".equals(e.getSQLState()))) {
                     Dialogs.exception(e);
@@ -77,6 +79,9 @@ public class DB {
                 LOGGER.log(Level.INFO, "Users table already exists so database is assumed to be all set up.");
                 return;
             }
+
+            isFirstRun = true;
+            s.executeUpdate("INSERT INTO USERS (Username, Nickname, Password, AccessLevel) VALUES ('admin', 'Administrator', 'admin', 2)");
 
             try {
                 s.executeUpdate("CREATE TABLE Students (StudentID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
@@ -1082,6 +1087,131 @@ public class DB {
         }
         prep.setLong(1, s.getID());
         prep.executeUpdate();
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Users">
+    public static ObservableList<User> getUsers() throws SQLException, IOException {
+        LOGGER.log(Level.INFO, "Getting users...");
+        ResultSet r;
+        PreparedStatement prep = con.prepareStatement("SELECT UserID, Username, Nickname, Picture, AccessLevel FROM Users");
+        r = prep.executeQuery();
+
+        ObservableList<User> users = FXCollections.observableArrayList();
+
+        while (r.next()) {
+            User temp = new User(r.getLong(1));
+            temp.setUsername(r.getString(2));
+            temp.setNickname(r.getString(3));
+            InputStream is = r.getBinaryStream(4);
+            if (is != null) {
+                temp.setPicture(ImageIO.read(is));
+                is.close();
+            }
+            temp.setAccessLevel(r.getInt(5));
+            users.add(temp);
+        }
+        return users;
+    }
+
+    public static boolean save(User u) throws SQLException, IOException {
+
+        LOGGER.log(Level.INFO, "Updating user...");
+        byte[] imgbytes = null;
+        if (u.getPicture() != null) {
+            ByteArrayOutputStream tempimg = new ByteArrayOutputStream();
+            ImageIO.write(u.getPicture(), "png", tempimg);
+            imgbytes = tempimg.toByteArray();
+        }
+
+        PreparedStatement preps = con.prepareStatement("UPDATE Users SET Username = ?, Nickname = ?, Picture = ?, AccessLevel = ? WHERE UserID = ?");
+        preps.setString(1, u.getUsername());
+        preps.setString(2, u.getNickname());
+        preps.setBytes(3, imgbytes);
+        preps.setInt(4, u.getAccessLevel());
+        preps.setLong(5, u.getID());
+        preps.executeUpdate();
+        return false;
+    }
+
+    public static boolean save(User u, String password) throws SQLException, IOException {
+        if (u.getID() == -1) {
+            LOGGER.log(Level.INFO, "Saving new user...");
+            byte[] imgbytes = null;
+            if (u.getPicture() != null) {
+                ByteArrayOutputStream tempimg = new ByteArrayOutputStream();
+                ImageIO.write(u.getPicture(), "png", tempimg);
+                imgbytes = tempimg.toByteArray();
+            }
+
+            PreparedStatement preps = con.prepareStatement("INSERT INTO Users (Username, Nickname, Password, Picture, AccessLevel) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            preps.setString(1, u.getUsername());
+            preps.setString(2, u.getNickname());
+            preps.setString(3, password);
+            preps.setBytes(4, imgbytes);
+            preps.setInt(5, u.getAccessLevel());
+            preps.executeUpdate();
+            ResultSet rs = preps.getGeneratedKeys();
+            rs.next();
+            u.setID(rs.getLong(1));
+            return true;
+        } else {
+            LOGGER.log(Level.INFO, "Updating user with new password...");
+            byte[] imgbytes = null;
+            if (u.getPicture() != null) {
+                ByteArrayOutputStream tempimg = new ByteArrayOutputStream();
+                ImageIO.write(u.getPicture(), "png", tempimg);
+                imgbytes = tempimg.toByteArray();
+            }
+
+            PreparedStatement preps = con.prepareStatement("UPDATE Users SET Username = ?, Nickname = ?, Password = ?, Picture = ?, AccessLevel = ? WHERE UserID = ?");
+            preps.setString(1, u.getUsername());
+            preps.setString(2, u.getNickname());
+            preps.setString(3, password);
+            preps.setBytes(4, imgbytes);
+            preps.setInt(5, u.getAccessLevel());
+            preps.setLong(6, u.getID());
+            preps.executeUpdate();
+            return false;
+        }
+    }
+
+    public static void delete(User u) throws SQLException {
+        LOGGER.log(Level.INFO, "Deleting user...");
+        PreparedStatement prep = con.prepareStatement("DELETE FROM Users WHERE UserID = ?");
+        prep.setLong(1, u.getID());
+        prep.executeUpdate();
+    }
+
+    public static boolean userExists(String u) throws SQLException {
+        LOGGER.log(Level.INFO, "Checking if user exists...");
+        ResultSet r;
+        PreparedStatement ps = con.prepareStatement("SELECT UserID FROM Users WHERE Username = ?");
+        ps.setString(1, u);
+        r = ps.executeQuery();
+        return r.next();
+    }
+
+    public static boolean userExists(String u, String p) throws SQLException {
+        LOGGER.log(Level.INFO, "Checking if user exists...");
+        ResultSet r;
+        PreparedStatement ps = con.prepareStatement("SELECT UserID FROM Users WHERE Username = ? AND Password = ?");
+        ps.setString(1, u);
+        ps.setString(2, p);
+        r = ps.executeQuery();
+        return r.next();
+    }
+
+    public static String getPasswordHint(String u) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting password hint...");
+        ResultSet r;
+        PreparedStatement ps = con.prepareStatement("SELECT PasswordHint FROM Users WHERE Username = ?");
+        ps.setString(1, u);
+        r = ps.executeQuery();
+        if (r.next())
+            return r.getString(1);
+        else
+            return null;
     }
     // </editor-fold>
 }

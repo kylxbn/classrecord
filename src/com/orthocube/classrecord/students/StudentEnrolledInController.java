@@ -38,7 +38,6 @@ public class StudentEnrolledInController implements Initializable {
     private ResourceBundle bundle;
     private Student currentStudent;
 
-
     @FXML
     private TitledPane ttlCollege;
 
@@ -50,7 +49,6 @@ public class StudentEnrolledInController implements Initializable {
 
     @FXML
     private ListView<Clazz> lstSHS;
-
 
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;

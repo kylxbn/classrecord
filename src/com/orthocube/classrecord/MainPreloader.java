@@ -8,6 +8,7 @@
 package com.orthocube.classrecord;
 
 import com.orthocube.classrecord.preloader.MainPreloaderController;
+import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
@@ -22,6 +23,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.NotificationPane;
 
+import java.sql.SQLException;
 import java.util.Calendar;
 
 public class MainPreloader extends Preloader {
@@ -29,8 +31,8 @@ public class MainPreloader extends Preloader {
 
     private Stage preloaderStage;
     private Scene scene;
-    String username = "orthocube";
-    String password = "vurshfki";
+    String username = null;
+    String password = null;
     private MainPreloaderController loadercontroller;
 
     Group topGroup;
@@ -147,15 +149,19 @@ public class MainPreloader extends Preloader {
 
     private void mayBeHidden() {
         if (preloaderStage.isShowing() && username != null && password != null && consumer != null) {
-            if (username.equals("orthocube") && password.equals("vurshfki")) {
-                consumer.setCredential(username, password, preloaderStage, scene);
-                //Platform.runLater(() -> preloaderStage.hide());
-                SharedScene appScene = (SharedScene) evt.getApplication();
-                fadeInTo(appScene.getParentNode());
+            try {
+                if (DB.userExists(username, password)) {
+                    consumer.setCredential(username, password, preloaderStage, scene);
+                    //Platform.runLater(() -> preloaderStage.hide());
+                    SharedScene appScene = (SharedScene) evt.getApplication();
+                    fadeInTo(appScene.getParentNode());
 
-            } else {
-                Dialogs.error("Login Error", "Invalid username or password.", "The username you provided might be non-existent,\nor that is not the password for that username.");
-                loadercontroller.disableLogin(false);
+                } else {
+                    Dialogs.error("Login Error", "Invalid username or password.", "The username you provided might be non-existent,\nor that is not the password for that username.");
+                    loadercontroller.disableLogin(false);
+                }
+            } catch (SQLException e) {
+                Dialogs.exception(e);
             }
         }
     }
@@ -198,6 +204,11 @@ public class MainPreloader extends Preloader {
             evt = info;
             loadercontroller.hideProgressBar();
             consumer = (CredentialsConsumer) info.getApplication();
+            if (DB.isFirstRun()) {
+                Dialogs.info("Application initialized", "Welcome!", "This is the first time the program has been started,\nso a default user is created for you.\nYou will now be logged in with:\n\nUser: admin\nPassword: admin\n\nPlease do not forget to change it later!\n\nHave fun!");
+                username = "admin";
+                password = "admin";
+            }
             mayBeHidden();
         }
     }

@@ -9,10 +9,7 @@ package com.orthocube.classrecord;
 
 import com.orthocube.classrecord.about.AboutController;
 import com.orthocube.classrecord.classes.*;
-import com.orthocube.classrecord.data.Clazz;
-import com.orthocube.classrecord.data.Enrollee;
-import com.orthocube.classrecord.data.Student;
-import com.orthocube.classrecord.data.Task;
+import com.orthocube.classrecord.data.*;
 import com.orthocube.classrecord.students.StudentChooserController;
 import com.orthocube.classrecord.students.StudentEnrolledInController;
 import com.orthocube.classrecord.students.StudentsController;
@@ -68,6 +65,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     private ObservableList<Clazz> classModel;
     private ObservableList<Student> studentsModel;
+    private ObservableList<User> usersModel;
 
     private Locale language = Locale.ENGLISH;
     private ResourceBundle bundle = null; // ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings", language);
@@ -240,8 +238,12 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         users = usersLoader.load();
         usersController = usersLoader.getController();
         usersController.setMainApp(this);
-        notifyPreloader(new MainPreloader.ProgressNotification(0.8));
+        notifyPreloader(new MainPreloader.ProgressNotification(0.7));
 
+        LOGGER.log(Level.INFO, "Loading users...");
+        usersModel = DB.getUsers();
+        usersController.setModel(usersModel);
+        notifyPreloader(new MainPreloader.ProgressNotification(0.8));
 
         // ----------------- LOAD ABOUT -----------------
         LOGGER.log(Level.INFO, "Loading About.fxml...");

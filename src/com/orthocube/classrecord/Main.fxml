@@ -291,7 +291,11 @@
                 <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="8.0">
                     <children>
                         <ImageView fx:id="pboUser" fitHeight="125.0" fitWidth="125.0" pickOnBounds="true"
-                                   preserveRatio="true"/>
+                                   preserveRatio="true">
+                            <image>
+                                <Image url="@res/Businessman_100px.png"/>
+                            </image>
+                        </ImageView>
                         <Label fx:id="lblUser" text="Username">
                             <font>
                                 <Font name="System Bold" size="14.0"/>
