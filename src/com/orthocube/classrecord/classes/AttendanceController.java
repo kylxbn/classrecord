@@ -43,6 +43,19 @@ public class AttendanceController implements Initializable {
 
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
+
+    @FXML
+    private Button cmdOthers;
+
+    @FXML
+    private Button cmdLate;
+
+    @FXML
+    private Button cmdAbsent;
+
+    @FXML
+    private Button cmdPresent;
+
     @FXML
     private VBox pnlVbox;
     @FXML
@@ -183,6 +196,11 @@ public class AttendanceController implements Initializable {
 
             cboRemarks.setDisable(false);
             txtListNotes.setDisable(false);
+
+            cmdOthers.setDisable(false);
+            cmdLate.setDisable(false);
+            cmdAbsent.setDisable(false);
+            cmdPresent.setDisable(false);
         } else {
             cboRemarks.getSelectionModel().select(-1);
             txtListNotes.setText("");
@@ -190,6 +208,10 @@ public class AttendanceController implements Initializable {
             cboRemarks.setDisable(true);
             txtListNotes.setDisable(true);
 
+            cmdOthers.setDisable(true);
+            cmdLate.setDisable(true);
+            cmdAbsent.setDisable(true);
+            cmdPresent.setDisable(true);
         }
 
         cmdSaveList.setDisable(true);

@@ -7,7 +7,6 @@
   ~ Written by Kyle Alexander Buan <orthocube@protonmail.com>, 2018.
   -->
 
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -172,14 +171,17 @@
                                                         vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                     <children>
-                                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                                onAction="#cmdOthersAction" text="Others"/>
-                                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                                onAction="#cmdLateAction" text="Late" GridPane.columnIndex="1"/>
-                                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                                onAction="#cmdAbsentAction" text="Absent" GridPane.columnIndex="2"/>
-                                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                                onAction="#cmdPresentAction" text="Present" GridPane.columnIndex="3"/>
+                                        <Button fx:id="cmdOthers" disable="true" maxWidth="1.7976931348623157E308"
+                                                mnemonicParsing="false" onAction="#cmdOthersAction" text="Others"/>
+                                        <Button fx:id="cmdLate" disable="true" maxWidth="1.7976931348623157E308"
+                                                mnemonicParsing="false" onAction="#cmdLateAction" text="Late"
+                                                GridPane.columnIndex="1"/>
+                                        <Button fx:id="cmdAbsent" disable="true" maxWidth="1.7976931348623157E308"
+                                                mnemonicParsing="false" onAction="#cmdAbsentAction" text="Absent"
+                                                GridPane.columnIndex="2"/>
+                                        <Button fx:id="cmdPresent" disable="true" maxWidth="1.7976931348623157E308"
+                                                mnemonicParsing="false" onAction="#cmdPresentAction" text="Present"
+                                                GridPane.columnIndex="3"/>
                                     </children>
                                 </GridPane>
                             </content>

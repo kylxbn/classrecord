@@ -37,10 +37,18 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <CustomTextField fx:id="txtClassSearch" promptText="Class"/>
-                                <CustomTextField fx:id="txtSYSearch" promptText="S.Y." GridPane.columnIndex="1"/>
-                                <CustomTextField fx:id="txtSemSearch" promptText="Sem" GridPane.columnIndex="2"/>
-                                <CustomTextField fx:id="txtCourseSearch" promptText="Course" GridPane.columnIndex="3"/>
+                                <CustomTextField fx:id="txtClassSearch" maxHeight="-Infinity"
+                                                 maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="10.0"
+                                                 promptText="Class"/>
+                                <CustomTextField fx:id="txtSYSearch" maxHeight="-Infinity"
+                                                 maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="10.0"
+                                                 promptText="S.Y." GridPane.columnIndex="1"/>
+                                <CustomTextField fx:id="txtSemSearch" maxHeight="-Infinity"
+                                                 maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="10.0"
+                                                 promptText="Sem" GridPane.columnIndex="2"/>
+                                <CustomTextField fx:id="txtCourseSearch" maxHeight="-Infinity"
+                                                 maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="10.0"
+                                                 promptText="Course" GridPane.columnIndex="3"/>
                             </children>
                         </GridPane>
                     </children>

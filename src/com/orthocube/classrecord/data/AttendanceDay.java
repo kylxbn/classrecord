@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Calendar;
 
 public class AttendanceDay {
     private final LongProperty id = new SimpleLongProperty();
@@ -29,7 +30,7 @@ public class AttendanceDay {
 
     public AttendanceDay(long id) {
         //this(id, Date.valueOf((new SimpleDateFormat("yyyy-mm-dd")).format(new java.util.Date())), null, "");
-        this(id, Date.valueOf("2018-01-01"), null, "");
+        this(id, new java.sql.Date(Calendar.getInstance().getTimeInMillis()), null, "");
     }
 
     public AttendanceDay() {

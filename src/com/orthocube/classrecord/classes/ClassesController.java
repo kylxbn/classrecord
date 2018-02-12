@@ -15,6 +15,7 @@ package com.orthocube.classrecord.classes;
 
 import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
+import com.orthocube.classrecord.data.Criterion;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import com.orthocube.classrecord.util.Utils;
@@ -27,6 +28,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.validation.Severity;
+import org.controlsfx.validation.ValidationResult;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -255,6 +260,7 @@ public class ClassesController implements Initializable {
 
     @FXML
     private MenuItem mnuCriteria;
+    private ValidationSupport validationSupport;
     // </editor-fold>
 
     public void setMainApp(MainApp mainApp) {
@@ -738,6 +744,19 @@ public class ClassesController implements Initializable {
         Utils.setupClearButtonField(txtSYSearch);
         Utils.setupClearButtonField(txtSemSearch);
         Utils.setupClearButtonField(txtCourseSearch);
+
+        validationSupport = new ValidationSupport();
+
+        Validator<String> termValidator = (control, value) -> {
+            boolean condition = value == null;
+            return ValidationResult.fromMessageIf(control, "Please choose a term.", Severity.ERROR, condition);
+        };
+        Validator<Criterion> criterionValidator = (control, value) -> {
+            boolean condition = value == null;
+            return ValidationResult.fromMessageIf(control, "Please choose a criterion.", Severity.ERROR, condition);
+        };
+
+        //validationSupport.registerValidator(cboTCriterion, true, criterionValidator);
 
         // <editor-fold defaultstate="collapsed" desc="Change listeners">
         txtName.textProperty().addListener((obs, ov, nv) -> {
