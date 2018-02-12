@@ -20,6 +20,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import org.controlsfx.validation.Severity;
+import org.controlsfx.validation.ValidationResult;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -44,6 +48,8 @@ public class TasksController implements Initializable {
     boolean saveInProgress = false;
     boolean nullifyPending = false;
     private ObservableList<Criterion> criteria;
+
+    private ValidationSupport validationSupport;
     // <editor-fold defaultstate="collapsed" desc="Controls">
     @FXML
     private Accordion accTasks;
@@ -266,6 +272,11 @@ public class TasksController implements Initializable {
 
     @FXML
     void cmdTSaveAction(ActionEvent event) {
+        if (validationSupport.isInvalid()) {
+            Dialogs.error("Invalid values", "Please fix the invalid input first.", "Choosing a term and a criterion is required.");
+            return;
+        }
+
         saveInProgress = true;
         try {
             currentTask.setName(txtTName.getText());
@@ -576,6 +587,21 @@ public class TasksController implements Initializable {
                     accTasks.setExpandedPane(tpnPrelims);
                 break;
         }
+
+        validationSupport = new ValidationSupport();
+
+        Validator<String> termValidator = (control, value) -> {
+            boolean condition = value == null;
+
+            return ValidationResult.fromMessageIf(control, "Please choose a term.", Severity.ERROR, condition);
+        };
+        Validator<Criterion> criterionValidator = (control, value) -> {
+            boolean condition = value == null;
+            return ValidationResult.fromMessageIf(control, "Please choose a criterion.", Severity.ERROR, condition);
+        };
+
+        validationSupport.registerValidator(cboTTerm, true, termValidator);
+        validationSupport.registerValidator(cboTCriterion, true, criterionValidator);
 
         // <editor-fold defaultstate="collapsed" desc="Listeners">
         txtTName.textProperty().addListener((obs, ov, nv) -> {
