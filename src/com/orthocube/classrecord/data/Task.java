@@ -8,7 +8,6 @@
 package com.orthocube.classrecord.data;
 
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class Task {
@@ -16,7 +15,7 @@ public class Task {
     private final StringProperty name = new SimpleStringProperty();
     private final ObjectProperty<Clazz> clazz = new SimpleObjectProperty<>();
     private final ObjectProperty<Criterion> criterion = new SimpleObjectProperty<>();
-    private ObservableList<Score> scores = FXCollections.observableArrayList();
+    private final ObjectProperty<ObservableList<Score>> scores = new SimpleObjectProperty<>();
     private final IntegerProperty term = new SimpleIntegerProperty();
     private final IntegerProperty items = new SimpleIntegerProperty();
 
@@ -38,11 +37,15 @@ public class Task {
     }
 
     public ObservableList<Score> getScores() {
-        return scores;
+        return scores.get();
     }
 
-    public void setScores(ObservableList<Score> s) {
-        scores = s;
+    public void setScores(ObservableList<Score> scores) {
+        this.scores.set(scores);
+    }
+
+    public ObjectProperty<ObservableList<Score>> scoresProperty() {
+        return scores;
     }
 
     public long getID() {

@@ -282,7 +282,12 @@ public class TasksController implements Initializable {
             currentTask.setName(txtTName.getText());
             currentTask.setItems(Integer.parseInt(txtTItems.getText()));
             currentTask.setTerm(1 << cboTTerm.getSelectionModel().getSelectedIndex());
-            currentTask.setCriterion(cboTCriterion.getSelectionModel().getSelectedItem());
+
+            Criterion selectedCriterion = cboTCriterion.getSelectionModel().getSelectedItem();
+            currentTask.getCriterion().setName(selectedCriterion.getName());
+            currentTask.getCriterion().setPercentage(selectedCriterion.getPercentage());
+            currentTask.getCriterion().setTerms(selectedCriterion.getTerms());
+            currentTask.getCriterion().setID(selectedCriterion.getID());
 
             boolean newentry = DB.save(currentTask);
 
