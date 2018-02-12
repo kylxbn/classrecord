@@ -605,8 +605,8 @@ public class TasksController implements Initializable {
             return ValidationResult.fromMessageIf(control, "Please choose a criterion.", Severity.ERROR, condition);
         };
 
-        validationSupport.registerValidator(cboTTerm, true, termValidator);
-        validationSupport.registerValidator(cboTCriterion, true, criterionValidator);
+        validationSupport.registerValidator(cboTTerm, false, termValidator);
+        validationSupport.registerValidator(cboTCriterion, false, criterionValidator);
 
         // <editor-fold defaultstate="collapsed" desc="Listeners">
         txtTName.textProperty().addListener((obs, ov, nv) -> {

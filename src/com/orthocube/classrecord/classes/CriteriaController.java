@@ -189,7 +189,7 @@ public class CriteriaController implements Initializable {
     @FXML
     void cmdSaveAction(ActionEvent event) {
         if (validationSupport.isInvalid()) {
-            mainApp.getRootNotification().show("Please fix invalid values first.");
+            Dialogs.error("Invalid input", "Invalid percent value.", "Please fix invalid values first.");
             return;
         }
 
@@ -472,7 +472,7 @@ public class CriteriaController implements Initializable {
 
         validationSupport = new ValidationSupport();
 
-        Validator<String> validator = (control, value) -> {
+        Validator<String> percentValidator = (control, value) -> {
             boolean condition = false;
 
             try {
@@ -486,7 +486,7 @@ public class CriteriaController implements Initializable {
             return ValidationResult.fromMessageIf(control, "Invalid percentage", Severity.ERROR, condition);
         };
 
-        validationSupport.registerValidator(txtPercent, true, validator);
+        validationSupport.registerValidator(txtPercent, false, percentValidator);
 
         cboTerms.valueProperty().addListener(e -> updateChart());
         //chtPie.setLabelLineLength(10);

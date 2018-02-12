@@ -15,7 +15,6 @@ package com.orthocube.classrecord.classes;
 
 import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
-import com.orthocube.classrecord.data.Criterion;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import com.orthocube.classrecord.util.Utils;
@@ -269,6 +268,11 @@ public class ClassesController implements Initializable {
 
     @FXML
     void cmdSaveAction(ActionEvent event) {
+        if (validationSupport.isInvalid()) {
+            Dialogs.error("Invalid input", "Class data is invalid.", "Please recheck for errors in input.");
+            return;
+        }
+
         try {
             currentClass.setName(txtName.getText());
             currentClass.setSY(Integer.parseInt(txtSY.getText()));
@@ -747,16 +751,54 @@ public class ClassesController implements Initializable {
 
         validationSupport = new ValidationSupport();
 
-        Validator<String> termValidator = (control, value) -> {
-            boolean condition = value == null;
-            return ValidationResult.fromMessageIf(control, "Please choose a term.", Severity.ERROR, condition);
-        };
-        Validator<Criterion> criterionValidator = (control, value) -> {
-            boolean condition = value == null;
-            return ValidationResult.fromMessageIf(control, "Please choose a criterion.", Severity.ERROR, condition);
+        Validator<String> syValidator = (control, value) -> {
+            boolean condition = false;
+            try {
+                if (Integer.parseInt(txtSY.getText()) < 0)
+                    condition = true;
+            } catch (Exception e) {
+                condition = true;
+            }
+            return ValidationResult.fromMessageIf(control, "Invalid school year.", Severity.ERROR, condition);
         };
 
-        //validationSupport.registerValidator(cboTCriterion, true, criterionValidator);
+        Validator<String> timeValidator = (control, value) -> {
+            boolean condition = false;
+            if (value.length() < 3) {
+                condition = true;
+            } else if (value.split(":").length != 2) {
+                condition = true;
+            } else {
+                try {
+                    String[] split = value.split(":");
+                    int hour = Integer.parseInt(split[0]);
+                    int minute = Integer.parseInt(split[1]);
+                    if ((hour < 0) || (hour > 23))
+                        condition = true;
+                    else if ((minute < 0) || (minute > 59))
+                        condition = true;
+                } catch (Exception e) {
+                    condition = false;
+                }
+            }
+            return ValidationResult.fromMessageIf(control, "Invalid time format.", Severity.ERROR, condition);
+        };
+
+        validationSupport.registerValidator(txtSY, false, syValidator);
+        validationSupport.registerValidator(txtSunday, false, timeValidator);
+        validationSupport.registerValidator(txtMonday, false, timeValidator);
+        validationSupport.registerValidator(txtTuesday, false, timeValidator);
+        validationSupport.registerValidator(txtWednesday, false, timeValidator);
+        validationSupport.registerValidator(txtThursday, false, timeValidator);
+        validationSupport.registerValidator(txtFriday, false, timeValidator);
+        validationSupport.registerValidator(txtSaturday, false, timeValidator);
+        validationSupport.registerValidator(txtSunday2, false, timeValidator);
+        validationSupport.registerValidator(txtMonday2, false, timeValidator);
+        validationSupport.registerValidator(txtTuesday2, false, timeValidator);
+        validationSupport.registerValidator(txtWednesday2, false, timeValidator);
+        validationSupport.registerValidator(txtThursday2, false, timeValidator);
+        validationSupport.registerValidator(txtFriday2, false, timeValidator);
+        validationSupport.registerValidator(txtSaturday2, false, timeValidator);
 
         // <editor-fold defaultstate="collapsed" desc="Change listeners">
         txtName.textProperty().addListener((obs, ov, nv) -> {
