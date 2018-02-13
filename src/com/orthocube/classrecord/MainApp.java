@@ -72,8 +72,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private Stage stage;
     private Scene scene;
 
-    private String username;
-    private String password;
+    private User currentUser;
 
     private boolean isDark = true;
 
@@ -86,21 +85,25 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     }
 
     private void mayBeShown() {
-        if (stage != null && username != null) {
-            mainController.setUser(username);
+        if (stage != null && currentUser != null) {
+            mainController.setUser(currentUser);
             Platform.runLater(() -> {
                 //stage.show();
 
-                rootNotification.show("Welcome, " + username + "!");
+                rootNotification.show("Welcome, " + (currentUser.getNickname().isEmpty() ? currentUser.getUsername() : currentUser.getNickname()) + "!");
             });
         }
     }
 
-    public void setCredential(String username, String password, Stage stage, Scene scene) {
-        this.username = username;
-        this.password = password;
+    public void setInitData(User user, Stage stage, Scene scene, boolean dark) {
+        this.currentUser = user;
         this.scene = scene;
         this.stage = stage;
+        this.isDark = dark;
+        if (isDark)
+            setDarkTheme();
+        else
+            setLightTheme();
         mayBeShown();
 
         //setDarkTheme();
@@ -159,11 +162,15 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void setDarkTheme() {
         scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+        rootNotification.getStyleClass().add(NotificationPane.STYLE_CLASS_DARK);
         isDark = true;
+        mainController.setDark();
     }
 
     public void setLightTheme() {
         scene.getStylesheets().clear();
+        rootNotification.getStyleClass().remove(rootNotification.getStyleClass().size() - 1);
+        mainController.setLight();
         isDark = false;
     }
 
@@ -195,7 +202,6 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
             delay.play();
         });
         //rootNotification.setShowFromTop(false);
-        rootNotification.getStyleClass().add(NotificationPane.STYLE_CLASS_DARK);
         mainController = rootLoader.getController();
         mainController.setMainApp(this);
         notifyPreloader(new MainPreloader.ProgressNotification(0.2));

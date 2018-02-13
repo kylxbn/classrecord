@@ -10,7 +10,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.*?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" id="mystackpane" maxHeight="1.7976931348623157E308"
            maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="669.0"
            prefWidth="930.0" xmlns="http://javafx.com/javafx/9.0.1"
@@ -74,53 +74,84 @@
                                         <Insets bottom="32.0" left="32.0" right="32.0" top="32.0"/>
                                     </padding>
                                 </Label>
-                                <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity"
-                                      minWidth="-Infinity" prefWidth="350.0">
+                                <VBox fx:id="vbxLogin" alignment="CENTER" maxHeight="1.7976931348623157E308"
+                                      maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="350.0">
                                     <children>
-                                        <GridPane fx:id="grpMain" vgap="16.0">
-                                            <columnConstraints>
-                                                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS"
-                                                                   maxWidth="1.7976931348623157E308"
-                                                                   minWidth="-Infinity"/>
-                                                <ColumnConstraints/>
-                                            </columnConstraints>
-                                            <rowConstraints>
-                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                                vgrow="SOMETIMES"/>
-                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                                vgrow="SOMETIMES"/>
-                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                                vgrow="SOMETIMES"/>
-                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                                vgrow="SOMETIMES"/>
-                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                                vgrow="SOMETIMES"/>
-                                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                                vgrow="SOMETIMES"/>
-                                            </rowConstraints>
-                                            <children>
-                                                <TextField fx:id="txtUsername" GridPane.rowIndex="1"/>
-                                                <PasswordField fx:id="txtPassword" GridPane.rowIndex="3"/>
-                                                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308"
-                                                      maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                                                      minWidth="-Infinity" spacing="32.0" GridPane.columnSpan="2"
-                                                      GridPane.rowIndex="5">
-                                                    <children>
-                                                        <Button fx:id="cmdLogin" defaultButton="true"
-                                                                mnemonicParsing="false" onAction="#cmdLoginAction"
-                                                                text="Log In"/>
-                                                    </children>
-                                                    <padding>
-                                                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
-                                                    </padding>
-                                                </HBox>
-                                                <Label text="Username:"/>
-                                                <Label text="Password:" GridPane.rowIndex="2"/>
-                                            </children>
+                                        <StackPane>
                                             <VBox.margin>
                                                 <Insets bottom="32.0" left="32.0" right="32.0" top="32.0"/>
                                             </VBox.margin>
-                                        </GridPane>
+                                            <children>
+                                                <VBox fx:id="vbxFirstStart" alignment="CENTER" maxHeight="-Infinity"
+                                                      maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                                                      spacing="8.0">
+                                                    <children>
+                                                        <Label text="Welcome!">
+                                                            <font>
+                                                                <Font name="System Bold" size="24.0"/>
+                                                            </font>
+                                                        </Label>
+                                                        <Label text="Program is starting&#10;itself for the first time."
+                                                               textAlignment="CENTER">
+                                                            <font>
+                                                                <Font size="14.0"/>
+                                                            </font>
+                                                        </Label>
+                                                        <Label text="Please wait while the program&#10;prepares itself for first use."
+                                                               textAlignment="CENTER">
+                                                            <font>
+                                                                <Font size="14.0"/>
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                    <padding>
+                                                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                                                    </padding>
+                                                </VBox>
+                                                <GridPane fx:id="grpMain" vgap="16.0" visible="false">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS"
+                                                                           maxWidth="1.7976931348623157E308"
+                                                                           minWidth="-Infinity"/>
+                                                        <ColumnConstraints/>
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints maxHeight="1.7976931348623157E308"
+                                                                        minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                                        <RowConstraints maxHeight="1.7976931348623157E308"
+                                                                        minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                                        <RowConstraints maxHeight="1.7976931348623157E308"
+                                                                        minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                                        <RowConstraints maxHeight="1.7976931348623157E308"
+                                                                        minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                                        <RowConstraints maxHeight="1.7976931348623157E308"
+                                                                        minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                                        <RowConstraints maxHeight="1.7976931348623157E308"
+                                                                        minHeight="-Infinity" vgrow="SOMETIMES"/>
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <TextField fx:id="txtUsername" GridPane.rowIndex="1"/>
+                                                        <PasswordField fx:id="txtPassword" GridPane.rowIndex="3"/>
+                                                        <HBox alignment="CENTER" maxHeight="1.7976931348623157E308"
+                                                              maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                                              minWidth="-Infinity" spacing="32.0"
+                                                              GridPane.columnSpan="2" GridPane.rowIndex="5">
+                                                            <children>
+                                                                <Button fx:id="cmdLogin" defaultButton="true"
+                                                                        mnemonicParsing="false"
+                                                                        onAction="#cmdLoginAction" text="Log In"/>
+                                                            </children>
+                                                            <padding>
+                                                                <Insets bottom="16.0" left="16.0" right="16.0"
+                                                                        top="16.0"/>
+                                                            </padding>
+                                                        </HBox>
+                                                        <Label text="Username:"/>
+                                                        <Label text="Password:" GridPane.rowIndex="2"/>
+                                                    </children>
+                                                </GridPane>
+                                            </children>
+                                        </StackPane>
                                     </children>
                                 </VBox>
                             </children>

@@ -1114,6 +1114,32 @@ public class DB {
         return users;
     }
 
+    public static User getUser(String username, String password) throws SQLException, IOException {
+        LOGGER.log(Level.INFO, "Getting users...");
+        ResultSet r;
+        PreparedStatement prep = con.prepareStatement("SELECT UserID, Username, Nickname, Picture, AccessLevel FROM Users WHERE Username = ? AND Password = ?");
+        prep.setString(1, username);
+        prep.setString(2, password);
+        r = prep.executeQuery();
+
+        ObservableList<User> users = FXCollections.observableArrayList();
+
+        if (r.next()) {
+            User temp = new User(r.getLong(1));
+            temp.setUsername(r.getString(2));
+            temp.setNickname(r.getString(3));
+            InputStream is = r.getBinaryStream(4);
+            if (is != null) {
+                temp.setPicture(ImageIO.read(is));
+                is.close();
+            }
+            temp.setAccessLevel(r.getInt(5));
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
     public static boolean save(User u) throws SQLException, IOException {
 
         LOGGER.log(Level.INFO, "Updating user...");

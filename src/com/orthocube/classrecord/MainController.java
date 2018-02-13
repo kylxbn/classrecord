@@ -7,6 +7,7 @@
 
 package com.orthocube.classrecord;
 
+import com.orthocube.classrecord.data.User;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -31,9 +32,13 @@ import java.util.ResourceBundle;
  */
 public class MainController implements Initializable {
     boolean dark = true;
-    String username;
+    User currentUser;
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    RadioMenuItem mnuLightTheme;
+    @FXML
+    RadioMenuItem mnuDarkTheme;
     @FXML
     Label lblUser;
     @FXML
@@ -227,9 +232,19 @@ public class MainController implements Initializable {
 
     }
 
-    public void setUser(String user) {
-        this.username = user;
-        lblUser.setText(username);
+    public void setDark() {
+        dark = true;
+        mnuDarkTheme.setSelected(true);
+    }
+
+    public void setLight() {
+        dark = false;
+        mnuLightTheme.setSelected(true);
+    }
+
+    public void setUser(User user) {
+        this.currentUser = user;
+        lblUser.setText(currentUser.getNickname().isEmpty() ? currentUser.getUsername() : currentUser.getNickname());
 
     }
 }

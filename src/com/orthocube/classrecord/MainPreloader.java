@@ -7,6 +7,7 @@
 
 package com.orthocube.classrecord;
 
+import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.preloader.MainPreloaderController;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.NotificationPane;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Calendar;
 
@@ -33,11 +35,14 @@ public class MainPreloader extends Preloader {
     private Scene scene;
     String username = null;
     String password = null;
-    private MainPreloaderController loadercontroller;
+    boolean dark = true;
 
     Group topGroup;
     StackPane preloaderParent;
     StateChangeNotification evt;
+
+    User user = null;
+    private MainPreloaderController loaderController;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -45,8 +50,8 @@ public class MainPreloader extends Preloader {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("preloader/Preloader.fxml"));
         StackPane root = loader.load();
-        loadercontroller = loader.getController();
-        loadercontroller.setMainPreloader(this);
+        loaderController = loader.getController();
+        loaderController.setMainPreloader(this);
         preloaderParent = root;
         topGroup = new Group(preloaderParent);
 
@@ -62,18 +67,23 @@ public class MainPreloader extends Preloader {
         preloaderStage.setMinHeight(768);
         preloaderStage.setMaximized(true);
         scene = new Scene(topGroup);
-        setDarkTheme();
+        if (dark) {
+            setDarkTheme();
+        } else {
+            setLightTheme();
+        }
         preloaderStage.setScene(scene);
 
         preloaderParent.prefHeightProperty().bind(preloaderStage.getScene().heightProperty());
         preloaderParent.prefWidthProperty().bind(preloaderStage.getScene().widthProperty());
 
-        loadercontroller.startOpeningAnimation();
+        loaderController.startOpeningAnimation();
         preloaderStage.show();
     }
 
     public void setDarkTheme() {
         scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+        loaderController.setDark();
         //preloaderParent.setStyle("-fx-background-color: #323232;"); // 0x323232");
         Calendar calendar = Calendar.getInstance();
         int month = calendar.get(Calendar.MONTH);
@@ -99,11 +109,12 @@ public class MainPreloader extends Preloader {
                 preloaderParent.getStylesheets().add(getClass().getResource("res/winter_dark.css").toExternalForm());
                 break;
         }
-        loadercontroller.setDark();
+        loaderController.setDark();
     }
 
     public void setLightTheme() {
         scene.getStylesheets().clear();
+        loaderController.setLight();
         //preloaderParent.setStyle("-fx-background-color: #323232;"); // 0x323232");
         Calendar calendar = Calendar.getInstance();
         int month = calendar.get(Calendar.MONTH);
@@ -129,7 +140,7 @@ public class MainPreloader extends Preloader {
                 preloaderParent.getStylesheets().add(getClass().getResource("res/winter_light.css").toExternalForm());
                 break;
         }
-        loadercontroller.setLight();
+        loaderController.setLight();
 
     }
 
@@ -138,29 +149,29 @@ public class MainPreloader extends Preloader {
         this.username = username;
         this.password = password;
 
-        loadercontroller.disableLogin(true);
+        loaderController.disableLogin(true);
         mayBeHidden();
     }
 
     @Override
     public void handleApplicationNotification(PreloaderNotification pn) {
-        loadercontroller.setProgress(((ProgressNotification) pn).getProgress());
+        loaderController.setProgress(((ProgressNotification) pn).getProgress());
     }
 
     private void mayBeHidden() {
         if (preloaderStage.isShowing() && username != null && password != null && consumer != null) {
             try {
                 if (DB.userExists(username, password)) {
-                    consumer.setCredential(username, password, preloaderStage, scene);
+                    user = DB.getUser(username, password);
+                    consumer.setInitData(user, preloaderStage, scene, dark);
                     //Platform.runLater(() -> preloaderStage.hide());
                     SharedScene appScene = (SharedScene) evt.getApplication();
                     fadeInTo(appScene.getParentNode());
-
                 } else {
                     Dialogs.error("Login Error", "Invalid username or password.", "The username you provided might be non-existent,\nor that is not the password for that username.");
-                    loadercontroller.disableLogin(false);
+                    loaderController.disableLogin(false);
                 }
-            } catch (SQLException e) {
+            } catch (SQLException | IOException e) {
                 Dialogs.exception(e);
             }
         }
@@ -182,7 +193,7 @@ public class MainPreloader extends Preloader {
                 preloaderParent);
         ft1.setFromValue(1.0);
         ft1.setToValue(1.0);
-        ft1.setOnFinished(t -> loadercontroller.startClosingAnimation());
+        ft1.setOnFinished(t -> loaderController.startClosingAnimation());
 
         FadeTransition ft2 = new FadeTransition(
                 Duration.millis(1000),
@@ -202,10 +213,11 @@ public class MainPreloader extends Preloader {
         StateChangeNotification.Type type = info.getType();
         if (type == Type.BEFORE_START) {
             evt = info;
-            loadercontroller.hideProgressBar();
+            loaderController.hideProgressBar();
             consumer = (CredentialsConsumer) info.getApplication();
             if (DB.isFirstRun()) {
-                Dialogs.info("Application initialized", "Welcome!", "This is the first time the program has been started,\nso a default user is created for you.\nYou will now be logged in with:\n\nUser: admin\nPassword: admin\n\nPlease do not forget to change it later!\n\nHave fun!");
+                loaderController.hideFirstStart();
+                Dialogs.info("Application initialized", "Welcome!", "This is the first time the program has been started,\nso a default user has been created for you.\nYou will now be automatically logged in with:\n\n      User: admin\n      Password: admin\n\nPlease do not forget to change it later!\nIf you closed the program without changing login data,\nno problem--just login with the same credentials\nbut you will have to type it manually.\n\nI hope you enjoy using this program\nas much as I enjoyed making it,\nbut most importantly, have fun!\n\n  - Kyle");
                 username = "admin";
                 password = "admin";
             }
@@ -214,7 +226,7 @@ public class MainPreloader extends Preloader {
     }
 
     public interface CredentialsConsumer {
-        void setCredential(String user, String password, Stage stage, Scene scene);
+        void setInitData(User user, Stage stage, Scene scene, boolean dark);
     }
 
     public interface SharedScene {

@@ -24,6 +24,7 @@ import javafx.util.Duration;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -31,9 +32,16 @@ public class MainPreloaderController implements Initializable {
     MainPreloader mainPreloader;
 
     boolean dark = true;
+    private VBox firstStart = null;
 
     @FXML
     private HBox vbxLoading;
+
+    @FXML
+    private VBox vbxLogin;
+
+    @FXML
+    private VBox vbxFirstStart;
 
     @FXML
     private Label lblDescription;
@@ -115,7 +123,7 @@ public class MainPreloaderController implements Initializable {
         stage1a.setFromValue(0.0);
         stage1a.setToValue(0.0);
 
-        FadeTransition stage1b = new FadeTransition(Duration.millis(1000), grpMain);
+        FadeTransition stage1b = new FadeTransition(Duration.millis(1000), vbxLogin);
         stage1b.setFromValue(0.0);
         stage1b.setToValue(0.0);
 
@@ -157,7 +165,7 @@ public class MainPreloaderController implements Initializable {
         stage2f.setToY(0);
 
         // STAGE 3 - Everything else shows
-        FadeTransition stage3 = new FadeTransition(Duration.millis(750), grpMain);
+        FadeTransition stage3 = new FadeTransition(Duration.millis(750), vbxLogin);
         stage3.setFromValue(0.0);
         stage3.setToValue(1.0);
 
@@ -171,9 +179,16 @@ public class MainPreloaderController implements Initializable {
         ParallelTransition stage3t = new ParallelTransition();
         stage3t.getChildren().addAll(stage3);
 
-        SequentialTransition animation = new SequentialTransition();
+        SequentialTransition animation;
+
+        animation = new SequentialTransition();
         animation.getChildren().addAll(stage1t, stage2t, stage3t);
+
         animation.play();
+    }
+
+    public void hideFirstStart() {
+        vbxFirstStart.setVisible(false);
     }
 
     public void startClosingAnimation() {
@@ -182,7 +197,7 @@ public class MainPreloaderController implements Initializable {
         stage1a.setFromY(0.0);
         stage1a.setToY(100);
 
-        TranslateTransition stage1b = new TranslateTransition(Duration.millis(1000), grpMain);
+        TranslateTransition stage1b = new TranslateTransition(Duration.millis(1000), vbxLogin);
         stage1b.setFromY(0.0);
         stage1b.setToY(100);
 
@@ -197,14 +212,17 @@ public class MainPreloaderController implements Initializable {
         SequentialTransition animation = new SequentialTransition();
         animation.getChildren().addAll(stage1t);
         animation.play();
+
     }
 
     public void setDark() {
         pnlBG.setStyle("-fx-background-color: rgba(0,0,0,0.25);");
+        dark = true;
     }
 
     public void setLight() {
         pnlBG.setStyle("-fx-background-color: rgba(255,255,255,0.25);");
+        dark = false;
     }
 
     @Override
@@ -213,5 +231,13 @@ public class MainPreloaderController implements Initializable {
 
         support.registerValidator(txtUsername, Validator.createEmptyValidator("Username is required"));
         support.registerValidator(txtPassword, Validator.createEmptyValidator("Password is required"));
+
+        if (!(new File("database").exists())) {
+            grpMain.setVisible(false);
+            vbxFirstStart.setVisible(true);
+        } else {
+            grpMain.setVisible(true);
+            vbxFirstStart.setVisible(false);
+        }
     }
 }
