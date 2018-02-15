@@ -273,6 +273,51 @@ public class ClassesController implements Initializable {
             return;
         }
 
+        txtSunday.setText(sanitizeTime(txtSunday.getText()));
+        txtMonday.setText(sanitizeTime(txtMonday.getText()));
+        txtTuesday.setText(sanitizeTime(txtTuesday.getText()));
+        txtWednesday.setText(sanitizeTime(txtWednesday.getText()));
+        txtThursday.setText(sanitizeTime(txtThursday.getText()));
+        txtFriday.setText(sanitizeTime(txtFriday.getText()));
+        txtSaturday.setText(sanitizeTime(txtSaturday.getText()));
+
+        txtSunday2.setText(sanitizeTime(txtSunday2.getText()));
+        txtMonday2.setText(sanitizeTime(txtMonday2.getText()));
+        txtTuesday2.setText(sanitizeTime(txtTuesday2.getText()));
+        txtWednesday2.setText(sanitizeTime(txtWednesday2.getText()));
+        txtThursday2.setText(sanitizeTime(txtThursday2.getText()));
+        txtFriday2.setText(sanitizeTime(txtFriday2.getText()));
+        txtSaturday2.setText(sanitizeTime(txtSaturday2.getText()));
+
+        if (chkSunday.isSelected() && txtSunday.getText().compareTo(txtSunday2.getText()) > 0) {
+            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            return;
+        }
+        if (chkMonday.isSelected() && txtMonday.getText().compareTo(txtMonday2.getText()) > 0) {
+            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            return;
+        }
+        if (chkTuesday.isSelected() && txtTuesday.getText().compareTo(txtTuesday2.getText()) > 0) {
+            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            return;
+        }
+        if (chkWednesday.isSelected() && txtWednesday.getText().compareTo(txtWednesday2.getText()) > 0) {
+            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            return;
+        }
+        if (chkThursday.isSelected() && txtThursday.getText().compareTo(txtThursday2.getText()) > 0) {
+            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            return;
+        }
+        if (chkFriday.isSelected() && txtFriday.getText().compareTo(txtFriday2.getText()) > 0) {
+            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            return;
+        }
+        if (chkSaturday.isSelected() && txtSaturday.getText().compareTo(txtSaturday2.getText()) > 0) {
+            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            return;
+        }
+
         try {
             currentClass.setName(txtName.getText());
             currentClass.setSY(Integer.parseInt(txtSY.getText()));
@@ -658,6 +703,13 @@ public class ClassesController implements Initializable {
 
             return include > 0;
         });
+    }
+
+    private String sanitizeTime(String t) {
+        String[] parts = t.split(":");
+        int hour = Integer.parseInt(parts[0]);
+        int min = Integer.parseInt(parts[1]);
+        return String.format("%02d:%02d", hour, min);
     }
 
     @Override
