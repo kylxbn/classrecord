@@ -192,7 +192,7 @@ public class EnrolleesController implements Initializable {
 
     @FXML
     private void mnuRemoveAction(ActionEvent event) {
-        if (Dialogs.confirm("Remove Enrollee", "Are you sure you want to delete this this enrollee?", currentEnrollee.getStudent().getFN() + " " + currentEnrollee.getStudent().getLN()) == ButtonType.OK)
+        if (Dialogs.confirm("Remove Enrollee", "Are you sure you want to delete this enrollee?", currentEnrollee.getStudent().getFN() + " " + currentEnrollee.getStudent().getLN()) == ButtonType.OK)
             try {
                 DB.delete(currentEnrollee);
                 enrollees.remove(currentEnrollee);

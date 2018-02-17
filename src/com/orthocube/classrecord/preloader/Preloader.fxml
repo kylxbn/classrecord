@@ -23,13 +23,13 @@
                         <VBox fx:id="vbxInfo" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                               HBox.hgrow="ALWAYS">
                             <children>
-                                <Label text="Class Record v3.0.0_ALPHA">
+                                <Label text="%preloader.classrecorddetail">
                                     <font>
                                         <Font name="System Bold" size="12.0"/>
                                     </font>
                                 </Label>
-                                <Label text="Copyright 2018 Kyle Alexander Buan"/>
-                                <Label text="orthocube@protonmail.com"/>
+                                <Label text="%preloader.copyright"/>
+                                <Label text="%preloader.email"/>
                             </children>
                         </VBox>
                         <HBox fx:id="vbxLoading" prefWidth="300.0" spacing="16.0">
@@ -38,8 +38,8 @@
                                       maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
                                       HBox.hgrow="ALWAYS">
                                     <children>
-                                        <Label text="Please wait."/>
-                                        <Label fx:id="lblDescription" text="what is loading..."/>
+                                        <Label text="%preloader.pleasewait"/>
+                                        <Label fx:id="lblDescription" text="%preloader.initializing"/>
                                         <ProgressBar fx:id="prgProgress" maxHeight="1.7976931348623157E308"
                                                      maxWidth="1.7976931348623157E308" minWidth="-Infinity"
                                                      progress="0.0"/>
@@ -63,7 +63,7 @@
                               minWidth="-Infinity" prefHeight="409.6" prefWidth="400.0"/>
                         <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="346.0" prefWidth="400.0">
                             <children>
-                                <Label fx:id="lblClassRecord" text="Class Record">
+                                <Label fx:id="lblClassRecord" text="%preloader.classrecord">
                                     <font>
                                         <Font name="Consolas Bold" size="48.0"/>
                                     </font>
@@ -86,19 +86,17 @@
                                                       maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
                                                       spacing="8.0">
                                                     <children>
-                                                        <Label text="Welcome!">
+                                                        <Label text="%preloader.welcome">
                                                             <font>
                                                                 <Font name="System Bold" size="24.0"/>
                                                             </font>
                                                         </Label>
-                                                        <Label text="Program is starting&#10;itself for the first time."
-                                                               textAlignment="CENTER">
+                                                        <Label text="%preloader.firststart" textAlignment="CENTER">
                                                             <font>
                                                                 <Font size="14.0"/>
                                                             </font>
                                                         </Label>
-                                                        <Label text="Please wait while the program&#10;prepares itself for first use."
-                                                               textAlignment="CENTER">
+                                                        <Label text="%preloader.wait" textAlignment="CENTER">
                                                             <font>
                                                                 <Font size="14.0"/>
                                                             </font>
@@ -139,15 +137,16 @@
                                                             <children>
                                                                 <Button fx:id="cmdLogin" defaultButton="true"
                                                                         mnemonicParsing="false"
-                                                                        onAction="#cmdLoginAction" text="Log In"/>
+                                                                        onAction="#cmdLoginAction"
+                                                                        text="%preloader.login"/>
                                                             </children>
                                                             <padding>
                                                                 <Insets bottom="16.0" left="16.0" right="16.0"
                                                                         top="16.0"/>
                                                             </padding>
                                                         </HBox>
-                                                        <Label text="Username:"/>
-                                                        <Label text="Password:" GridPane.rowIndex="2"/>
+                                                        <Label text="%preloader.username"/>
+                                                        <Label text="%preloader.password" GridPane.rowIndex="2"/>
                                                     </children>
                                                 </GridPane>
                                             </children>

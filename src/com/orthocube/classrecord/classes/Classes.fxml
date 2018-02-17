@@ -150,7 +150,8 @@
                                 <MenuItem fx:id="mnuTasks" mnemonicParsing="false" onAction="#mnuTasksAction"
                                           text="Tasks"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" text="Grades"/>
+                                <MenuItem fx:id="mnuGrades" mnemonicParsing="false" onAction="#mnuGradesAction"
+                                          text="Grades"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem mnemonicParsing="false" onAction="#mnuDeleteAction" text="Remove"/>
                             </items>

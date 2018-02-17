@@ -144,35 +144,35 @@
                                                         <TextArea fx:id="txtNotes" disable="true" prefHeight="200.0"
                                                                   prefWidth="200.0" GridPane.columnIndex="1"
                                                                   GridPane.rowIndex="8"/>
-                                                        <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308"
-                                                              maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                                                              minWidth="-Infinity" GridPane.columnSpan="2">
+                                                        <VBox GridPane.columnSpan="2">
                                                             <children>
-                                                                <ImageView fx:id="pboPicture" fitHeight="200.0"
-                                                                           fitWidth="200.0" pickOnBounds="true"
-                                                                           preserveRatio="true"/>
+                                                                <HBox spacing="8.0">
+                                                                    <children>
+                                                                        <ImageView fx:id="pboPicture" fitHeight="200.0"
+                                                                                   fitWidth="200.0" pickOnBounds="true"
+                                                                                   preserveRatio="true"/>
+                                                                        <VBox spacing="8.0">
+                                                                            <children>
+                                                                                <Button fx:id="cmdChangeImage"
+                                                                                        disable="true"
+                                                                                        mnemonicParsing="false"
+                                                                                        onAction="#cmdChangeImageAction"
+                                                                                        text="Change"/>
+                                                                                <Button fx:id="cmdRemoveImage"
+                                                                                        disable="true"
+                                                                                        mnemonicParsing="false"
+                                                                                        onAction="#cmdRemoveImageAction"
+                                                                                        text="Remove"/>
+                                                                            </children>
+                                                                        </VBox>
+                                                                    </children>
+                                                                </HBox>
                                                                 <VBox alignment="TOP_CENTER"
                                                                       maxHeight="1.7976931348623157E308"
                                                                       maxWidth="1.7976931348623157E308"
                                                                       minHeight="-Infinity" minWidth="-Infinity"
                                                                       spacing="8.0">
                                                                     <children>
-                                                                        <HBox alignment="TOP_CENTER"
-                                                                              maxHeight="1.7976931348623157E308"
-                                                                              maxWidth="1.7976931348623157E308"
-                                                                              minHeight="-Infinity" minWidth="-Infinity"
-                                                                              spacing="8.0">
-                                                                            <children>
-                                                                                <Button fx:id="cmdChangeImage"
-                                                                                        disable="true"
-                                                                                        mnemonicParsing="false"
-                                                                                        text="Change"/>
-                                                                                <Button fx:id="cmdRemoveImage"
-                                                                                        disable="true"
-                                                                                        mnemonicParsing="false"
-                                                                                        text="Remove"/>
-                                                                            </children>
-                                                                        </HBox>
                                                                         <Label fx:id="lblShowName" text="name">
                                                                             <font>
                                                                                 <Font size="24.0"/>

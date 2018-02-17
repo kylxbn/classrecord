@@ -27,28 +27,33 @@ import org.controlsfx.control.NotificationPane;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class MainPreloader extends Preloader {
-    CredentialsConsumer consumer = null;
+    private CredentialsConsumer consumer = null;
 
     private Stage preloaderStage;
     private Scene scene;
-    String username = null;
-    String password = null;
-    boolean dark = true;
+    private String username = null;
+    private String password = null;
+    private boolean dark = true;
 
-    Group topGroup;
-    StackPane preloaderParent;
-    StateChangeNotification evt;
+    private Group topGroup;
+    private StackPane preloaderParent;
+    private StateChangeNotification evt;
 
-    User user = null;
+    private Locale language = Locale.JAPANESE;
+    private ResourceBundle bundle = ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings");//, language);
+
+    private User user = null;
     private MainPreloaderController loaderController;
 
     @Override
     public void start(Stage stage) throws Exception {
         this.preloaderStage = stage;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("preloader/Preloader.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("preloader/Preloader.fxml"), bundle);
         StackPane root = loader.load();
         loaderController = loader.getController();
         loaderController.setMainPreloader(this);
@@ -60,7 +65,7 @@ public class MainPreloader extends Preloader {
         this.preloaderStage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_40px.png")));
         this.preloaderStage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_80px.png")));
 
-        preloaderStage.setTitle("ClassRecord - Log In");
+        preloaderStage.setTitle(bundle.getString("preloader.title"));
         preloaderStage.setWidth(1024);
         preloaderStage.setHeight(768);
         preloaderStage.setMinWidth(1024);
@@ -81,7 +86,7 @@ public class MainPreloader extends Preloader {
         preloaderStage.show();
     }
 
-    public void setDarkTheme() {
+    private void setDarkTheme() {
         scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
         loaderController.setDark();
         //preloaderParent.setStyle("-fx-background-color: #323232;"); // 0x323232");
@@ -112,7 +117,7 @@ public class MainPreloader extends Preloader {
         loaderController.setDark();
     }
 
-    public void setLightTheme() {
+    private void setLightTheme() {
         scene.getStylesheets().clear();
         loaderController.setLight();
         //preloaderParent.setStyle("-fx-background-color: #323232;"); // 0x323232");
@@ -168,7 +173,7 @@ public class MainPreloader extends Preloader {
                     SharedScene appScene = (SharedScene) evt.getApplication();
                     fadeInTo(appScene.getParentNode());
                 } else {
-                    Dialogs.error("Login Error", "Invalid username or password.", "The username you provided might be non-existent,\nor that is not the password for that username.");
+                    Dialogs.error(bundle.getString("preloader.loginerror.title"), bundle.getString("preloader.loginerror.header"), bundle.getString("preloader.loginerror.content"));
                     loaderController.disableLogin(false);
                 }
             } catch (SQLException | IOException e) {
@@ -217,7 +222,7 @@ public class MainPreloader extends Preloader {
             consumer = (CredentialsConsumer) info.getApplication();
             if (DB.isFirstRun()) {
                 loaderController.hideFirstStart();
-                Dialogs.info("Application initialized", "Welcome!", "This is the first time the program has been started,\nso a default user has been created for you.\nYou will now be automatically logged in with:\n\n      User: admin\n      Password: admin\n\nPlease do not forget to change it later!\nIf you closed the program without changing login data,\nno problem--just login with the same credentials\nbut you will have to type it manually.\n\nI hope you enjoy using this program\nas much as I enjoyed making it,\nbut most importantly, have fun!\n\n  - Kyle");
+                Dialogs.info(bundle.getString("preloader.appinit.title"), bundle.getString("preloader.appinit.header"), bundle.getString("preloader.appinit.content"));
                 username = "admin";
                 password = "admin";
             }

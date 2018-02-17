@@ -8,11 +8,9 @@
 package com.orthocube.classrecord.classes;
 
 /**
- * Controller for the Classes display.
- *
+ * Controller for the Classes display
  * @author OrthoCube
  */
-
 import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.util.DB;
@@ -376,8 +374,12 @@ public class ClassesController implements Initializable {
     }
 
     @FXML
-    void cmdSearchAction(ActionEvent event) {
-        // TODO: Implement searching
+    void mnuGradesAction(ActionEvent event) {
+        try {
+            mainApp.showGrades(currentClass);
+        } catch (Exception e) {
+            Dialogs.exception(e);
+        }
     }
 
     @FXML

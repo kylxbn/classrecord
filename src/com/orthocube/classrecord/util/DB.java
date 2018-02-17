@@ -69,7 +69,7 @@ public class DB {
                         "Username VARCHAR(64) UNIQUE, " +
                         "Nickname VARCHAR(64), " +
                         "Password VARCHAR(64) NOT NULL, " +
-                        "Picture BLOB(64000), " +
+                        "Picture BLOB(200000), " +
                         "AccessLevel SMALLINT NOT NULL DEFAULT 0, " +
                         "PasswordHint VARCHAR(255))");
             } catch (SQLException e) {
@@ -93,7 +93,7 @@ public class DB {
                         "Contact VARCHAR(64), " +
                         "Address VARCHAR(255), " +
                         "Notes VARCHAR(255), " +
-                        "Picture BLOB(64000))");
+                        "Picture BLOB(200000))");
             } catch (SQLException e) {
                 if (!("X0Y32".equals(e.getSQLState()))) {
                     Dialogs.exception(e);
@@ -285,6 +285,14 @@ public class DB {
                 }
             }
 
+            try {
+                s.executeUpdate("CREATE FUNCTION BitSet(a SMALLINT, b SMALLINT) RETURNS SMALLINT " +
+                        "PARAMETER STYLE JAVA NO SQL LANGUAGE JAVA " +
+                        "EXTERNAL NAME 'com.orthocube.classrecord.util.Utils.bitSet'");
+            } catch (SQLException e) {
+                Dialogs.exception(e);
+            }
+
             LOGGER.log(Level.INFO, "Done creating tables.");
         } catch (SQLException e) {
             Dialogs.exception(e);
@@ -352,9 +360,48 @@ public class DB {
         return students;
     }
 
+    private static Student getStudent(long id) throws SQLException, IOException {
+        LOGGER.log(Level.INFO, "Getting student...");
+        ResultSet r;
+        PreparedStatement prep = con.prepareStatement("SELECT Students.StudentID, Students.SID, Students.FN, Students.MN, Students.LN, Students.IsFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture FROM Students WHERE Students.StudentID = ?");
+        prep.setLong(1, id);
+        r = prep.executeQuery();
+
+        if (r.next()) {
+            Student student = new Student(r.getLong(1));
+            student.setSID(r.getString(2));
+            student.setFN(r.getString(3));
+            student.setMN(r.getString(4));
+            student.setLN(r.getString(5));
+            student.setFemale(r.getInt(6) > 0);
+            student.setContact(r.getString(7));
+            student.setAddress(r.getString(8));
+            student.setNotes(r.getString(9));
+            InputStream is = r.getBinaryStream(10);
+            if (is != null) {
+                student.setPicture(ImageIO.read(is));
+                is.close();
+            }
+            return student;
+        } else {
+            return null;
+        }
+    }
+
     public static boolean save(Student s) throws SQLException, IOException {
         if (s.getID() == -1) {
             LOGGER.log(Level.INFO, "Saving new student...");
+            byte[] imgbytes;
+            if (s.getPicture() != null) {
+                ByteArrayOutputStream tempimg = new ByteArrayOutputStream();
+                ImageIO.write(s.getPicture(), "png", tempimg);
+                imgbytes = tempimg.toByteArray();
+            } else {
+                imgbytes = null;
+            }
+            if (imgbytes != null)
+                LOGGER.log(Level.INFO, "Image size: " + imgbytes.length + " bytes");
+
             PreparedStatement preps = con.prepareStatement("INSERT INTO Students (Students.SID, Students.FN, Students.MN, Students.LN, Students.isFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture) VALUES (?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             preps.setString(1, s.getSID());
             preps.setString(2, s.getFN());
@@ -364,7 +411,7 @@ public class DB {
             preps.setString(6, s.getContact());
             preps.setString(7, s.getAddress());
             preps.setString(8, s.getNotes());
-            preps.setBytes(9, null);
+            preps.setBytes(9, imgbytes);
             preps.executeUpdate();
             ResultSet res = preps.getGeneratedKeys();
             res.next();
@@ -372,12 +419,16 @@ public class DB {
             return true;
         } else {
             LOGGER.log(Level.INFO, "Updating student...");
-            byte[] imgbytes = null;
+            byte[] imgbytes;
             if (s.getPicture() != null) {
                 ByteArrayOutputStream tempimg = new ByteArrayOutputStream();
                 ImageIO.write(s.getPicture(), "png", tempimg);
                 imgbytes = tempimg.toByteArray();
+            } else {
+                imgbytes = null;
             }
+            if (imgbytes != null)
+                LOGGER.log(Level.INFO, "Image size: " + imgbytes.length + " bytes");
 
             PreparedStatement preps = con.prepareStatement("UPDATE Students SET SID = ?, FN = ?, MN = ?, LN = ?, isFemale = ?, Contact = ?, Address = ?, Notes = ?, Picture = ? WHERE StudentID = ?");
             preps.setString(1, s.getSID());
@@ -515,6 +566,36 @@ public class DB {
         return classes;
     }
 
+    private static Clazz getClass(long id) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting class...");
+        ResultSet r;
+        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes WHERE ClassID = ?");
+        prep.setLong(1, id);
+        r = prep.executeQuery();
+
+        if (r.next()) {
+            Clazz temp = new Clazz(r.getInt(1));
+            temp.setName(r.getString(2));
+            temp.setSY(r.getInt(3));
+            temp.setSem(r.getInt(4));
+            temp.setYear(r.getInt(5));
+            temp.setCourse(r.getString(6));
+            temp.setRoom(r.getString(7));
+            temp.setDays(r.getInt(8));
+
+            ArrayList<String> times = new ArrayList<>();
+            Collections.addAll(times, r.getString(9).split("\\|"));
+
+            temp.setTimes(times);
+
+            temp.setSHS(r.getInt(10) > 0);
+            temp.setNotes(r.getString(11));
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
     public static void delete(Clazz c) throws SQLException {
         LOGGER.log(Level.INFO, "Deleting class...");
         PreparedStatement prep = con.prepareStatement("DELETE FROM Classes WHERE ClassID = ?");
@@ -618,6 +699,56 @@ public class DB {
         }
 
         return enrollees;
+    }
+
+    private static Enrollee getSHSEnrollee(long id) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting SHS Enrollee...");
+        ResultSet r;
+
+        PreparedStatement prep;
+
+        prep = con.prepareStatement("SELECT SHSEnrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, SHSEnrollees.Notes, SHSEnrollees.Course FROM (Students JOIN SHSEnrollees ON SHSEnrollees.StudentID = Students.StudentID) JOIN Classes ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.EnrolleeID = ?");
+
+        prep.setLong(1, id);
+        r = prep.executeQuery();
+
+        if (r.next()) {
+            Enrollee temp = new Enrollee(r.getLong(1));
+            temp.setStudent(new Student(r.getLong(2)));
+            temp.getStudent().setFN(r.getString(3));
+            temp.getStudent().setLN(r.getString(4));
+            temp.setNotes(r.getString(5));
+            temp.setCourse(r.getString(6));
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
+    private static Enrollee getEnrollee(long id) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Enrollee...");
+        ResultSet r;
+
+        PreparedStatement prep;
+
+        prep = con.prepareStatement("SELECT Enrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, Enrollees.ClassCard, Enrollees.Notes, Enrollees.Course FROM (Students JOIN Enrollees ON Enrollees.StudentID = Students.StudentID) JOIN Classes ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.EnrolleeID = ?");
+
+        prep.setLong(1, id);
+        r = prep.executeQuery();
+
+        if (r.next()) {
+            Enrollee enrollee = new Enrollee(r.getLong(1));
+            enrollee.setStudent(new Student(r.getLong(2)));
+            enrollee.getStudent().setFN(r.getString(3));
+            enrollee.getStudent().setLN(r.getString(4));
+            enrollee.setClasscard(r.getInt(5));
+            enrollee.setNotes(r.getString(6));
+            enrollee.setCourse(r.getString(7));
+            return enrollee;
+        } else {
+
+            return null;
+        }
     }
 
     public static boolean save(Enrollee e) throws SQLException {
@@ -729,6 +860,52 @@ public class DB {
         }
 
         return FXCollections.observableList(criteria, (Criterion cr) -> new Observable[]{cr.nameProperty(), cr.percentageProperty(), cr.termsProperty()});
+    }
+
+    private static Criterion getCriterion(long id) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Criterion...");
+        ResultSet r;
+
+        PreparedStatement prep;
+
+        prep = con.prepareStatement("SELECT Criteria.CriterionID, Criteria.Name, Criteria.Percent, Criteria.Terms FROM Criteria WHERE Criteria.CriterionID = ?");
+
+        prep.setLong(1, id);
+        r = prep.executeQuery();
+
+        if (r.next()) {
+            Criterion temp = new Criterion(r.getLong(1));
+            temp.setName(r.getString(2));
+            temp.setPercentage(r.getInt(3));
+            temp.setTerms(r.getInt(4));
+            return temp;
+        } else {
+            return null;
+        }
+
+    }
+
+    private static Criterion getSHSCriterion(long id) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Criterion...");
+        ResultSet r;
+
+        PreparedStatement prep;
+
+        prep = con.prepareStatement("SELECT SHSCriteria.CriterionID, SHSCriteria.Name, SHSCriteria.Percent, SHSCriteria.Terms FROM SHSCriteria WHERE SHSCriteria.CriterionID = ?");
+
+        prep.setLong(1, id);
+        r = prep.executeQuery();
+
+        if (r.next()) {
+            Criterion temp = new Criterion(r.getLong(1));
+            temp.setName(r.getString(2));
+            temp.setPercentage(r.getInt(3));
+            temp.setTerms(r.getInt(4));
+            return temp;
+        } else {
+            return null;
+        }
+
     }
 
     public static boolean save(Criterion c) throws SQLException {
@@ -955,8 +1132,64 @@ public class DB {
             temp.getCriterion().setName(r.getString(6));
             temp.setScores(getScores(temp));
             tasks.add(temp);
+            for (Score score : temp.getScores()) {
+                score.setTask(temp);
+            }
         }
         return tasks;
+    }
+
+    private static Task getTask(long id) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Task...");
+        ResultSet r;
+
+        PreparedStatement prep = con.prepareStatement("SELECT Tasks.TaskID, Tasks.Name, Tasks.Term, Tasks.Items, Tasks.ClassID, Criteria.CriterionID, Criteria.Name FROM Tasks INNER JOIN Criteria ON Tasks.CriterionID = Criteria.CriterionID WHERE Tasks.TaskID = ?");
+        prep.setLong(1, id);
+        r = prep.executeQuery();
+
+        if (r.next()) {
+            Task temp = new Task(r.getLong(1));
+            temp.setName(r.getString(2));
+            temp.setTerm(r.getInt(3));
+            temp.setItems(r.getInt(4));
+            temp.setClass(getClass(r.getLong(5)));
+            temp.setCriterion(new Criterion(r.getLong(6)));
+            temp.getCriterion().setName(r.getString(7));
+            temp.setScores(getScores(temp));
+            for (Score score : temp.getScores()) {
+                score.setTask(temp);
+            }
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
+    private static Task getSHSTask(long id) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Task...");
+        ResultSet r;
+
+        PreparedStatement prep;
+        prep = con.prepareStatement("SELECT SHSTasks.TaskID, SHSTasks.Name, SHSTasks.Term, SHSTasks.Items, SHSTasks.ClassID, SHSCriteria.CriterionID, SHSCriteria.Name FROM SHSTasks INNER JOIN SHSCriteria ON SHSTasks.CriterionID = SHSCriteria.CriterionID WHERE SHSTasks.TaskID = ?");
+        prep.setLong(1, id);
+        r = prep.executeQuery();
+
+        if (r.next()) {
+            Task temp = new Task(r.getLong(1));
+            temp.setName(r.getString(2));
+            temp.setTerm(r.getInt(3));
+            temp.setItems(r.getInt(4));
+            temp.setClass(getClass(r.getLong(5)));
+            temp.setCriterion(new Criterion(r.getLong(6)));
+            temp.getCriterion().setName(r.getString(7));
+            temp.setScores(getScores(temp));
+            for (Score score : temp.getScores()) {
+                score.setTask(temp);
+            }
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     public static boolean save(Task t) throws SQLException {
@@ -1010,7 +1243,7 @@ public class DB {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Scores">
-    public static ObservableList<Score> getScores(Task t) throws SQLException {
+    private static ObservableList<Score> getScores(Task t) throws SQLException {
         LOGGER.log(Level.INFO, "Getting Scores...");
         ResultSet r;
 
@@ -1072,6 +1305,7 @@ public class DB {
             prep.setLong(1, s.getEnrollee().getID());
             prep.setInt(2, s.getScore());
             prep.setString(3, s.getNotes());
+            prep.setLong(4, s.getID());
             prep.executeUpdate();
             return false;
         }
@@ -1239,5 +1473,343 @@ public class DB {
         else
             return null;
     }
+    // </editor-fold>
+
+    // <editor-fold defaultstatus="collapsed" desc="Grades">
+    public static ObservableList<Grade> getGrades(Clazz c) throws SQLException, IOException {
+        if (c.isSHS()) {
+            return getSHSGrades(c);
+        } else {
+            return getCollegeGrades(c);
+        }
+    }
+
+    public static ObservableList<Grade> getCollegeGrades(Clazz c) throws SQLException, IOException {
+        ObservableList<Grade> grades = FXCollections.observableArrayList();
+
+        ResultSet r1, r2, r3, r4;
+        PreparedStatement prep1, prep2, prep3, prep4;
+
+        prep1 = con.prepareStatement("SELECT Enrollees.EnrolleeID FROM Enrollees LEFT JOIN Students ON Enrollees.StudentID = Students.StudentID WHERE Enrollees.ClassID = ? ORDER BY LN || FN ASC");
+        prep1.setLong(1, c.getID());
+        r1 = prep1.executeQuery();
+
+        Student currentStudent;
+        Enrollee currentEnrollee;
+        Criterion currentCriterion;
+        Task currentTask;
+
+        ArrayList<ArrayList<com.orthocube.classrecord.util.grade.Criterion>> terms = new ArrayList<>();
+        terms.add(new ArrayList<>());
+        terms.add(new ArrayList<>());
+        terms.add(new ArrayList<>());
+        terms.add(new ArrayList<>());
+
+        while (r1.next()) {
+            // Here we get the preliminary student data.
+            currentEnrollee = getEnrollee(r1.getLong(1));
+            assert currentEnrollee != null;
+            currentStudent = getStudent(currentEnrollee.getStudent().getID());
+
+            // Here, we start getting the data for for each term. =======================================================
+            for (int t = 0; t < 4; t++) {
+                prep2 = con.prepareStatement("SELECT Criteria.CriterionID FROM Criteria WHERE ClassID = ? AND BitSet(Terms, ?) > 0");
+                prep2.setLong(1, c.getID());
+                prep2.setInt(2, t);
+                r2 = prep2.executeQuery();
+                terms.set(t, new ArrayList<>());
+
+                while (r2.next()) {
+                    currentCriterion = getCriterion(r2.getInt(1));
+
+                    // for every criteria... we add the criteria to PRELIM
+                    assert currentCriterion != null;
+                    terms.get(t).add(new com.orthocube.classrecord.util.grade.Criterion(currentCriterion.getPercentage()));
+
+                    // then we get the tasks associated with that criteria
+                    prep3 = con.prepareStatement("SELECT Tasks.TaskID FROM Tasks WHERE CriterionID = ? AND BitSet(Term, ?) > 0");
+                    prep3.setLong(1, currentCriterion.getID());
+                    prep3.setInt(2, t);
+                    r3 = prep3.executeQuery();
+
+                    while (r3.next()) {
+                        currentTask = getTask(r3.getInt(1));
+                        // we look for the student's grade in that task...
+                        prep4 = con.prepareStatement("SELECT Score FROM Scores WHERE EnrolleeID = ? AND TaskID = ?");
+                        prep4.setLong(1, currentEnrollee.getID());
+                        assert currentTask != null;
+                        prep4.setLong(2, currentTask.getID());
+                        r4 = prep4.executeQuery();
+                        int score = 0;
+                        while (r4.next()) {
+                            // we get the student's score
+                            score = r4.getInt(1);
+                        }
+                        // for every task... we add it to the last criteria in PRELIM
+                        terms.get(t).get(terms.get(t).size() - 1).addTask(score, currentTask.getItems());
+                    }
+                }
+            }
+
+            // by this point, I HOPE that all the tasks inside the criteria inside the terms HAVE the right data,
+            // so let's hope for the best and compute it.
+            ArrayList<String> termStrings = new ArrayList<>();
+            for (int i = 0; i < 4; i++) {
+                termStrings.add("ERROR");
+            }
+            double total;
+            for (int term = 0; term < 4; term++) {
+                total = 0.0;
+                for (com.orthocube.classrecord.util.grade.Criterion criterion : terms.get(term)) {
+                    total += criterion.getGrade();
+                }
+                //termStrings.set(term, Double.toString(total));
+                termStrings.set(term, roundCollegeGrade(total));
+            }
+
+            Grade temp = new Grade();
+            assert currentStudent != null;
+            temp.setFName(currentStudent.getFN());
+            temp.setLName(currentStudent.getLN());
+            temp.setPrelim(termStrings.get(0));
+            temp.setMidterms(termStrings.get(1));
+            temp.setSemis(termStrings.get(2));
+            temp.setFinals(termStrings.get(3));
+            temp.setFinal(finalCollegeGrade(termStrings));
+            temp.setClassCard(currentEnrollee.getClasscard());
+            temp.setCourse(currentEnrollee.getCourse());
+            grades.add(temp);
+        }
+
+        return grades;
+    }
+
+    private static String roundCollegeGrade(double g) {
+        String r;
+        if (g <= 1.124) {
+            r = "1.00";
+        } else if (g <= 1.374) {
+            r = "1.25";
+        } else if (g <= 1.624) {
+            r = "1.50";
+        } else if (g <= 1.874) {
+            r = "1.75";
+        } else if (g <= 2.124) {
+            r = "2.00";
+        } else if (g <= 2.374) {
+            r = "2.25";
+        } else if (g <= 2.624) {
+            r = "2.50";
+        } else if (g <= 2.874) {
+            r = "2.75";
+        } else if (g <= 3.44) {
+            r = "3.00";
+        } else {
+            r = "5.00";
+        }
+        return r;
+    }
+
+    private static String finalCollegeGrade(ArrayList<String> l) {
+        double total = 0;
+        for (String g : l) {
+            total += Double.parseDouble(g);
+        }
+        double average = total / ((double) l.size());
+        return roundCollegeGrade(average);
+    }
+
+    public static ObservableList<Grade> getSHSGrades(Clazz c) throws SQLException, IOException {
+        ObservableList<Grade> grades = FXCollections.observableArrayList();
+
+        ResultSet r1, r2, r3, r4;
+        PreparedStatement prep1, prep2, prep3, prep4;
+
+        prep1 = con.prepareStatement("SELECT SHSEnrollees.EnrolleeID FROM SHSEnrollees LEFT JOIN Students ON SHSEnrollees.StudentID = Students.StudentID WHERE SHSEnrollees.ClassID = ? ORDER BY Students.IsFemale ASC, LN || FN");
+        prep1.setLong(1, c.getID());
+        r1 = prep1.executeQuery();
+
+        Student currentStudent;
+        Enrollee currentEnrollee;
+        Criterion currentCriterion;
+        Task currentTask;
+
+        ArrayList<ArrayList<com.orthocube.classrecord.util.grade.SHSCriterion>> terms = new ArrayList<>();
+        terms.add(new ArrayList<>());
+        terms.add(new ArrayList<>());
+
+        while (r1.next()) {
+            // Here we get the preliminary student data.
+            currentEnrollee = getSHSEnrollee(r1.getLong(1));
+            assert currentEnrollee != null;
+            currentStudent = getStudent(currentEnrollee.getStudent().getID());
+
+            // Here, we start getting the data for for each term. =======================================================
+            for (int t = 0; t < 4; t += 2) {
+                prep2 = con.prepareStatement("SELECT SHSCriteria.CriteriaID FROM SHSCriteria WHERE ClassID = ? AND BitSet(Terms, ?) > 0");
+                prep2.setLong(1, c.getID());
+                prep2.setInt(2, t);
+                r2 = prep2.executeQuery();
+                terms.set(t, new ArrayList<>());
+
+                while (r2.next()) {
+                    currentCriterion = getSHSCriterion(r2.getInt(1));
+
+                    // for every criteria... we add the criteria to PRELIM
+                    assert currentCriterion != null;
+                    terms.get(t).add(new com.orthocube.classrecord.util.grade.SHSCriterion(currentCriterion.getPercentage()));
+
+                    // then we get the tasks associated with that criteria
+                    prep3 = con.prepareStatement("SELECT SHSTasks.TaskID FROM SHSTasks WHERE CriteriaID = ? AND BitSet(Term, ?) > 0");
+                    prep3.setLong(1, currentCriterion.getID());
+                    prep3.setInt(2, t);
+                    r3 = prep3.executeQuery();
+
+                    while (r3.next()) {
+                        currentTask = getSHSTask(r3.getInt(1));
+                        // we look for the student's grade in that task...
+                        prep4 = con.prepareStatement("SELECT Score FROM SHSScores WHERE EnrolleeID = ? AND TaskID = ?");
+                        prep4.setLong(1, currentEnrollee.getID());
+                        assert currentTask != null;
+                        prep4.setLong(2, currentTask.getID());
+                        r4 = prep4.executeQuery();
+                        int score = 0;
+                        while (r4.next()) {
+                            // we get the student's score
+                            score = r4.getInt(1);
+                        }
+                        // for every task... we add it to the last criteria in PRELIM
+                        terms.get(t / 2).get(terms.get(t / 2).size() - 1).addTask(score, currentTask.getItems());
+                    }
+                }
+            }
+
+            // by this point, I HOPE that all the tasks inside the criterias inside the terms HAVE the right data,
+            // so let's hope for the best and compute it.
+            ArrayList<String> termStrings = new ArrayList<>();
+            for (int i = 0; i < 2; i++) {
+                termStrings.add("ERROR");
+            }
+            double total;
+            for (int term = 0; term < 2; term++) {
+                total = 0.0;
+                for (com.orthocube.classrecord.util.grade.SHSCriterion criterion : terms.get(term)) {
+                    total += criterion.getGrade();
+                }
+                //termStrings.set(term, Double.toString(total));
+                termStrings.set(term, roundSHSGrade(total));
+            }
+
+            Grade temp = new Grade();
+            assert currentStudent != null;
+            temp.setFName(currentStudent.getFN());
+            temp.setLName(currentStudent.getLN());
+            temp.setMidterms(termStrings.get(0));
+            temp.setFinals(termStrings.get(1));
+            temp.setFinal(finalSHSGrade(termStrings));
+            temp.setCourse(currentEnrollee.getCourse());
+            grades.add(temp);
+        }
+
+        return grades;
+    }
+
+    private static String roundSHSGrade(double g) {
+        String r;
+        if (g == 100) {
+            r = "100";
+        } else if (g >= 98.40) {
+            r = "99";
+        } else if (g >= 96.80) {
+            r = "98";
+        } else if (g >= 95.20) {
+            r = "97";
+        } else if (g >= 93.60) {
+            r = "96";
+        } else if (g >= 92.00) {
+            r = "95";
+        } else if (g >= 90.40) {
+            r = "94";
+        } else if (g >= 88.80) {
+            r = "93";
+        } else if (g >= 87.20) {
+            r = "92";
+        } else if (g >= 85.60) {
+            r = "91";
+        } else if (g >= 84.00) {
+            r = "90";
+        } else if (g >= 82.40) {
+            r = "89";
+        } else if (g >= 80.80) {
+            r = "88";
+        } else if (g >= 79.20) {
+            r = "87";
+        } else if (g >= 77.60) {
+            r = "86";
+        } else if (g >= 76.00) {
+            r = "85";
+        } else if (g >= 74.40) {
+            r = "84";
+        } else if (g >= 72.80) {
+            r = "83";
+        } else if (g >= 71.20) {
+            r = "82";
+        } else if (g >= 69.60) {
+            r = "81";
+        } else if (g >= 68.00) {
+            r = "80";
+        } else if (g >= 66.40) {
+            r = "79";
+        } else if (g >= 64.80) {
+            r = "78";
+        } else if (g >= 63.20) {
+            r = "77";
+        } else if (g >= 61.60) {
+            r = "76";
+        } else if (g >= 60.00) {
+            r = "75";
+        } else if (g >= 56.00) {
+            r = "74";
+        } else if (g >= 52.00) {
+            r = "73";
+        } else if (g >= 48.00) {
+            r = "72";
+        } else if (g >= 44.00) {
+            r = "71";
+        } else if (g >= 40.00) {
+            r = "70";
+        } else if (g >= 36.00) {
+            r = "69";
+        } else if (g >= 32.00) {
+            r = "68";
+        } else if (g >= 28.00) {
+            r = "67";
+        } else if (g >= 24.00) {
+            r = "66";
+        } else if (g >= 20.00) {
+            r = "65";
+        } else if (g >= 16.00) {
+            r = "64";
+        } else if (g >= 12.00) {
+            r = "63";
+        } else if (g >= 8.00) {
+            r = "62";
+        } else if (g >= 4.00) {
+            r = "61";
+        } else {
+            r = "60";
+        }
+        return r;
+    }
+
+    private static String finalSHSGrade(ArrayList<String> l) {
+        double total = 0;
+        for (String g : l) {
+            total += Double.parseDouble(g);
+        }
+        double average = total / ((double) l.size());
+        return Long.toString(Math.round(average));
+    }
+
     // </editor-fold>
 }

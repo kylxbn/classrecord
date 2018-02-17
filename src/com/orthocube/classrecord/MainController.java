@@ -31,8 +31,11 @@ import java.util.ResourceBundle;
  * @author OrthoCube
  */
 public class MainController implements Initializable {
-    boolean dark = true;
-    User currentUser;
+    private boolean dark = true;
+    private User currentUser;
+    private MainApp mainApp;
+    private ResourceBundle bundle;
+    private ToggleGroup group = null;
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
     @FXML
@@ -53,9 +56,7 @@ public class MainController implements Initializable {
     Menu mnuEdit;
     @FXML
     Menu mnuTools;
-    private MainApp mainApp;
-    private ResourceBundle bundle;
-    private ToggleGroup group = null;
+
     @FXML
     Menu mnuHelp;
     @FXML
@@ -222,7 +223,7 @@ public class MainController implements Initializable {
             long usedMem = allocatedMem - Runtime.getRuntime().freeMemory();
 
             prgMemory.setProgress(((double) usedMem) / ((double) allocatedMem));
-            lblMemory.setText(String.format("%d of %dMB used", usedMem / 1000000, allocatedMem / 1000000));
+            lblMemory.setText(String.format(rb.getString("main.mb"), usedMem / 1000000, allocatedMem / 1000000));
 
         }),
                 new KeyFrame(Duration.seconds(1))

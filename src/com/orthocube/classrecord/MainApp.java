@@ -10,6 +10,7 @@ package com.orthocube.classrecord;
 import com.orthocube.classrecord.about.AboutController;
 import com.orthocube.classrecord.classes.*;
 import com.orthocube.classrecord.data.*;
+import com.orthocube.classrecord.students.ImageRefinerController;
 import com.orthocube.classrecord.students.StudentChooserController;
 import com.orthocube.classrecord.students.StudentEnrolledInController;
 import com.orthocube.classrecord.students.StudentsController;
@@ -25,11 +26,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import net.coobird.thumbnailator.Thumbnails;
 import org.controlsfx.control.NotificationPane;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -67,8 +74,8 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private ObservableList<Student> studentsModel;
     private ObservableList<User> usersModel;
 
-    private Locale language = Locale.ENGLISH;
-    private ResourceBundle bundle = null; // ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings", language);
+    private Locale language = Locale.JAPANESE;
+    private ResourceBundle bundle = ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings");//, language);
     private Stage stage;
     private Scene scene;
 
@@ -467,5 +474,76 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
             Dialogs.exception(e);
         }
         return null;
+    }
+
+    public BufferedImage chooseImage(int size) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle(bundle.getString("main.imagechooser"));
+        File f = fc.showOpenDialog(stage);
+        if (f == null) return null;
+
+        try {
+            BufferedImage bi = ImageIO.read(f);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("students/ImageRefiner.fxml"));
+            SplitPane imageRefiner = loader.load();
+            ImageRefinerController irController = loader.getController();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle(bundle.getString("main.imagerefiner"));
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(stage);
+            Scene scene = new Scene(imageRefiner);
+            if (isDark) scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+            dialogStage.setScene(scene);
+
+            irController.setDialogStage(dialogStage);
+            irController.setImage(bi);
+
+            dialogStage.showAndWait();
+            BufferedImage chosenImage = irController.getResult();
+
+            BufferedImage resizedImage = null;
+            try {
+                if (chosenImage.getHeight() > chosenImage.getWidth()) {
+                    resizedImage = Thumbnails.of(chosenImage).width(size).asBufferedImage();
+                } else {
+                    resizedImage = Thumbnails.of(chosenImage).height(size).asBufferedImage();
+                }
+            } catch (IOException ex) {
+                Dialogs.exception(ex);
+            }
+
+            BufferedImage croppedImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+            Graphics g = croppedImage.createGraphics();
+
+            assert resizedImage != null;
+            int width = resizedImage.getWidth();
+            int height = resizedImage.getHeight();
+            int cropW = (width - height) / 2;
+            cropW = (cropW < 0) ? 0 : cropW;
+            int cropH = (height - width) / 2;
+            cropH = (cropH < 0) ? 0 : cropH;
+
+            g.drawImage(resizedImage, 0, 0, size, size, cropW, cropH, width - cropW, height - cropH, null);
+            g.dispose();
+
+            return croppedImage;
+        } catch (IOException e) {
+            Dialogs.exception(e);
+        }
+        return null;
+    }
+
+    public void showGrades(Clazz currentClass) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("classes/Grades.fxml"));
+        loader.setResources(bundle);
+        SplitPane grades = loader.load();
+        GradesController controller = loader.getController();
+        controller.setMainApp(this);
+        controller.setClass(currentClass);
+
+        trimHistoryThenAdd(grades, controller.getTitle());
+        currentHistory++;
+        updateNavigation();
     }
 }

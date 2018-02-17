@@ -22,9 +22,12 @@
                             <content>
                                 <TableView fx:id="tblPrelims" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
-                                        <TableColumn fx:id="colPName" prefWidth="75.0" text="Name"/>
-                                        <TableColumn fx:id="colPCriterion" prefWidth="75.0" text="Criterion"/>
-                                        <TableColumn fx:id="colPItems" prefWidth="75.0" text="Items"/>
+                                        <TableColumn fx:id="colPName" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                                     prefWidth="-1.0" text="Name"/>
+                                        <TableColumn fx:id="colPCriterion" maxWidth="1.7976931348623157E308"
+                                                     minWidth="40.0" prefWidth="-1.0" text="Criterion"/>
+                                        <TableColumn fx:id="colPItems" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                                     prefWidth="-1.0" text="Items"/>
                                     </columns>
                                 </TableView>
                             </content>
@@ -33,9 +36,12 @@
                             <content>
                                 <TableView fx:id="tblMidterms" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
-                                        <TableColumn fx:id="colMName" prefWidth="75.0" text="Name"/>
-                                        <TableColumn fx:id="colMCriterion" prefWidth="75.0" text="Criterion"/>
-                                        <TableColumn fx:id="colMItems" prefWidth="75.0" text="Items"/>
+                                        <TableColumn fx:id="colMName" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                                     prefWidth="-1.0" text="Name"/>
+                                        <TableColumn fx:id="colMCriterion" maxWidth="1.7976931348623157E308"
+                                                     minWidth="40.0" prefWidth="-1.0" text="Criterion"/>
+                                        <TableColumn fx:id="colMItems" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                                     prefWidth="-1.0" text="Items"/>
                                     </columns>
                                 </TableView>
                             </content>
@@ -44,9 +50,12 @@
                             <content>
                                 <TableView fx:id="tblSemis" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
-                                        <TableColumn fx:id="colSName" prefWidth="75.0" text="Name"/>
-                                        <TableColumn fx:id="colSCriterion" prefWidth="75.0" text="Criterion"/>
-                                        <TableColumn fx:id="colSItems" prefWidth="75.0" text="Items"/>
+                                        <TableColumn fx:id="colSName" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                                     prefWidth="-1.0" text="Name"/>
+                                        <TableColumn fx:id="colSCriterion" maxWidth="1.7976931348623157E308"
+                                                     minWidth="40.0" prefWidth="-1.0" text="Criterion"/>
+                                        <TableColumn fx:id="colSItems" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                                     prefWidth="-1.0" text="Items"/>
                                     </columns>
                                 </TableView>
                             </content>
@@ -55,9 +64,12 @@
                             <content>
                                 <TableView fx:id="tblFinals" prefHeight="200.0" prefWidth="200.0">
                                     <columns>
-                                        <TableColumn fx:id="colFName" prefWidth="75.0" text="Name"/>
-                                        <TableColumn fx:id="colFCriterion" prefWidth="75.0" text="Criterion"/>
-                                        <TableColumn fx:id="colFItems" prefWidth="75.0" text="Items"/>
+                                        <TableColumn fx:id="colFName" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                                     prefWidth="-1.0" text="Name"/>
+                                        <TableColumn fx:id="colFCriterion" maxWidth="1.7976931348623157E308"
+                                                     minWidth="40.0" prefWidth="-1.0" text="Criterion"/>
+                                        <TableColumn fx:id="colFItems" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                                     prefWidth="-1.0" text="Items"/>
                                     </columns>
                                 </TableView>
                             </content>
@@ -124,10 +136,21 @@
             <children>
                 <TableView fx:id="tblScores" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colScoreName" prefWidth="75.0" text="Name"/>
-                        <TableColumn fx:id="colSScore" prefWidth="75.0" text="Score"/>
-                        <TableColumn fx:id="colSNotes" prefWidth="75.0" text="Notes"/>
+                        <TableColumn fx:id="colScoreName" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                     prefWidth="-1.0" text="Name"/>
+                        <TableColumn fx:id="colSScore" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                     prefWidth="-1.0" text="Score"/>
+                        <TableColumn fx:id="colSNotes" maxWidth="1.7976931348623157E308" minWidth="40.0"
+                                     prefWidth="-1.0" text="Notes"/>
                     </columns>
+                    <contextMenu>
+                        <ContextMenu>
+                            <items>
+                                <MenuItem fx:id="cmdDeleteScore" mnemonicParsing="false"
+                                          onAction="#cmdDeleteScoreAction" text="Delete"/>
+                            </items>
+                        </ContextMenu>
+                    </contextMenu>
                 </TableView>
                 <TitledPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                             minWidth="-Infinity" text="Info">
@@ -149,12 +172,10 @@
                                     <children>
                                         <Label text="Score:"/>
                                         <Label text="Notes:" GridPane.rowIndex="1"/>
-                                        <TextField fx:id="txtSScore" disable="true" GridPane.columnIndex="1"
-                                                   GridPane.columnSpan="2"/>
+                                        <TextField fx:id="txtSScore" disable="true" GridPane.columnIndex="1"/>
                                         <TextField fx:id="txtSNotes" disable="true" GridPane.columnIndex="1"
-                                                   GridPane.rowIndex="1"/>
-                                        <Label fx:id="lblScore" text="/ 20" GridPane.columnIndex="2"
-                                               GridPane.rowIndex="1"/>
+                                                   GridPane.columnSpan="2" GridPane.rowIndex="1"/>
+                                        <Label fx:id="lblScore" text="/ 20" GridPane.columnIndex="2"/>
                                     </children>
                                 </GridPane>
                                 <HBox alignment="TOP_RIGHT" maxHeight="1.7976931348623157E308"

@@ -31,6 +31,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.controlsfx.control.textfield.CustomTextField;
 
@@ -53,7 +54,16 @@ public class StudentsController implements Initializable {
 
     private MainApp mainApp;
 
+    private static Image noStudent;
+    private static Image noPicture;
+
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    private Button cmdChangeImage;
+
+    @FXML
+    private Button cmdRemoveImage;
+
     @FXML
     private Button cmdAdd;
 
@@ -209,6 +219,26 @@ public class StudentsController implements Initializable {
     }
 
     @FXML
+    void cmdChangeImageAction(ActionEvent event) {
+        if (Dialogs.confirm("Change picture", "Are you sure you want to change the picture?", "This action will be automatically saved and it can't be undone.") == ButtonType.OK) {
+            BufferedImage bi = mainApp.chooseImage(200);
+            if (bi != null)
+                currentStudent.setPicture(bi);
+            showStudentInfo();
+            cmdSaveAction(null);
+        }
+    }
+
+    @FXML
+    void cmdRemoveImageAction(ActionEvent event) {
+        if (Dialogs.confirm("Remove picture", "Are you sure you want to remove the picture?", "This action will be automatically saved and it can't be undone.") == ButtonType.OK) {
+            currentStudent.setPicture(null);
+            cmdSaveAction(null);
+            showStudentInfo();
+        }
+    }
+
+    @FXML
     void cmdDeleteAction(ActionEvent event) {
         if (Dialogs.confirm("Delete Student", "Are you sure you want to delete this student?", currentStudent.getLN() + ", " + currentStudent.getFN()) == ButtonType.OK)
             try {
@@ -244,6 +274,8 @@ public class StudentsController implements Initializable {
             BufferedImage picture = currentStudent.getPicture();
             if (picture != null)
                 pboPicture.setImage(SwingFXUtils.toFXImage(picture, null));
+            else
+                pboPicture.setImage(noPicture);
 
             txtSID.setDisable(false);
             txtLN.setDisable(false);
@@ -253,7 +285,8 @@ public class StudentsController implements Initializable {
             txtContact.setDisable(false);
             txtAddress.setDisable(false);
             txtNotes.setDisable(false);
-            
+            cmdChangeImage.setDisable(false);
+            cmdRemoveImage.setDisable(currentStudent.getPicture() == null);
         } else {
             txtSID.setText("");
             txtFN.setText("");
@@ -263,6 +296,7 @@ public class StudentsController implements Initializable {
             txtContact.setText("");
             txtAddress.setText("");
             txtNotes.setText("");
+            pboPicture.setImage(noStudent);
 
             txtSID.setDisable(true);
             txtLN.setDisable(true);
@@ -272,7 +306,8 @@ public class StudentsController implements Initializable {
             txtContact.setDisable(true);
             txtAddress.setDisable(true);
             txtNotes.setDisable(true);
-
+            cmdChangeImage.setDisable(true);
+            cmdRemoveImage.setDisable(true);
         }
 
 
@@ -341,6 +376,20 @@ public class StudentsController implements Initializable {
         lblShowName.textProperty().bind(Bindings.concat(txtFN.textProperty(), " ", txtLN.textProperty()));
 
         Utils.setupClearButtonField(txtSearch);
+
+        BufferedImage bi1 = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+        Graphics g1 = bi1.createGraphics();
+        g1.drawString("NO PICTURE SET", 40, 40);
+        g1.dispose();
+        noPicture = SwingFXUtils.toFXImage(bi1, null);
+
+        BufferedImage bi2 = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+        Graphics g2 = bi2.createGraphics();
+        g2.drawString("NO STUDENT SELECTED", 40, 40);
+        g2.dispose();
+        noStudent = SwingFXUtils.toFXImage(bi2, null);
+
+        pboPicture.setImage(noStudent);
 
         // <editor-fold defaultstate="collapsed" desc="change listeners">
         txtSID.textProperty().addListener((ob, ov, nv) -> {

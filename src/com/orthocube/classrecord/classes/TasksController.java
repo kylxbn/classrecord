@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 
 public class TasksController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(ClassesController.class.getName());
+
     private ResourceBundle bundle;
 
     private MainApp mainApp;
@@ -43,14 +44,19 @@ public class TasksController implements Initializable {
 
     private ObservableList<Task> tasks;
     private ObservableList<Score> scores;
-    FilteredList<Criterion> filteredCriteria;
+    private FilteredList<Criterion> filteredCriteria;
     int warningShowCount = 0;
-    boolean saveInProgress = false;
+    private boolean saveInProgress = false;
     boolean nullifyPending = false;
     private ObservableList<Criterion> criteria;
 
-    private ValidationSupport validationSupport;
+    private ValidationSupport taskValidationSupport;
+    private ValidationSupport scoreValidationSupport;
+
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    private MenuItem cmdDeleteScore;
+
     @FXML
     private Accordion accTasks;
 
@@ -272,7 +278,7 @@ public class TasksController implements Initializable {
 
     @FXML
     void cmdTSaveAction(ActionEvent event) {
-        if (validationSupport.isInvalid()) {
+        if (taskValidationSupport.isInvalid()) {
             Dialogs.error("Invalid values", "Please fix the invalid input first.", "Choosing a term and a criterion is required.");
             return;
         }
@@ -284,10 +290,7 @@ public class TasksController implements Initializable {
             currentTask.setTerm(1 << cboTTerm.getSelectionModel().getSelectedIndex());
 
             Criterion selectedCriterion = cboTCriterion.getSelectionModel().getSelectedItem();
-            currentTask.getCriterion().setName(selectedCriterion.getName());
-            currentTask.getCriterion().setPercentage(selectedCriterion.getPercentage());
-            currentTask.getCriterion().setTerms(selectedCriterion.getTerms());
-            currentTask.getCriterion().setID(selectedCriterion.getID());
+            currentTask.setCriterion(selectedCriterion);
 
             boolean newentry = DB.save(currentTask);
 
@@ -385,6 +388,18 @@ public class TasksController implements Initializable {
         cmdTSave.setText("Save");
     }
 
+    @FXML
+    void cmdDeleteScoreAction(ActionEvent event) {
+        if (Dialogs.confirm("Remove Score", "Are you sure you want to delete this score?", currentScore.getEnrollee().getStudent().getLN() + ", " + currentScore.getEnrollee().getStudent().getFN()) == ButtonType.OK)
+            try {
+                DB.delete(currentScore);
+                scores.remove(currentScore);
+                mainApp.getRootNotification().show("Score removed from task.");
+            } catch (SQLException e) {
+                Dialogs.exception(e);
+            }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.log(Level.INFO, "Initializing...");
@@ -413,6 +428,9 @@ public class TasksController implements Initializable {
                     showTaskInfo();
                     scores = currentTask.getScores();
                     tblScores.setItems(scores);
+                    cmdSAdd.setDisable(false);
+                    cmdSSave.setDisable(true);
+                    cmdSSave.setText("Save");
                 } else {
                     if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
                         currentTask = newv;
@@ -422,6 +440,9 @@ public class TasksController implements Initializable {
                         cmdTAdd.setDisable(false);
                         cmdTSave.setDisable(true);
                         cmdTSave.setText("Save");
+                        cmdSAdd.setDisable(false);
+                        cmdSSave.setDisable(true);
+                        cmdSSave.setText("Save");
                     }
                 }
             }
@@ -434,6 +455,9 @@ public class TasksController implements Initializable {
                     showTaskInfo();
                     scores = currentTask.getScores();
                     tblScores.setItems(scores);
+                    cmdSAdd.setDisable(false);
+                    cmdSSave.setDisable(true);
+                    cmdSSave.setText("Save");
 
                 } else {
                     if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
@@ -445,6 +469,9 @@ public class TasksController implements Initializable {
                         cmdTAdd.setDisable(false);
                         cmdTSave.setDisable(true);
                         cmdTSave.setText("Save");
+                        cmdSAdd.setDisable(false);
+                        cmdSSave.setDisable(true);
+                        cmdSSave.setText("Save");
                     }
                 }
             }
@@ -457,6 +484,9 @@ public class TasksController implements Initializable {
                     showTaskInfo();
                     scores = currentTask.getScores();
                     tblScores.setItems(scores);
+                    cmdSAdd.setDisable(false);
+                    cmdSSave.setDisable(true);
+                    cmdSSave.setText("Save");
 
                 } else {
                     if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
@@ -468,6 +498,9 @@ public class TasksController implements Initializable {
                         cmdTAdd.setDisable(false);
                         cmdTSave.setDisable(true);
                         cmdTSave.setText("Save");
+                        cmdSAdd.setDisable(false);
+                        cmdSSave.setDisable(true);
+                        cmdSSave.setText("Save");
                     }
                 }
             }
@@ -480,6 +513,9 @@ public class TasksController implements Initializable {
                     showTaskInfo();
                     scores = currentTask.getScores();
                     tblScores.setItems(scores);
+                    cmdSAdd.setDisable(false);
+                    cmdSSave.setDisable(true);
+                    cmdSSave.setText("Save");
 
                 } else {
                     if (Dialogs.confirm("Change selection", "You have unsaved changes. Discard changes?", "Choosing another task will discard your current unsaved changes.") == ButtonType.OK) {
@@ -491,6 +527,9 @@ public class TasksController implements Initializable {
                         cmdTAdd.setDisable(false);
                         cmdTSave.setDisable(true);
                         cmdTSave.setText("Save");
+                        cmdSAdd.setDisable(false);
+                        cmdSSave.setDisable(true);
+                        cmdSSave.setText("Save");
                     }
                 }
             }
@@ -532,9 +571,8 @@ public class TasksController implements Initializable {
             }
         });
 
-        cboTTerm.getSelectionModel().selectedIndexProperty().addListener((obs, oldv, newv) -> {
-            filteredCriteria.setPredicate(p -> (p.getTerms() & (1 << newv.intValue())) > 0);
-        });
+        cboTTerm.getSelectionModel().selectedIndexProperty().addListener((obs, oldv, newv) ->
+                filteredCriteria.setPredicate(p -> (p.getTerms() & (1 << newv.intValue())) > 0));
 
         cboTCriterion.setConverter(new CriterionConverter());
 
@@ -593,7 +631,7 @@ public class TasksController implements Initializable {
                 break;
         }
 
-        validationSupport = new ValidationSupport();
+        taskValidationSupport = new ValidationSupport();
 
         Validator<String> termValidator = (control, value) -> {
             boolean condition = value == null;
@@ -605,8 +643,41 @@ public class TasksController implements Initializable {
             return ValidationResult.fromMessageIf(control, "Please choose a criterion.", Severity.ERROR, condition);
         };
 
-        validationSupport.registerValidator(cboTTerm, false, termValidator);
-        validationSupport.registerValidator(cboTCriterion, false, criterionValidator);
+        taskValidationSupport.registerValidator(cboTTerm, true, termValidator);
+        taskValidationSupport.registerValidator(cboTCriterion, true, criterionValidator);
+
+
+        scoreValidationSupport = new ValidationSupport();
+        Validator<String> scoreValidator = (control, value) -> {
+            boolean condition = false;
+            try {
+                int v = Integer.parseInt(value);
+                if ((v < 0) || (v > currentTask.getItems()))
+                    condition = true;
+            } catch (Exception e) {
+                condition = true;
+            }
+            return ValidationResult.fromMessageIf(control, "Invalid score.", Severity.ERROR, condition);
+        };
+        scoreValidationSupport.registerValidator(txtSScore, true, scoreValidator);
+
+        ContextMenu mnuTasks = new ContextMenu();
+        MenuItem mnuDeleteTask = new MenuItem("Delete task");
+        mnuDeleteTask.setOnAction(ev -> {
+            if (Dialogs.confirm("Remove Task", "Are you sure you want to delete this task?", currentTask.getName()) == ButtonType.OK)
+                try {
+                    DB.delete(currentTask);
+                    tasks.remove(currentTask);
+                    mainApp.getRootNotification().show("Task removed from class.");
+                } catch (SQLException e) {
+                    Dialogs.exception(e);
+                }
+        });
+        mnuTasks.getItems().add(mnuDeleteTask);
+        tblPrelims.setContextMenu(mnuTasks);
+        tblSemis.setContextMenu(mnuTasks);
+        tblMidterms.setContextMenu(mnuTasks);
+        tblFinals.setContextMenu(mnuTasks);
 
         // <editor-fold defaultstate="collapsed" desc="Listeners">
         txtTName.textProperty().addListener((obs, ov, nv) -> {

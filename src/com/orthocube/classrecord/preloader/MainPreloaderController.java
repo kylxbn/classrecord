@@ -29,9 +29,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainPreloaderController implements Initializable {
-    MainPreloader mainPreloader;
+    private MainPreloader mainPreloader;
 
-    boolean dark = true;
+    private boolean dark = true;
     private VBox firstStart = null;
 
     @FXML
@@ -72,6 +72,7 @@ public class MainPreloaderController implements Initializable {
 
     @FXML
     private Pane pnlBG;
+    private ResourceBundle rb;
 
     @FXML
     void cmdLoginAction(ActionEvent event) {
@@ -91,21 +92,21 @@ public class MainPreloaderController implements Initializable {
     public void setProgress(double progress) {
         prgProgress.setProgress(progress);
         if (progress < 0.15)
-            lblDescription.setText("Loading Main panel...");
+            lblDescription.setText(rb.getString("preloader.mainpanel"));
         else if (progress < 0.25)
-            lblDescription.setText("Loading Students tab...");
+            lblDescription.setText(rb.getString("preloader.studentstab"));
         else if (progress < 0.35)
-            lblDescription.setText("Connecting to database...");
+            lblDescription.setText(rb.getString("preloader.connecting"));
         else if (progress < 0.45)
-            lblDescription.setText("Loading Classes tab...");
+            lblDescription.setText(rb.getString("preloader.classestab"));
         else if (progress < 0.55)
-            lblDescription.setText("Loading classes from database...");
+            lblDescription.setText(rb.getString("preloader.classes"));
         else if (progress < 0.65)
-            lblDescription.setText("Loading Users tab...");
+            lblDescription.setText(rb.getString("preloader.userstab"));
         else if (progress < 0.75)
-            lblDescription.setText("Loading users from database...");
+            lblDescription.setText(rb.getString("preloader.users"));
         else if (progress < 0.85)
-            lblDescription.setText("Loading About tab...");
+            lblDescription.setText(rb.getString("preloader.abouttab"));
     }
 
     public void hideProgressBar() {
@@ -227,10 +228,11 @@ public class MainPreloaderController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        rb = resources;
         ValidationSupport support = new ValidationSupport();
 
-        support.registerValidator(txtUsername, Validator.createEmptyValidator("Username is required"));
-        support.registerValidator(txtPassword, Validator.createEmptyValidator("Password is required"));
+        support.registerValidator(txtUsername, Validator.createEmptyValidator(rb.getString("preloader.usernamerequired")));
+        support.registerValidator(txtPassword, Validator.createEmptyValidator(rb.getString("preloader.passwordrequired")));
 
         if (!(new File("database").exists())) {
             grpMain.setVisible(false);

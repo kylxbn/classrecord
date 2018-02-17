@@ -20,9 +20,9 @@
             <children>
                 <MenuBar>
                     <menus>
-                        <Menu fx:id="mnuFile" mnemonicParsing="false" text="File">
+                        <Menu fx:id="mnuFile" mnemonicParsing="false" text="%main.file">
                             <items>
-                                <MenuItem fx:id="mnuSave" mnemonicParsing="false" text="Save">
+                                <MenuItem fx:id="mnuSave" mnemonicParsing="false" text="%main.save">
                                     <graphic>
                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
                                             <image>
@@ -32,7 +32,7 @@
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="mnuExit" mnemonicParsing="false" text="Exit">
+                                <MenuItem fx:id="mnuExit" mnemonicParsing="false" text="%main.exit">
                                     <graphic>
                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
                                             <image>
@@ -43,9 +43,9 @@
                                 </MenuItem>
                             </items>
                         </Menu>
-                        <Menu fx:id="mnuEdit" mnemonicParsing="false" text="Edit">
+                        <Menu fx:id="mnuEdit" mnemonicParsing="false" text="%main.edit">
                             <items>
-                                <MenuItem fx:id="mnuUndo" mnemonicParsing="false" text="Undo">
+                                <MenuItem fx:id="mnuUndo" mnemonicParsing="false" text="%main.undo">
                                     <graphic>
                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
                                             <image>
@@ -54,7 +54,7 @@
                                         </ImageView>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem fx:id="mnuRedo" mnemonicParsing="false" text="Redo">
+                                <MenuItem fx:id="mnuRedo" mnemonicParsing="false" text="%main.redo">
                                     <graphic>
                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
                                             <image>
@@ -64,7 +64,7 @@
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="mnuDelete" mnemonicParsing="false" text="Delete">
+                                <MenuItem fx:id="mnuDelete" mnemonicParsing="false" text="%main.delete">
                                     <graphic>
                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
                                             <image>
@@ -74,24 +74,24 @@
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <Menu mnemonicParsing="false" text="Theme">
+                                <Menu mnemonicParsing="false" text="%main.theme">
                                     <items>
                                         <RadioMenuItem fx:id="mnuDarkTheme" mnemonicParsing="false"
-                                                       onAction="#mnuDarkThemeAction" selected="true" text="Dark">
+                                                       onAction="#mnuDarkThemeAction" selected="true" text="%main.dark">
                                             <toggleGroup>
                                                 <ToggleGroup fx:id="mnuTheme"/>
                                             </toggleGroup>
                                         </RadioMenuItem>
                                         <RadioMenuItem fx:id="mnuLightTheme" mnemonicParsing="false"
-                                                       onAction="#mnuLightThemeAction" text="Light"
+                                                       onAction="#mnuLightThemeAction" text="%main.light"
                                                        toggleGroup="$mnuTheme"/>
                                     </items>
                                 </Menu>
                             </items>
                         </Menu>
-                        <Menu fx:id="mnuTools" mnemonicParsing="false" text="Tools">
+                        <Menu fx:id="mnuTools" mnemonicParsing="false" text="%main.tools">
                             <items>
-                                <MenuItem fx:id="mnuSQL" mnemonicParsing="false" text="SQL Debugger">
+                                <MenuItem fx:id="mnuSQL" mnemonicParsing="false" text="%main.sql">
                                     <graphic>
                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
                                             <image>
@@ -102,10 +102,10 @@
                                 </MenuItem>
                             </items>
                         </Menu>
-                        <Menu fx:id="mnuHelp" mnemonicParsing="false" text="Help">
+                        <Menu fx:id="mnuHelp" mnemonicParsing="false" text="%main.help">
                             <items>
                                 <MenuItem fx:id="mnuAbout" mnemonicParsing="false" onAction="#mnuAboutAction"
-                                          text="About">
+                                          text="%main.about">
                                     <graphic>
                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
                                             <image>
@@ -124,7 +124,8 @@
                             <children>
                                 <Button fx:id="cmdBack" disable="true" maxHeight="1.7976931348623157E308"
                                         maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                        onAction="#cmdBackAction" prefWidth="87.0" styleClass="left-pill" text="Back">
+                                        onAction="#cmdBackAction" prefWidth="87.0" styleClass="left-pill"
+                                        text="%main.back">
                                     <graphic>
                                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" smooth="false">
                                             <image>
@@ -136,7 +137,7 @@
                                 <Button fx:id="cmdNext" contentDisplay="RIGHT" disable="true"
                                         maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                                         mnemonicParsing="false" onAction="#cmdNextAction" prefWidth="87.0"
-                                        styleClass="right-pill" text="Next">
+                                        styleClass="right-pill" text="%main.next">
                                     <graphic>
                                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" smooth="false">
                                             <image>
@@ -151,7 +152,7 @@
                             <children>
                                 <VBox>
                                     <children>
-                                        <Label fx:id="lblClassRecord" text="Class Record">
+                                        <Label fx:id="lblClassRecord" text="%main.classrecord">
                                             <font>
                                                 <Font size="14.0"/>
                                             </font>
@@ -212,7 +213,7 @@
                     <children>
                         <ToggleButton fx:id="cmdDashboard" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
                                       maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-                                      mnemonicParsing="false" styleClass="navigation" text="Dashboard">
+                                      mnemonicParsing="false" styleClass="navigation" text="%main.home">
                             <graphic>
                                 <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
                                     <image>
@@ -227,7 +228,7 @@
                         <ToggleButton fx:id="cmdStudents" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
                                       maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
                                       mnemonicParsing="false" onAction="#cmdStudentsAction" styleClass="navigation"
-                                      text="Students" GridPane.rowIndex="1">
+                                      text="%main.students" GridPane.rowIndex="1">
                             <graphic>
                                 <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
                                     <image>
@@ -242,7 +243,7 @@
                         <ToggleButton fx:id="cmdClasses" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
                                       maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
                                       mnemonicParsing="false" onAction="#cmdClassesAction" styleClass="navigation"
-                                      text="Classes" GridPane.rowIndex="2">
+                                      text="%main.classes" GridPane.rowIndex="2">
                             <graphic>
                                 <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
                                     <image>
@@ -257,7 +258,7 @@
                         <ToggleButton fx:id="cmdUsers" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
                                       maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
                                       mnemonicParsing="false" onAction="#cmdUsersAction" styleClass="navigation"
-                                      text="Users" GridPane.rowIndex="3">
+                                      text="%main.users" GridPane.rowIndex="3">
                             <graphic>
                                 <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
                                     <image>
@@ -271,7 +272,7 @@
                         </ToggleButton>
                         <ToggleButton fx:id="cmdReminders" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
                                       maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-                                      mnemonicParsing="false" styleClass="navigation" text="Reminders"
+                                      mnemonicParsing="false" styleClass="navigation" text="%main.reminders"
                                       GridPane.rowIndex="4">
                             <graphic>
                                 <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
@@ -320,7 +321,7 @@
                 </StackPane>
                 <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                            minWidth="-Infinity" orientation="VERTICAL"/>
-                <Label fx:id="lblStatus" text="Ready."/>
+                <Label fx:id="lblStatus" text="%main.ready"/>
             </children>
             <padding>
                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>

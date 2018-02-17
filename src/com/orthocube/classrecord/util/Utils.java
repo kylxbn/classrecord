@@ -24,4 +24,9 @@ public class Utils {
             Dialogs.exception(e);
         }
     }
+
+    // Used by Derby because it lacks proper bitwise math support. DO NOT REMOVE.
+    public static short bitSet(short a, short b) {
+        return (short) (a & (1 << b));
+    }
 }
