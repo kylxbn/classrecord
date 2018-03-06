@@ -19,13 +19,13 @@ import java.io.StringWriter;
 
 public class Dialogs {
 
-    public static ButtonType info(String title, String header, String content) {
+    public static void info(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
 
-        return alert.showAndWait().get();
+        alert.showAndWait();
     }
 
     public static ButtonType warning(String title, String header, String content) {
@@ -37,16 +37,16 @@ public class Dialogs {
         return alert.showAndWait().get();
     }
 
-    public static ButtonType error(String title, String header, String content) {
+    public static void error(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
 
-        return alert.showAndWait().get();
+        alert.showAndWait();
     }
 
-    public static ButtonType exception(Exception ex) {
+    public static void exception(Exception ex) {
         ex.printStackTrace();
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Internal Error");
@@ -78,7 +78,7 @@ public class Dialogs {
         // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
 
-        return alert.showAndWait().get();
+        alert.showAndWait();
     }
 
     public static ButtonType confirm(String title, String header, String content) {

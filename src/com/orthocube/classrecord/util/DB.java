@@ -11,6 +11,7 @@ import com.orthocube.classrecord.data.*;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
@@ -24,13 +25,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Allows the program to access the database
  * @author OrthoCube
  */
 public class DB {
     private final static Logger LOGGER = Logger.getLogger(DB.class.getName());
-    private static String url = "jdbc:derby:database;create=true";
+    private final static String url = "jdbc:derby:database;create=true";
+    private final static String DB_VERSION = "4";
+
     private static boolean isFirstRun = false;
-    private static Connection con = null;
+    private static Connection con;
 
     public static boolean isFirstRun() {
         return isFirstRun;
@@ -53,7 +57,7 @@ public class DB {
             Statement s = con.createStatement();
             r = s.executeQuery("SELECT * FROM Settings WHERE SettingKey = 'db_version'");
             if (!r.next())
-                s.executeUpdate("INSERT INTO Settings VALUES ('db_version', '4')");
+                s.executeUpdate("INSERT INTO Settings VALUES ('db_version', '" + DB_VERSION + "')");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -334,7 +338,7 @@ public class DB {
     public static ObservableList<Student> getStudents() throws SQLException, IOException {
         LOGGER.log(Level.INFO, "Getting students...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT Students.StudentID, Students.SID, Students.FN, Students.MN, Students.LN, Students.IsFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture FROM Students");
+        PreparedStatement prep = con.prepareStatement("SELECT Students.StudentID, Students.SID, Students.FN, Students.MN, Students.LN, Students.IsFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture FROM Students ORDER BY LN ASC NULLS FIRST, FN ASC NULLS FIRST");
         r = prep.executeQuery();
 
         ObservableList<Student> students = FXCollections.observableArrayList();
@@ -351,7 +355,7 @@ public class DB {
             temp.setNotes(r.getString(9));
             InputStream is = r.getBinaryStream(10);
             if (is != null) {
-                temp.setPicture(ImageIO.read(is));
+                temp.setPicture(SwingFXUtils.toFXImage(ImageIO.read(is), null));
                 is.close();
             }
             students.add(temp);
@@ -379,7 +383,7 @@ public class DB {
             student.setNotes(r.getString(9));
             InputStream is = r.getBinaryStream(10);
             if (is != null) {
-                student.setPicture(ImageIO.read(is));
+                student.setPicture(SwingFXUtils.toFXImage(ImageIO.read(is), null));
                 is.close();
             }
             return student;
@@ -394,7 +398,7 @@ public class DB {
             byte[] imgbytes;
             if (s.getPicture() != null) {
                 ByteArrayOutputStream tempimg = new ByteArrayOutputStream();
-                ImageIO.write(s.getPicture(), "png", tempimg);
+                ImageIO.write(SwingFXUtils.fromFXImage(s.getPicture(), null), "png", tempimg);
                 imgbytes = tempimg.toByteArray();
             } else {
                 imgbytes = null;
@@ -422,7 +426,7 @@ public class DB {
             byte[] imgbytes;
             if (s.getPicture() != null) {
                 ByteArrayOutputStream tempimg = new ByteArrayOutputStream();
-                ImageIO.write(s.getPicture(), "png", tempimg);
+                ImageIO.write(SwingFXUtils.fromFXImage(s.getPicture(), null), "png", tempimg);
                 imgbytes = tempimg.toByteArray();
             } else {
                 imgbytes = null;
@@ -457,7 +461,7 @@ public class DB {
     public static ObservableList<Clazz> getEnrolledIn(Student s) throws SQLException {
         LOGGER.log(Level.INFO, "Getting Enrolled In list...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes JOIN Enrollees ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.StudentID = ?");
+        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes JOIN Enrollees ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.StudentID = ? ORDER BY Classes.Name ASC NULLS FIRST");
         prep.setLong(1, s.getID());
         r = prep.executeQuery();
 
@@ -487,7 +491,7 @@ public class DB {
     public static ObservableList<Clazz> getSHSEnrolledIn(Student s) throws SQLException {
         LOGGER.log(Level.INFO, "Getting SHS Enrolled In list...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes JOIN SHSEnrollees ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.StudentID = ?");
+        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes JOIN SHSEnrollees ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.StudentID = ? ORDER BY Classes.Name ASC NULLS FIRST");
         prep.setLong(1, s.getID());
         r = prep.executeQuery();
 
@@ -538,7 +542,7 @@ public class DB {
     public static ObservableList<Clazz> getClasses() throws SQLException {
         LOGGER.log(Level.INFO, "Getting classes...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes");
+        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes ORDER BY Classes.Name ASC NULLS FIRST");
         r = prep.executeQuery();
 
         ObservableList<Clazz> classes = FXCollections.observableArrayList();
@@ -666,9 +670,9 @@ public class DB {
 
         boolean shs = c.isSHS();
         if (shs)
-            prep = con.prepareStatement("SELECT SHSEnrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, SHSEnrollees.Notes, SHSEnrollees.Course FROM (Students JOIN SHSEnrollees ON SHSEnrollees.StudentID = Students.StudentID) JOIN Classes ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.ClassID = ?");
+            prep = con.prepareStatement("SELECT SHSEnrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, SHSEnrollees.Notes, SHSEnrollees.Course FROM (Students JOIN SHSEnrollees ON SHSEnrollees.StudentID = Students.StudentID) JOIN Classes ON SHSEnrollees.ClassID = Classes.ClassID WHERE SHSEnrollees.ClassID = ? ORDER BY Students.LN ASC NULLS FIRST, Students.FN ASC NULLS FIRST");
         else {
-            prep = con.prepareStatement("SELECT Enrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, Enrollees.ClassCard, Enrollees.Notes, Enrollees.Course FROM (Students JOIN Enrollees ON Enrollees.StudentID = Students.StudentID) JOIN Classes ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.ClassID = ?");
+            prep = con.prepareStatement("SELECT Enrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, Enrollees.ClassCard, Enrollees.Notes, Enrollees.Course FROM (Students JOIN Enrollees ON Enrollees.StudentID = Students.StudentID) JOIN Classes ON Enrollees.ClassID = Classes.ClassID WHERE Enrollees.ClassID = ? ORDER BY Students.LN ASC NULLS FIRST, Students.FN ASC NULLS FIRST");
         }
 
         prep.setLong(1, c.getID());
@@ -764,6 +768,17 @@ public class DB {
                 ResultSet res = preps.getGeneratedKeys();
                 res.next();
                 e.setID(res.getLong(1));
+
+                // add enrollee to the days where he/she was absent
+                PreparedStatement days = con.prepareStatement("SELECT AttendanceDays.DayID FROM AttendanceDays WHERE AttendanceDays.ClassID = ?");
+                days.setLong(1, e.getClazz().getID());
+                ResultSet daysResult = days.executeQuery();
+                PreparedStatement add = con.prepareStatement("INSERT INTO SHSAttendanceList (DayID, EnrolleeID, Remarks, Notes) VALUES (?, ?, 'A', 'Late enrollee')");
+                while (daysResult.next()) {
+                    add.setLong(1, daysResult.getLong(1));
+                    add.setLong(2, e.getID());
+                    add.executeUpdate();
+                }
             } else {
                 LOGGER.log(Level.WARNING, "Creating new enrollee");
                 PreparedStatement preps = con.prepareStatement("INSERT INTO Enrollees (ClassID, StudentID, ClassCard, Notes, Course) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -776,6 +791,17 @@ public class DB {
                 ResultSet res = preps.getGeneratedKeys();
                 res.next();
                 e.setID(res.getLong(1));
+
+                // add enrollee to the days where he/she was absent
+                PreparedStatement days = con.prepareStatement("SELECT AttendanceDays.DayID FROM AttendanceDays WHERE AttendanceDays.ClassID = ?");
+                days.setLong(1, e.getClazz().getID());
+                ResultSet daysResult = days.executeQuery();
+                PreparedStatement add = con.prepareStatement("INSERT INTO AttendanceList (DayID, EnrolleeID, Remarks, Notes) VALUES (?, ?, 'A', 'Late enrollee')");
+                while (daysResult.next()) {
+                    add.setLong(1, daysResult.getLong(1));
+                    add.setLong(2, e.getID());
+                    add.executeUpdate();
+                }
             }
             return true;
         } else {
@@ -868,7 +894,7 @@ public class DB {
 
         PreparedStatement prep;
 
-        prep = con.prepareStatement("SELECT Criteria.CriterionID, Criteria.Name, Criteria.Percent, Criteria.Terms FROM Criteria WHERE Criteria.CriterionID = ?");
+        prep = con.prepareStatement("SELECT Criteria.CriterionID, Criteria.Name, Criteria.Percent, Criteria.Terms FROM Criteria WHERE Criteria.CriterionID = ? ORDER BY Criteria.Percent ASC NULLS FIRST");
 
         prep.setLong(1, id);
         r = prep.executeQuery();
@@ -891,7 +917,7 @@ public class DB {
 
         PreparedStatement prep;
 
-        prep = con.prepareStatement("SELECT SHSCriteria.CriterionID, SHSCriteria.Name, SHSCriteria.Percent, SHSCriteria.Terms FROM SHSCriteria WHERE SHSCriteria.CriterionID = ?");
+        prep = con.prepareStatement("SELECT SHSCriteria.CriterionID, SHSCriteria.Name, SHSCriteria.Percent, SHSCriteria.Terms FROM SHSCriteria WHERE SHSCriteria.CriterionID = ? ORDER BY SHSCriteria.Percent ASC NULLS FIRST");
 
         prep.setLong(1, id);
         r = prep.executeQuery();
@@ -963,7 +989,7 @@ public class DB {
         ResultSet r;
 
         PreparedStatement prep;
-        prep = con.prepareStatement("SELECT DayID, Date, Notes FROM AttendanceDays WHERE ClassID = ?");
+        prep = con.prepareStatement("SELECT DayID, Date, Notes FROM AttendanceDays WHERE ClassID = ? ORDER BY Date DESC NULLS FIRST");
         prep.setLong(1, c.getID());
         r = prep.executeQuery();
 
@@ -977,6 +1003,21 @@ public class DB {
             days.add(temp);
         }
         return days;
+    }
+
+    public static long dayAlreadyExists(AttendanceDay ad) throws SQLException {
+        PreparedStatement prep;
+        if (ad.getID() == -1) {
+            prep = con.prepareStatement("SELECT DayID FROM AttendanceDays WHERE Date = ? AND ClassID = ?");
+            prep.setDate(1, ad.getDate());
+            prep.setLong(2, ad.getClazz().getID());
+            ResultSet rs = prep.executeQuery();
+            if (rs.next())
+                return rs.getLong(1);
+            else return 0;
+        } else {
+            return 1;
+        }
     }
 
     public static boolean save(AttendanceDay ad) throws SQLException {
@@ -1031,7 +1072,6 @@ public class DB {
         } else {
             prep2 = con.prepareStatement("INSERT INTO AttendanceList (DayID, EnrolleeID, Remarks, Notes) VALUES (" + did + ", ?, '', '')", Statement.RETURN_GENERATED_KEYS);
         }
-        ArrayList<AttendanceList> list = new ArrayList<>();
         while (enrolleesResult.next()) {
             prep2.setLong(1, enrolleesResult.getLong(1));
             prep2.executeUpdate();
@@ -1045,15 +1085,15 @@ public class DB {
 
         PreparedStatement prep;
         if (ad.getClazz().isSHS()) {
-            prep = con.prepareStatement("SELECT SHSAttendanceList.AttendanceID, SHSEnrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, SHSAttendanceList.Remarks, SHSAttendanceList.Notes "
+            prep = con.prepareStatement("SELECT SHSAttendanceList.AttendanceID, SHSEnrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, SHSEnrollees.Course, SHSAttendanceList.Remarks, SHSAttendanceList.Notes "
                     + "FROM (Students INNER JOIN SHSEnrollees ON Students.StudentID = SHSEnrollees.StudentID) "
                     + "INNER JOIN SHSAttendanceList ON SHSEnrollees.EnrolleeID = SHSAttendanceList.EnrolleeID "
-                    + "WHERE SHSAttendanceList.DayID = ?");
+                    + "WHERE SHSAttendanceList.DayID = ? ORDER BY Students.LN ASC NULLS FIRST, Students.FN ASC NULLS FIRST");
         } else {
-            prep = con.prepareStatement("SELECT AttendanceList.AttendanceID, Enrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, AttendanceList.Remarks, AttendanceList.Notes "
+            prep = con.prepareStatement("SELECT AttendanceList.AttendanceID, Enrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, Enrollees.Course, AttendanceList.Remarks, AttendanceList.Notes "
                     + "FROM (Students INNER JOIN Enrollees ON Students.StudentID = Enrollees.StudentID) "
                     + "INNER JOIN AttendanceList ON Enrollees.EnrolleeID = AttendanceList.EnrolleeID "
-                    + "WHERE AttendanceList.DayID = ?");
+                    + "WHERE AttendanceList.DayID = ? ORDER BY Students.LN ASC NULLS FIRST, Students.FN ASC NULLS FIRST");
         }
         prep.setLong(1, ad.getID());
         r = prep.executeQuery();
@@ -1066,14 +1106,15 @@ public class DB {
             al.getEnrollee().setStudent(new Student(r.getLong(3)));
             al.getEnrollee().getStudent().setFN(r.getString(4));
             al.getEnrollee().getStudent().setLN(r.getString(5));
-            al.setRemarks(r.getString(6));
-            al.setNotes(r.getString(7));
+            al.getEnrollee().setCourse(r.getString(6));
+            al.setRemarks(r.getString(7));
+            al.setNotes(r.getString(8));
             list.add(al);
         }
         return list;
     }
 
-    public static boolean save(AttendanceList al) throws SQLException {
+    public static void save(AttendanceList al) throws SQLException {
         PreparedStatement prep;
         if (al.getID() == -1) {
             LOGGER.log(Level.INFO, "Saving new Attendance List...");
@@ -1090,7 +1131,6 @@ public class DB {
             ResultSet rs = prep.getGeneratedKeys();
             rs.next();
             al.setID(rs.getLong(1));
-            return true;
         } else {
             LOGGER.log(Level.INFO, "Saving Attendance List...");
             if (al.getAttendanceDay().getClazz().isSHS()) {
@@ -1102,7 +1142,6 @@ public class DB {
             prep.setString(2, al.getNotes());
             prep.setLong(3, al.getID());
             prep.executeUpdate();
-            return false;
         }
     }
     // </editor-fold>
@@ -1114,9 +1153,9 @@ public class DB {
 
         PreparedStatement prep;
         if (c.isSHS()) {
-            prep = con.prepareStatement("SELECT SHSTasks.TaskID, SHSTasks.Name, SHSTasks.Term, SHSTasks.Items, SHSCriteria.CriterionID, SHSCriteria.Name FROM SHSTasks INNER JOIN SHSCriteria ON SHSTasks.CriterionID = SHSCriteria.CriterionID WHERE SHSTasks.ClassID = ?");
+            prep = con.prepareStatement("SELECT SHSTasks.TaskID, SHSTasks.Name, SHSTasks.Term, SHSTasks.Items, SHSCriteria.CriterionID, SHSCriteria.Name FROM SHSTasks INNER JOIN SHSCriteria ON SHSTasks.CriterionID = SHSCriteria.CriterionID WHERE SHSTasks.ClassID = ? ORDER BY SHSCriteria.Percent ASC NULLS FIRST");
         } else {
-            prep = con.prepareStatement("SELECT Tasks.TaskID, Tasks.Name, Tasks.Term, Tasks.Items, Criteria.CriterionID, Criteria.Name FROM Tasks INNER JOIN Criteria ON Tasks.CriterionID = Criteria.CriterionID WHERE Tasks.ClassID = ?");
+            prep = con.prepareStatement("SELECT Tasks.TaskID, Tasks.Name, Tasks.Term, Tasks.Items, Criteria.CriterionID, Criteria.Name FROM Tasks INNER JOIN Criteria ON Tasks.CriterionID = Criteria.CriterionID WHERE Tasks.ClassID = ? ORDER BY Criteria.Percent ASC NULLS FIRST");
         }
         prep.setLong(1, c.getID());
         r = prep.executeQuery();
@@ -1252,12 +1291,12 @@ public class DB {
             prep = con.prepareStatement("SELECT SHSScores.ScoreID, SHSEnrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, SHSScores.Score, SHSScores.Notes "
                     + "FROM (Students INNER JOIN SHSEnrollees ON Students.StudentID = SHSEnrollees.StudentID) "
                     + "INNER JOIN SHSScores ON SHSEnrollees.EnrolleeID = SHSScores.EnrolleeID "
-                    + "WHERE SHSScores.TaskID = ?");
+                    + "WHERE SHSScores.TaskID = ? ORDER BY Students.LN ASC NULLS FIRST, Students.FN ASC NULLS FIRST");
         } else {
             prep = con.prepareStatement("SELECT Scores.ScoreID, Enrollees.EnrolleeID, Students.StudentID, Students.FN, Students.LN, Scores.Score, Scores.Notes "
                     + "FROM (Students INNER JOIN Enrollees ON Students.StudentID = Enrollees.StudentID) "
                     + "INNER JOIN Scores ON Enrollees.EnrolleeID = Scores.EnrolleeID "
-                    + "WHERE Scores.TaskID = ?");
+                    + "WHERE Scores.TaskID = ? ORDER BY Students.LN ASC NULLS FIRST, Students.FN ASC NULLS FIRST");
         }
         prep.setLong(1, t.getID());
         r = prep.executeQuery();
@@ -1328,7 +1367,7 @@ public class DB {
     public static ObservableList<User> getUsers() throws SQLException, IOException {
         LOGGER.log(Level.INFO, "Getting users...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT UserID, Username, Nickname, Picture, AccessLevel FROM Users");
+        PreparedStatement prep = con.prepareStatement("SELECT UserID, Username, Nickname, Picture, AccessLevel FROM Users ORDER BY Username ASC NULLS FIRST");
         r = prep.executeQuery();
 
         ObservableList<User> users = FXCollections.observableArrayList();
@@ -1339,7 +1378,7 @@ public class DB {
             temp.setNickname(r.getString(3));
             InputStream is = r.getBinaryStream(4);
             if (is != null) {
-                temp.setPicture(ImageIO.read(is));
+                temp.setPicture(SwingFXUtils.toFXImage(ImageIO.read(is), null));
                 is.close();
             }
             temp.setAccessLevel(r.getInt(5));
@@ -1356,7 +1395,28 @@ public class DB {
         prep.setString(2, password);
         r = prep.executeQuery();
 
-        ObservableList<User> users = FXCollections.observableArrayList();
+        if (r.next()) {
+            User temp = new User(r.getLong(1));
+            temp.setUsername(r.getString(2));
+            temp.setNickname(r.getString(3));
+            InputStream is = r.getBinaryStream(4);
+            if (is != null) {
+                temp.setPicture(SwingFXUtils.toFXImage(ImageIO.read(is), null));
+                is.close();
+            }
+            temp.setAccessLevel(r.getInt(5));
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
+    public static User getUser(long id) throws SQLException, IOException {
+        LOGGER.log(Level.INFO, "Getting user...");
+        ResultSet r;
+        PreparedStatement prep = con.prepareStatement("SELECT UserID, Username, Nickname, Picture, AccessLevel FROM Users WHERE UserID = ?");
+        prep.setLong(1, id);
+        r = prep.executeQuery();
 
         if (r.next()) {
             User temp = new User(r.getLong(1));
@@ -1364,7 +1424,7 @@ public class DB {
             temp.setNickname(r.getString(3));
             InputStream is = r.getBinaryStream(4);
             if (is != null) {
-                temp.setPicture(ImageIO.read(is));
+                temp.setPicture(SwingFXUtils.toFXImage(ImageIO.read(is), null));
                 is.close();
             }
             temp.setAccessLevel(r.getInt(5));
@@ -1380,7 +1440,7 @@ public class DB {
         byte[] imgbytes = null;
         if (u.getPicture() != null) {
             ByteArrayOutputStream tempimg = new ByteArrayOutputStream();
-            ImageIO.write(u.getPicture(), "png", tempimg);
+            ImageIO.write(SwingFXUtils.fromFXImage(u.getPicture(), null), "png", tempimg);
             imgbytes = tempimg.toByteArray();
         }
 
@@ -1391,6 +1451,7 @@ public class DB {
         preps.setInt(4, u.getAccessLevel());
         preps.setLong(5, u.getID());
         preps.executeUpdate();
+
         return false;
     }
 
@@ -1400,7 +1461,7 @@ public class DB {
             byte[] imgbytes = null;
             if (u.getPicture() != null) {
                 ByteArrayOutputStream tempimg = new ByteArrayOutputStream();
-                ImageIO.write(u.getPicture(), "png", tempimg);
+                ImageIO.write(SwingFXUtils.fromFXImage(u.getPicture(), null), "png", tempimg);
                 imgbytes = tempimg.toByteArray();
             }
 
@@ -1420,7 +1481,7 @@ public class DB {
             byte[] imgbytes = null;
             if (u.getPicture() != null) {
                 ByteArrayOutputStream tempimg = new ByteArrayOutputStream();
-                ImageIO.write(u.getPicture(), "png", tempimg);
+                ImageIO.write(SwingFXUtils.fromFXImage(u.getPicture(), null), "png", tempimg);
                 imgbytes = tempimg.toByteArray();
             }
 
@@ -1490,7 +1551,7 @@ public class DB {
         ResultSet r1, r2, r3, r4;
         PreparedStatement prep1, prep2, prep3, prep4;
 
-        prep1 = con.prepareStatement("SELECT Enrollees.EnrolleeID FROM Enrollees LEFT JOIN Students ON Enrollees.StudentID = Students.StudentID WHERE Enrollees.ClassID = ? ORDER BY LN || FN ASC");
+        prep1 = con.prepareStatement("SELECT Enrollees.EnrolleeID FROM Enrollees LEFT JOIN Students ON Enrollees.StudentID = Students.StudentID WHERE Enrollees.ClassID = ? ORDER BY Students.LN ASC NULLS FIRST, Students.FN ASC NULLS FIRST");
         prep1.setLong(1, c.getID());
         r1 = prep1.executeQuery();
 
@@ -1625,7 +1686,7 @@ public class DB {
         ResultSet r1, r2, r3, r4;
         PreparedStatement prep1, prep2, prep3, prep4;
 
-        prep1 = con.prepareStatement("SELECT SHSEnrollees.EnrolleeID FROM SHSEnrollees LEFT JOIN Students ON SHSEnrollees.StudentID = Students.StudentID WHERE SHSEnrollees.ClassID = ? ORDER BY Students.IsFemale ASC, LN || FN");
+        prep1 = con.prepareStatement("SELECT SHSEnrollees.EnrolleeID FROM SHSEnrollees LEFT JOIN Students ON SHSEnrollees.StudentID = Students.StudentID WHERE SHSEnrollees.ClassID = ? ORDER BY Students.IsFemale ASC NULLS FIRST, Students.LN ASC NULLS FIRST, Students.FN ASC NULLS FIRST");
         prep1.setLong(1, c.getID());
         r1 = prep1.executeQuery();
 
@@ -1810,6 +1871,10 @@ public class DB {
         double average = total / ((double) l.size());
         return Long.toString(Math.round(average));
     }
+
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Reminders">
 
     // </editor-fold>
 }

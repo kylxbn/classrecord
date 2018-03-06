@@ -17,9 +17,10 @@ package com.orthocube.classrecord.util.grade;
 /**
  * @author OrthoCube
  */
-public class SHSTask {
+class SHSTask {
 
-    private int score, total;
+    private final int score;
+    private final int total;
 
     SHSTask(int s, int t) {
         score = s;

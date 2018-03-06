@@ -16,16 +16,12 @@ public class AttendanceList {
     private final StringProperty remarks = new SimpleStringProperty();
     private final StringProperty notes = new SimpleStringProperty();
 
-    public AttendanceList(long id, AttendanceDay ad, Enrollee e, String rem, String n) {
-        this.id.set(id);
-        this.attendanceDay.set(ad);
-        this.enrollee.set(e);
-        this.remarks.set(rem);
-        this.notes.set(n);
-    }
-
     public AttendanceList(long id) {
-        this(id, null, null, "", "");
+        this.id.set(id);
+        this.attendanceDay.set(null);
+        this.enrollee.set(null);
+        this.remarks.set("");
+        this.notes.set("");
     }
 
     public AttendanceList() {

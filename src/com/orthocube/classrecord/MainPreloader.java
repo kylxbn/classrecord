@@ -8,7 +8,7 @@
 package com.orthocube.classrecord;
 
 import com.orthocube.classrecord.data.User;
-import com.orthocube.classrecord.preloader.MainPreloaderController;
+import com.orthocube.classrecord.gui.preloader.MainPreloaderController;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.animation.FadeTransition;
@@ -37,23 +37,22 @@ public class MainPreloader extends Preloader {
     private Scene scene;
     private String username = null;
     private String password = null;
-    private boolean dark = true;
+    private final boolean dark = true;
 
     private Group topGroup;
     private StackPane preloaderParent;
     private StateChangeNotification evt;
 
-    private Locale language = Locale.JAPANESE;
-    private ResourceBundle bundle = ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings");//, language);
+    private final Locale language = Locale.ENGLISH;
+    private final ResourceBundle bundle = ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings", language);
 
-    private User user = null;
     private MainPreloaderController loaderController;
 
     @Override
     public void start(Stage stage) throws Exception {
         this.preloaderStage = stage;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("preloader/Preloader.fxml"), bundle);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/preloader/Preloader.fxml"), bundle);
         StackPane root = loader.load();
         loaderController = loader.getController();
         loaderController.setMainPreloader(this);
@@ -84,6 +83,7 @@ public class MainPreloader extends Preloader {
 
         loaderController.startOpeningAnimation();
         preloaderStage.show();
+        preloaderStage.toFront();
     }
 
     private void setDarkTheme() {
@@ -167,7 +167,7 @@ public class MainPreloader extends Preloader {
         if (preloaderStage.isShowing() && username != null && password != null && consumer != null) {
             try {
                 if (DB.userExists(username, password)) {
-                    user = DB.getUser(username, password);
+                    User user = DB.getUser(username, password);
                     consumer.setInitData(user, preloaderStage, scene, dark);
                     //Platform.runLater(() -> preloaderStage.hide());
                     SharedScene appScene = (SharedScene) evt.getApplication();

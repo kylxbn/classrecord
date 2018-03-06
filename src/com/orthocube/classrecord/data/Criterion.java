@@ -16,16 +16,12 @@ public class Criterion {
     private final IntegerProperty percentage = new SimpleIntegerProperty();
     private final IntegerProperty terms = new SimpleIntegerProperty();
 
-    public Criterion(long id, Clazz clazz, String name, int percentage, int terms) {
-        this.id.set(id);
-        this.clazz.set(clazz);
-        this.name.set(name);
-        this.percentage.set(percentage);
-        this.terms.set(terms);
-    }
-
     public Criterion(long id) {
-        this(id, null, "", 0, 0);
+        this.id.set(id);
+        this.clazz.set(null);
+        this.name.set("");
+        this.percentage.set(0);
+        this.terms.set(0);
     }
 
     public Criterion() {

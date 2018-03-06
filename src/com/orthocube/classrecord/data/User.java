@@ -8,26 +8,21 @@
 package com.orthocube.classrecord.data;
 
 import javafx.beans.property.*;
-
-import java.awt.image.BufferedImage;
+import javafx.scene.image.Image;
 
 public class User {
     private final LongProperty id = new SimpleLongProperty();
     private final StringProperty username = new SimpleStringProperty();
     private final StringProperty nickname = new SimpleStringProperty();
-    private final ObjectProperty<BufferedImage> picture = new SimpleObjectProperty<>();
+    private final ObjectProperty<Image> picture = new SimpleObjectProperty<>();
     private final IntegerProperty accessLevel = new SimpleIntegerProperty();
 
-    public User(long id, String username, String nickname, BufferedImage picture, int accessLevel) {
-        this.id.set(id);
-        this.username.set(username);
-        this.nickname.set(nickname);
-        this.picture.set(picture);
-        this.accessLevel.set(accessLevel);
-    }
-
     public User(long id) {
-        this(id, "", "", null, 0);
+        this.id.set(id);
+        this.username.set("");
+        this.nickname.set("");
+        this.picture.set(null);
+        this.accessLevel.set(0);
     }
 
     public User() {
@@ -70,15 +65,15 @@ public class User {
         return nickname;
     }
 
-    public BufferedImage getPicture() {
+    public Image getPicture() {
         return picture.get();
     }
 
-    public void setPicture(BufferedImage picture) {
+    public void setPicture(Image picture) {
         this.picture.set(picture);
     }
 
-    public ObjectProperty<BufferedImage> pictureProperty() {
+    public ObjectProperty<Image> pictureProperty() {
         return picture;
     }
 

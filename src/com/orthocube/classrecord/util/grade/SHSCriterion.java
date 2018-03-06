@@ -14,8 +14,8 @@ import java.util.ArrayList;
  */
 public class SHSCriterion {
 
-    private ArrayList<SHSTask> tasks;
-    private double percent;
+    private final ArrayList<SHSTask> tasks;
+    private final double percent;
 
     public SHSCriterion(int p) {
         tasks = new ArrayList<>();

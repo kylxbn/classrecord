@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * <p>
  * Instances of this class can be used concurrently by multiple threads.
  */
-public final class PasswordAuthentication {
+final class PasswordAuthentication {
 
     /**
      * Each token produced by this class uses this identifier as a prefix.
@@ -54,7 +54,7 @@ public final class PasswordAuthentication {
      *
      * @param cost the exponential computational cost of hashing a password, 0 to 30
      */
-    public PasswordAuthentication(int cost) {
+    private PasswordAuthentication(int cost) {
         iterations(cost); /* Validate cost */
         this.cost = cost;
         this.random = new SecureRandom();
@@ -83,7 +83,7 @@ public final class PasswordAuthentication {
      *
      * @return a secure authentication token to be stored for later authentication
      */
-    public String hash(char[] password) {
+    private String hash(char[] password) {
         byte[] salt = new byte[SIZE / 8];
         random.nextBytes(salt);
         byte[] dk = pbkdf2(password, salt, 1 << cost);

@@ -21,16 +21,16 @@ public class AttendanceDay {
     private final StringProperty notes = new SimpleStringProperty();
     private final ObjectProperty<ObservableList<AttendanceList>> attendanceList = new SimpleObjectProperty<>();
 
-    public AttendanceDay(long id, Date date, Clazz clazz, String notes) {
+    private AttendanceDay(long id, Date date) {
         this.id.set(id);
         this.date.set(date);
-        this.clazz.set(clazz);
-        this.notes.set(notes);
+        this.clazz.set(null);
+        this.notes.set("");
     }
 
     public AttendanceDay(long id) {
         //this(id, Date.valueOf((new SimpleDateFormat("yyyy-mm-dd")).format(new java.util.Date())), null, "");
-        this(id, new java.sql.Date(Calendar.getInstance().getTimeInMillis()), null, "");
+        this(id, new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
     }
 
     public AttendanceDay() {

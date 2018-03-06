@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 public class Criterion {
 
-    private ArrayList<Task> tasks;
-    private double percent;
+    private final ArrayList<Task> tasks;
+    private final double percent;
 
     public Criterion(int p) {
         tasks = new ArrayList<>();

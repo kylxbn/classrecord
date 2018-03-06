@@ -17,9 +17,10 @@ package com.orthocube.classrecord.util.grade;
 /**
  * @author OrthoCube
  */
-public class Task {
+class Task {
 
-    private int score, total;
+    private final int score;
+    private final int total;
 
     public Task(int s, int t) {
         score = s;

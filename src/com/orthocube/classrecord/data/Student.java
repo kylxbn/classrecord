@@ -8,8 +8,7 @@
 package com.orthocube.classrecord.data;
 
 import javafx.beans.property.*;
-
-import java.awt.image.BufferedImage;
+import javafx.scene.image.Image;
 
 /**
  * @author OrthoCube
@@ -25,23 +24,19 @@ public final class Student {
     private final StringProperty contact = new SimpleStringProperty();
     private final StringProperty address = new SimpleStringProperty();
     private final StringProperty notes = new SimpleStringProperty();
-    private final ObjectProperty<BufferedImage> picture = new SimpleObjectProperty<>();
-
-    public Student(long id, String sid, String fn, String mn, String ln, boolean isFemale, String contact, String address, String notes, BufferedImage picture) {
-        this.id.set(id);
-        this.sid.set(sid);
-        this.fn.set(fn);
-        this.mn.set(mn);
-        this.ln.set(ln);
-        this.isFemale.set(isFemale);
-        this.contact.set(contact);
-        this.address.set(address);
-        this.notes.set(notes);
-        this.picture.set(picture);
-    }
+    private final ObjectProperty<Image> picture = new SimpleObjectProperty<>();
 
     public Student(long id) {
-        this(id, "", "", "", "", false, "", "", "", null);
+        this.id.set(id);
+        this.sid.set("");
+        this.fn.set("");
+        this.mn.set("");
+        this.ln.set("");
+        this.isFemale.set(false);
+        this.contact.set("");
+        this.address.set("");
+        this.notes.set("");
+        this.picture.set(null);
     }
 
     public Student() {
@@ -156,15 +151,15 @@ public final class Student {
         return notes;
     }
 
-    public BufferedImage getPicture() {
+    public Image getPicture() {
         return picture.get();
     }
 
-    public void setPicture(BufferedImage picture) {
+    public void setPicture(Image picture) {
         this.picture.set(picture);
     }
 
-    public ObjectProperty<BufferedImage> pictureProperty() {
+    public ObjectProperty<Image> pictureProperty() {
         return picture;
     }
 }

@@ -16,16 +16,12 @@ public class Score {
     private final IntegerProperty score = new SimpleIntegerProperty();
     private final StringProperty notes = new SimpleStringProperty();
 
-    public Score(long id, Enrollee enrollee, Task task, int score, String notes) {
-        this.id.set(id);
-        this.enrollee.set(enrollee);
-        this.task.set(task);
-        this.score.set(score);
-        this.notes.set(notes);
-    }
-
     public Score(long id) {
-        this(id, null, null, 0, "");
+        this.id.set(id);
+        this.enrollee.set(null);
+        this.task.set(null);
+        this.score.set(0);
+        this.notes.set("");
     }
 
     public Score() {
