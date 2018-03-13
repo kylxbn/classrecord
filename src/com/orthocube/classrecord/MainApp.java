@@ -11,6 +11,8 @@ import com.orthocube.classrecord.data.*;
 import com.orthocube.classrecord.gui.about.AboutController;
 import com.orthocube.classrecord.gui.classes.*;
 import com.orthocube.classrecord.gui.main.MainController;
+import com.orthocube.classrecord.gui.reminders.RemindersController;
+import com.orthocube.classrecord.gui.settings.SettingsController;
 import com.orthocube.classrecord.gui.students.ImageRefinerController;
 import com.orthocube.classrecord.gui.students.StudentChooserController;
 import com.orthocube.classrecord.gui.students.StudentEnrolledInController;
@@ -18,12 +20,14 @@ import com.orthocube.classrecord.gui.students.StudentsController;
 import com.orthocube.classrecord.gui.users.UsersController;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import com.orthocube.classrecord.util.Settings;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
@@ -40,8 +44,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -64,23 +66,21 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private SplitPane classes;
     private SplitPane users;
     private SplitPane about;
+    private SplitPane reminders;
 
     private MainController mainController;
     private StudentsController studentsController;
     private ClassesController classesController;
     private UsersController usersController;
     private AboutController aboutController;
+    private RemindersController remindersController;
 
     private ObservableList<Student> studentsModel;
 
-    private final Locale language = Locale.ENGLISH;
-    private final ResourceBundle bundle = ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings", language);
     private Stage stage;
     private Scene scene;
 
     private User currentUser;
-
-    private boolean isDark = true;
 
     public NotificationPane getRootNotification() {
         return rootNotification;
@@ -100,12 +100,11 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         }
     }
 
-    public void setInitData(User user, Stage stage, Scene scene, boolean dark) {
+    public void setInitData(User user, Stage stage, Scene scene) {
         this.currentUser = user;
         this.scene = scene;
         this.stage = stage;
-        this.isDark = dark;
-        if (isDark)
+        if (Settings.isDark)
             setDarkTheme();
         else
             setLightTheme();
@@ -114,12 +113,13 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         //setDarkTheme();
         Platform.setImplicitExit(true);
         // TODO: fix blank notification/confirmation window on Linux
-//        stage.setOnCloseRequest(e -> {
-//            if (Dialogs.confirm("Close Application", "Are you sure you want to leave?", "Any unsaved changes will be lost.") == ButtonType.CANCEL)
-//                e.consume();
-//        });
+        stage.setOnCloseRequest(e -> {
+            if (Dialogs.confirm("Close Application", "Are you sure you want to leave?", "Any unsaved changes will be lost.") == ButtonType.CANCEL) {
+                e.consume();
+            }
+        });
 
-        this.stage.setTitle("Class Record"); //bundle.getString("classrecord"));
+        this.stage.setTitle(Settings.bundle.getString("main.classrecord"));
 
     }
 
@@ -169,15 +169,13 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     public void setDarkTheme() {
         scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
         rootNotification.getStyleClass().add(NotificationPane.STYLE_CLASS_DARK);
-        isDark = true;
-        mainController.setDark();
+        remindersController.setDark();
     }
 
     public void setLightTheme() {
         scene.getStylesheets().clear();
         rootNotification.getStyleClass().remove(rootNotification.getStyleClass().size() - 1);
-        mainController.setLight();
-        isDark = false;
+        remindersController.setLight();
     }
 
     @Override
@@ -193,7 +191,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         // ----------- LOAD MAIN ----------------
         LOGGER.log(Level.INFO, "Loading Main.fxml...");
         FXMLLoader rootLoader = new FXMLLoader(getClass().getResource("gui/main/Main.fxml"));
-        rootLoader.setResources(bundle);
+        rootLoader.setResources(Settings.bundle);
         root = rootLoader.load();
         rootNotification = new NotificationPane(root);
         rootNotification.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -216,7 +214,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         // ------------ LOAD STUDENTS ----------------
         LOGGER.log(Level.INFO, "Loading Students.fxml...");
         FXMLLoader studentLoader = new FXMLLoader(getClass().getResource("gui/students/Students.fxml"));
-        studentLoader.setResources(bundle);
+        studentLoader.setResources(Settings.bundle);
         students = studentLoader.load();
         studentsController = studentLoader.getController();
         studentsController.setMainApp(this);
@@ -231,7 +229,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         // ------------- LOAD CLASSES -----------------
         LOGGER.log(Level.INFO, "Loading Classes.fxml...");
         FXMLLoader classesLoader = new FXMLLoader(getClass().getResource("gui/classes/Classes.fxml"));
-        classesLoader.setResources(bundle);
+        classesLoader.setResources(Settings.bundle);
         classes = classesLoader.load();
         classesController = classesLoader.getController();
         classesController.setMainApp(this);
@@ -246,7 +244,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         // --------------- LOAD USERS -----------------
         LOGGER.log(Level.INFO, "Loading Users.fxml...");
         FXMLLoader usersLoader = new FXMLLoader(getClass().getResource("gui/users/Users.fxml"));
-        usersLoader.setResources(bundle);
+        usersLoader.setResources(Settings.bundle);
         users = usersLoader.load();
         usersController = usersLoader.getController();
         usersController.setMainApp(this);
@@ -257,10 +255,24 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         usersController.setModel(usersModel);
         notifyPreloader(new MainPreloader.ProgressNotification(0.8));
 
+        // --------------- LOAD REMINDERS -----------------
+        LOGGER.log(Level.INFO, "Loading Reminders.fxml...");
+        FXMLLoader remindersLoader = new FXMLLoader(getClass().getResource("gui/reminders/Reminders.fxml"));
+        remindersLoader.setResources(Settings.bundle);
+        reminders = remindersLoader.load();
+        remindersController = remindersLoader.getController();
+        remindersController.setMainApp(this);
+        notifyPreloader(new MainPreloader.ProgressNotification(0.9));
+
+        LOGGER.log(Level.INFO, "Loading users...");
+        ObservableList<Reminder> remindersModel = DB.getReminders();
+        remindersController.setModel(remindersModel);
+        notifyPreloader(new MainPreloader.ProgressNotification(1.0));
+
         // ----------------- LOAD ABOUT -----------------
         LOGGER.log(Level.INFO, "Loading About.fxml...");
         FXMLLoader aboutLoader = new FXMLLoader(getClass().getResource("gui/about/About.fxml"));
-        aboutLoader.setResources(bundle);
+        aboutLoader.setResources(Settings.bundle);
         about = aboutLoader.load();
         aboutController = aboutLoader.getController();
         notifyPreloader(new MainPreloader.ProgressNotification(1.0));
@@ -295,7 +307,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void showEnrollees(Clazz c) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/classes/Enrollees.fxml"));
-        loader.setResources(bundle);
+        loader.setResources(Settings.bundle);
         SplitPane enrollees = loader.load();
         EnrolleesController controller = loader.getController();
         controller.setMainApp(this);
@@ -317,7 +329,8 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(stage);
             Scene scene = new Scene(studentChooser);
-            if (isDark) scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+            if (Settings.isDark)
+                scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
             dialogStage.setScene(scene);
 
             studentChooserController.setDialogStage(dialogStage);
@@ -334,7 +347,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void showEnrolledClasses(Student s) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/students/StudentEnrolledIn.fxml"));
-        loader.setResources(bundle);
+        loader.setResources(Settings.bundle);
         SplitPane enrolledIn = loader.load();
         StudentEnrolledInController controller = loader.getController();
         controller.setMainApp(this);
@@ -361,6 +374,17 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         historyTitles.add(aboutController.getTitle());
         currentHistory = 0;
         mainController.clearToggle();
+        updateNavigation();
+    }
+
+    public void showReminders() {
+        history.clear();
+        historyTitles.clear();
+        history.add(reminders);
+        historyTitles.add(remindersController.getTitle());
+        currentHistory = 0;
+        mainController.clearToggle();
+        remindersController.refreshSchedule();
         updateNavigation();
     }
 
@@ -400,7 +424,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void showCriteria(Clazz currentClass) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/classes/Criteria.fxml"));
-        loader.setResources(bundle);
+        loader.setResources(Settings.bundle);
         SplitPane enrollees = loader.load();
         CriteriaController controller = loader.getController();
         controller.setMainApp(this);
@@ -413,7 +437,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void showAttendance(Clazz currentClass) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/classes/Attendance.fxml"));
-        loader.setResources(bundle);
+        loader.setResources(Settings.bundle);
         SplitPane attendance = loader.load();
         AttendanceController controller = loader.getController();
         controller.setMainApp(this);
@@ -426,7 +450,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void addAttendance(Clazz currentClass) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/classes/Attendance.fxml"));
-        loader.setResources(bundle);
+        loader.setResources(Settings.bundle);
         SplitPane attendance = loader.load();
         AttendanceController controller = loader.getController();
         controller.setMainApp(this);
@@ -440,7 +464,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void showAttendanceStatistics(Clazz currentClass) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/classes/AttendanceStatistics.fxml"));
-        loader.setResources(bundle);
+        loader.setResources(Settings.bundle);
         SplitPane attendance = loader.load();
         AttendanceStatisticsController controller = loader.getController();
         controller.setClass(currentClass);
@@ -452,7 +476,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void showTasks(Clazz currentClass) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/classes/Tasks.fxml"));
-        loader.setResources(bundle);
+        loader.setResources(Settings.bundle);
         SplitPane tasks = loader.load();
         TasksController controller = loader.getController();
         controller.setMainApp(this);
@@ -474,7 +498,8 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(stage);
             Scene scene = new Scene(enrolleeChooser);
-            if (isDark) scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+            if (Settings.isDark)
+                scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
             dialogStage.setScene(scene);
 
             enrolleeChooserController.setDialogStage(dialogStage);
@@ -488,9 +513,33 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         return null;
     }
 
+    public void showSettingsDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/settings/Settings.fxml"));
+            SplitPane enrolleeChooser = loader.load();
+            SettingsController settingsController = loader.getController();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Settings");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(stage);
+            Scene scene = new Scene(enrolleeChooser);
+            if (Settings.isDark)
+                scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+            dialogStage.setScene(scene);
+
+            settingsController.setDialogStage(dialogStage);
+            settingsController.setMainApp(this);
+
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            Dialogs.exception(e);
+        }
+    }
+
     public BufferedImage chooseImage(int size) {
         FileChooser fc = new FileChooser();
-        fc.setTitle(bundle.getString("main.imagechooser"));
+        fc.setTitle(Settings.bundle.getString("main.imagechooser"));
         File f = fc.showOpenDialog(stage);
         if (f == null) return null;
 
@@ -501,11 +550,12 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
             ImageRefinerController irController = loader.getController();
 
             Stage dialogStage = new Stage();
-            dialogStage.setTitle(bundle.getString("main.imagerefiner"));
+            dialogStage.setTitle(Settings.bundle.getString("main.imagerefiner"));
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(stage);
             Scene scene = new Scene(imageRefiner);
-            if (isDark) scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
+            if (Settings.isDark)
+                scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
             dialogStage.setScene(scene);
 
             irController.setDialogStage(dialogStage);
@@ -548,7 +598,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void showGrades(Clazz currentClass) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/classes/Grades.fxml"));
-        loader.setResources(bundle);
+        loader.setResources(Settings.bundle);
         SplitPane grades = loader.load();
         GradesController controller = loader.getController();
         controller.setClass(currentClass);
@@ -560,7 +610,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     public void summarizeAttendance(Clazz currentClass) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/classes/AttendanceSummary.fxml"));
-        loader.setResources(bundle);
+        loader.setResources(Settings.bundle);
         SplitPane grades = loader.load();
         AttendanceSummaryController controller = loader.getController();
         controller.setClass(currentClass);
@@ -574,13 +624,21 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         mainController.refreshUser();
     }
 
-    public void detatch() {
+    public void detach() {
         Stage stage = new Stage();
         stage.setTitle("Class Record - " + mainController.getTitle());
         stage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("res/Dossier_16px.png")));
         stage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("res/Dossier_30px.png")));
         stage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("res/Dossier_40px.png")));
         stage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_80px.png")));
+
+        SplitPane currentCenter = (SplitPane) root.getCenter();
+        if ((currentCenter == students) || (currentCenter == classes) ||
+                (currentCenter == users) || (currentCenter == about) || (currentCenter == reminders)) {
+
+
+            currentCenter.getItems().setAll();
+        }
         stage.setScene(new Scene(history.get(currentHistory), 800, 600));
         stage.show();
     }

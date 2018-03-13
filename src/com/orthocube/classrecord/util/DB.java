@@ -8,16 +8,23 @@
 package com.orthocube.classrecord.util;
 
 import com.orthocube.classrecord.data.*;
+import com.orthocube.classrecord.util.license.Info;
+import com.orthocube.classrecord.util.license.KeyByteSet;
+import com.orthocube.classrecord.util.license.Utils;
+import com.orthocube.classrecord.util.license.verification.LicenseKeyCheck;
+import com.orthocube.classrecord.util.license.verification.LicenseKeyResult;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import org.apache.commons.math3.fraction.BigFraction;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Properties;
@@ -35,6 +42,7 @@ public class DB {
 
     private static boolean isFirstRun = false;
     private static Connection con;
+    public static Info licenseInfo;
 
     public static boolean isFirstRun() {
         return isFirstRun;
@@ -85,7 +93,7 @@ public class DB {
             }
 
             isFirstRun = true;
-            s.executeUpdate("INSERT INTO USERS (Username, Nickname, Password, AccessLevel) VALUES ('admin', 'Administrator', 'admin', 2)");
+            s.executeUpdate("INSERT INTO USERS (Username, Nickname, Password, AccessLevel) VALUES ('admin', 'Administrator', 'admin', 3)");
 
             try {
                 s.executeUpdate("CREATE TABLE Students (StudentID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
@@ -107,6 +115,7 @@ public class DB {
             try {
                 s.executeUpdate("CREATE TABLE Classes (ClassID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                         "Name VARCHAR(60), " +
+                        "Owner BIGINT NOT NULL, " +
                         "SY SMALLINT, " +
                         "Sem SMALLINT, " +
                         "YearLevel SMALLINT, " +
@@ -267,13 +276,15 @@ public class DB {
 
             try {
                 s.executeUpdate("CREATE TABLE Reminders (ID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                        "Owner BIGINT NOT NULL, " +
                         "StartDate DATE NOT NULL, " +
-                        "StartTime TIME NOT NULL, " +
+                        "StartTime TIME, " +
                         "EndDate DATE NOT NULL, " +
-                        "EndTime TIME NOT NULL, " +
+                        "EndTime TIME, " +
                         "Title VARCHAR(64) NOT NULL, " +
                         "Notes VARCHAR(255) NOT NULL, " +
-                        "Location VARCHAR(64) NOT NULL)");
+                        "Location VARCHAR(64) NOT NULL, " +
+                        "IsDone SMALLINT NOT NULL)");
             } catch (SQLException e) {
                 if (!("X0Y32".equals(e.getSQLState()))) {
                     Dialogs.exception(e);
@@ -293,6 +304,14 @@ public class DB {
                 s.executeUpdate("CREATE FUNCTION BitSet(a SMALLINT, b SMALLINT) RETURNS SMALLINT " +
                         "PARAMETER STYLE JAVA NO SQL LANGUAGE JAVA " +
                         "EXTERNAL NAME 'com.orthocube.classrecord.util.Utils.bitSet'");
+            } catch (SQLException e) {
+                Dialogs.exception(e);
+            }
+
+            try {
+                s.executeUpdate("CREATE FUNCTION DaysBetween(a DATE, b DATE) RETURNS BIGINT " +
+                        "PARAMETER STYLE JAVA NO SQL LANGUAGE JAVA " +
+                        "EXTERNAL NAME 'com.orthocube.classrecord.util.Utils.daysBetween'");
             } catch (SQLException e) {
                 Dialogs.exception(e);
             }
@@ -330,6 +349,94 @@ public class DB {
             } else {
                 LOGGER.log(Level.INFO, "Derby successfully shut down.");
             }
+        }
+    }
+
+    private static void setSetting(String key, String value) throws SQLException {
+        PreparedStatement prep = con.prepareStatement("SELECT SettingKey FROM Settings WHERE SettingKey = ?");
+        prep.setString(1, key);
+        ResultSet r = prep.executeQuery();
+        boolean keyExists = r.next();
+
+        PreparedStatement prep2;
+        if (keyExists) {
+            prep2 = con.prepareStatement("UPDATE Settings SET SettingValue = ? WHERE SettingKey = ?");
+            prep2.setString(1, value);
+            prep2.setString(2, key);
+        } else {
+            prep2 = con.prepareStatement("INSERT INTO Settings (SettingKey, SettingValue) VALUES (?, ?)");
+            prep2.setString(1, key);
+            prep2.setString(2, value);
+        }
+        prep2.executeUpdate();
+    }
+
+    private static String getSetting(String key) throws SQLException {
+        PreparedStatement prep = con.prepareStatement("SELECT SettingValue FROM Settings WHERE SettingKey = ?");
+        prep.setString(1, key);
+        ResultSet r = prep.executeQuery();
+        boolean keyExists = r.next();
+
+        if (keyExists) {
+            return r.getString(1);
+        } else {
+            return null;
+        }
+    }
+
+    public static LicenseKeyResult hasValidLicense() throws SQLException {
+        String failed = getSetting("failedboot");
+        if ((failed != null) && (failed.equals("true")))
+            return LicenseKeyResult.NEEDSREPAIR;
+
+        String key = getSetting("productkey");
+        if (key != null) {
+            LicenseKeyResult res = isValidLicense(key);
+            if (res != LicenseKeyResult.GOOD) {
+                setSetting("failedboot", "true");
+            }
+            return res;
+        } else {
+            return LicenseKeyResult.NOTFOUND;
+        }
+    }
+
+    public static LicenseKeyResult isValidLicense(String productkey) throws SQLException {
+        String failed = getSetting("failedboot");
+        if ((failed != null) && (failed.equals("true"))) {
+            if (Utils.formatKeyForCompare(productkey).equals(Utils.formatKeyForCompare(getSetting("productkey"))))
+                return LicenseKeyResult.NEEDSREPAIR;
+        }
+
+        LicenseKeyCheck licenseKeyCheck = new LicenseKeyCheck();
+
+        KeyByteSet[] keyBytes = new KeyByteSet[]{
+                new KeyByteSet(7, 0xc4, 0x0e, 0xd1),
+                new KeyByteSet(8, 0xec, 0x54, 0x91)
+        };
+
+        LicenseKeyResult result = licenseKeyCheck.checkKey(productkey, keyBytes, 8, null);
+        if (result == LicenseKeyResult.GOOD) {
+            Info info = licenseKeyCheck.getDecodedInfo();
+            licenseInfo = info;
+            if (info.getLength() == 0)
+                return LicenseKeyResult.INVALID;
+            if (Info.base.plusMonths(info.getStartMonth()).compareTo(LocalDate.now()) > 0) {
+                return LicenseKeyResult.TOOEARLY;
+            } else if (Info.base.plusMonths(info.getStartMonth()).plusMonths(info.getLength()).compareTo(LocalDate.now()) < 0) {
+                return LicenseKeyResult.EXPIRED;
+            } else {
+                return result;
+            }
+        }
+
+        return result;
+    }
+
+    public static void setLicense(String s) throws SQLException {
+        if (!Utils.formatKeyForCompare(getSetting("productkey")).equals(Utils.formatKeyForCompare(s))) {
+            setSetting("productkey", s);
+            setSetting("failedboot", "false");
         }
     }
     // </editor-fold>
@@ -570,6 +677,39 @@ public class DB {
         return classes;
     }
 
+    public static ObservableList<Clazz> getClasses(int year, int sem) throws SQLException {
+        LOGGER.log(Level.INFO, "Getting classes...");
+        ResultSet r;
+        PreparedStatement prep = con.prepareStatement("SELECT Classes.ClassID, Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes FROM Classes WHERE Classes.SY = ? AND Classes.Sem = ? ORDER BY Classes.Name ASC NULLS FIRST");
+        prep.setInt(1, year);
+        prep.setInt(2, sem);
+        r = prep.executeQuery();
+
+        ObservableList<Clazz> classes = FXCollections.observableArrayList();
+
+        while (r.next()) {
+            Clazz temp = new Clazz(r.getInt(1));
+            temp.setName(r.getString(2));
+            temp.setSY(r.getInt(3));
+            temp.setSem(r.getInt(4));
+            temp.setYear(r.getInt(5));
+            temp.setCourse(r.getString(6));
+            temp.setRoom(r.getString(7));
+            temp.setDays(r.getInt(8));
+
+            ArrayList<String> times = new ArrayList<>();
+            Collections.addAll(times, r.getString(9).split("\\|"));
+
+            temp.setTimes(times);
+
+            temp.setSHS(r.getInt(10) > 0);
+            temp.setNotes(r.getString(11));
+            classes.add(temp);
+        }
+
+        return classes;
+    }
+
     private static Clazz getClass(long id) throws SQLException {
         LOGGER.log(Level.INFO, "Getting class...");
         ResultSet r;
@@ -611,7 +751,6 @@ public class DB {
         if (c.getID() == -1) {
             LOGGER.log(Level.INFO, "Saving new class...");
             PreparedStatement preps = con.prepareStatement("INSERT INTO Classes (Classes.Name, Classes.SY, Classes.Sem, Classes.YearLevel, Classes.Course, Classes.Room, Classes.Days, Classes.Times, Classes.IsSHS, Classes.Notes) VALUES (?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
             preps.setString(1, c.getName());
             preps.setInt(2, c.getSY());
             preps.setInt(3, c.getSem());
@@ -658,6 +797,33 @@ public class DB {
             prep.executeUpdate();
             return false;
         }
+    }
+
+    public static ObservableList<String> getSchoolYears() throws SQLException {
+        LOGGER.log(Level.INFO, "Getting schoolyears...");
+        ResultSet r;
+        PreparedStatement prep = con.prepareStatement("SELECT DISTINCT Classes.SY FROM Classes");
+        r = prep.executeQuery();
+
+        ObservableList<String> years = FXCollections.observableArrayList();
+        while (r.next()) {
+            int y = r.getInt(1);
+            years.add(Integer.toString(y) + " - " + Integer.toString(y + 1));
+        }
+        return years;
+    }
+
+    public static ObservableList<String> getSemesters() throws SQLException {
+        LOGGER.log(Level.INFO, "Getting semesters...");
+        ResultSet r;
+        PreparedStatement prep = con.prepareStatement("SELECT DISTINCT Classes.Sem FROM Classes");
+        r = prep.executeQuery();
+
+        ObservableList<String> years = FXCollections.observableArrayList();
+        while (r.next()) {
+            years.add(Integer.toString(r.getInt(1)));
+        }
+        return years;
     }
     // </editor-fold>
 
@@ -759,7 +925,7 @@ public class DB {
         if (e.getID() == -1) {
             if (e.getClazz().isSHS()) {
                 LOGGER.log(Level.WARNING, "Creating new SHS enrollee");
-                PreparedStatement preps = con.prepareStatement("INSERT INTO SHSEnrollees (ClassID, StudentID, Notes, Course) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement preps = con.prepareStatement("INSERT INTO SHSEnrollees (ClassID, StudentID, Notes, Course) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
                 preps.setLong(1, e.getClazz().getID());
                 preps.setLong(2, e.getStudent().getID());
                 preps.setString(3, e.getNotes());
@@ -1615,17 +1781,19 @@ public class DB {
             // by this point, I HOPE that all the tasks inside the criteria inside the terms HAVE the right data,
             // so let's hope for the best and compute it.
             ArrayList<String> termStrings = new ArrayList<>();
+            ArrayList<BigFraction> termFractions = new ArrayList<>();
             for (int i = 0; i < 4; i++) {
                 termStrings.add("ERROR");
+                termFractions.add(null);
             }
-            double total;
             for (int term = 0; term < 4; term++) {
-                total = 0.0;
+                BigFraction total = BigFraction.ZERO;
                 for (com.orthocube.classrecord.util.grade.Criterion criterion : terms.get(term)) {
-                    total += criterion.getGrade();
+                    total = total.add(criterion.getGrade());
                 }
                 //termStrings.set(term, Double.toString(total));
                 termStrings.set(term, roundCollegeGrade(total));
+                termFractions.set(term, roundCollegeGradeFraction(total));
             }
 
             Grade temp = new Grade();
@@ -1636,7 +1804,7 @@ public class DB {
             temp.setMidterms(termStrings.get(1));
             temp.setSemis(termStrings.get(2));
             temp.setFinals(termStrings.get(3));
-            temp.setFinal(finalCollegeGrade(termStrings));
+            temp.setFinal(finalCollegeGrade(termFractions));
             temp.setClassCard(currentEnrollee.getClasscard());
             temp.setCourse(currentEnrollee.getCourse());
             grades.add(temp);
@@ -1645,25 +1813,25 @@ public class DB {
         return grades;
     }
 
-    private static String roundCollegeGrade(double g) {
+    private static String roundCollegeGrade(BigFraction g) {
         String r;
-        if (g <= 1.124) {
+        if (g.compareTo(new BigFraction(1.124)) <= 0) {
             r = "1.00";
-        } else if (g <= 1.374) {
+        } else if (g.compareTo(new BigFraction(1.374)) <= 0) {
             r = "1.25";
-        } else if (g <= 1.624) {
+        } else if (g.compareTo(new BigFraction(1.624)) <= 0) {
             r = "1.50";
-        } else if (g <= 1.874) {
+        } else if (g.compareTo(new BigFraction(1.874)) <= 0) {
             r = "1.75";
-        } else if (g <= 2.124) {
+        } else if (g.compareTo(new BigFraction(2.124)) <= 0) {
             r = "2.00";
-        } else if (g <= 2.374) {
+        } else if (g.compareTo(new BigFraction(2.374)) <= 0) {
             r = "2.25";
-        } else if (g <= 2.624) {
+        } else if (g.compareTo(new BigFraction(2.624)) <= 0) {
             r = "2.50";
-        } else if (g <= 2.874) {
+        } else if (g.compareTo(new BigFraction(2.874)) <= 0) {
             r = "2.75";
-        } else if (g <= 3.44) {
+        } else if (g.compareTo(new BigFraction(3.44)) <= 0) {
             r = "3.00";
         } else {
             r = "5.00";
@@ -1671,12 +1839,38 @@ public class DB {
         return r;
     }
 
-    private static String finalCollegeGrade(ArrayList<String> l) {
-        double total = 0;
-        for (String g : l) {
-            total += Double.parseDouble(g);
+    private static BigFraction roundCollegeGradeFraction(BigFraction g) {
+        double r;
+        if (g.compareTo(new BigFraction(1.124)) <= 0) {
+            r = 1.00;
+        } else if (g.compareTo(new BigFraction(1.374)) <= 0) {
+            r = 1.25;
+        } else if (g.compareTo(new BigFraction(1.624)) <= 0) {
+            r = 1.50;
+        } else if (g.compareTo(new BigFraction(1.874)) <= 0) {
+            r = 1.75;
+        } else if (g.compareTo(new BigFraction(2.124)) <= 0) {
+            r = 2.00;
+        } else if (g.compareTo(new BigFraction(2.374)) <= 0) {
+            r = 2.25;
+        } else if (g.compareTo(new BigFraction(2.624)) <= 0) {
+            r = 2.50;
+        } else if (g.compareTo(new BigFraction(2.874)) <= 0) {
+            r = 2.75;
+        } else if (g.compareTo(new BigFraction(3.44)) <= 0) {
+            r = 3.00;
+        } else {
+            r = 5.00;
         }
-        double average = total / ((double) l.size());
+        return new BigFraction(r);
+    }
+
+    private static String finalCollegeGrade(ArrayList<BigFraction> l) {
+        BigFraction total = BigFraction.ZERO;
+        for (BigFraction g : l) {
+            total = total.add(g);
+        }
+        BigFraction average = total.divide(l.size());
         return roundCollegeGrade(average);
     }
 
@@ -1748,17 +1942,20 @@ public class DB {
             // by this point, I HOPE that all the tasks inside the criterias inside the terms HAVE the right data,
             // so let's hope for the best and compute it.
             ArrayList<String> termStrings = new ArrayList<>();
+            ArrayList<BigFraction> termFractions = new ArrayList<>();
             for (int i = 0; i < 2; i++) {
                 termStrings.add("ERROR");
+                termFractions.add(null);
             }
-            double total;
+
             for (int term = 0; term < 2; term++) {
-                total = 0.0;
+                BigFraction total = BigFraction.ZERO;
                 for (com.orthocube.classrecord.util.grade.SHSCriterion criterion : terms.get(term)) {
-                    total += criterion.getGrade();
+                    total = total.add(criterion.getGrade());
                 }
                 //termStrings.set(term, Double.toString(total));
                 termStrings.set(term, roundSHSGrade(total));
+                termFractions.set(term, new BigFraction(Integer.parseInt(termStrings.get(term)), 1));
             }
 
             Grade temp = new Grade();
@@ -1767,7 +1964,7 @@ public class DB {
             temp.setLName(currentStudent.getLN());
             temp.setMidterms(termStrings.get(0));
             temp.setFinals(termStrings.get(1));
-            temp.setFinal(finalSHSGrade(termStrings));
+            temp.setFinal(finalSHSGrade(termFractions));
             temp.setCourse(currentEnrollee.getCourse());
             grades.add(temp);
         }
@@ -1775,87 +1972,87 @@ public class DB {
         return grades;
     }
 
-    private static String roundSHSGrade(double g) {
+    private static String roundSHSGrade(BigFraction g) {
         String r;
-        if (g == 100) {
+        if (g.compareTo(new BigFraction(100, 1)) == 0) {
             r = "100";
-        } else if (g >= 98.40) {
+        } else if (g.compareTo(new BigFraction(98.40)) >= 0) {
             r = "99";
-        } else if (g >= 96.80) {
+        } else if (g.compareTo(new BigFraction(96.80)) >= 0) {
             r = "98";
-        } else if (g >= 95.20) {
+        } else if (g.compareTo(new BigFraction(95.20)) >= 0) {
             r = "97";
-        } else if (g >= 93.60) {
+        } else if (g.compareTo(new BigFraction(93.60)) >= 0) {
             r = "96";
-        } else if (g >= 92.00) {
+        } else if (g.compareTo(new BigFraction(92.00)) >= 0) {
             r = "95";
-        } else if (g >= 90.40) {
+        } else if (g.compareTo(new BigFraction(90.40)) >= 0) {
             r = "94";
-        } else if (g >= 88.80) {
+        } else if (g.compareTo(new BigFraction(88.80)) >= 0) {
             r = "93";
-        } else if (g >= 87.20) {
+        } else if (g.compareTo(new BigFraction(87.20)) >= 0) {
             r = "92";
-        } else if (g >= 85.60) {
+        } else if (g.compareTo(new BigFraction(85.60)) >= 0) {
             r = "91";
-        } else if (g >= 84.00) {
+        } else if (g.compareTo(new BigFraction(84.00)) >= 0) {
             r = "90";
-        } else if (g >= 82.40) {
+        } else if (g.compareTo(new BigFraction(82.40)) >= 0) {
             r = "89";
-        } else if (g >= 80.80) {
+        } else if (g.compareTo(new BigFraction(80.80)) >= 0) {
             r = "88";
-        } else if (g >= 79.20) {
+        } else if (g.compareTo(new BigFraction(79.20)) >= 0) {
             r = "87";
-        } else if (g >= 77.60) {
+        } else if (g.compareTo(new BigFraction(77.60)) >= 0) {
             r = "86";
-        } else if (g >= 76.00) {
+        } else if (g.compareTo(new BigFraction(76.00)) >= 0) {
             r = "85";
-        } else if (g >= 74.40) {
+        } else if (g.compareTo(new BigFraction(74.40)) >= 0) {
             r = "84";
-        } else if (g >= 72.80) {
+        } else if (g.compareTo(new BigFraction(72.80)) >= 0) {
             r = "83";
-        } else if (g >= 71.20) {
+        } else if (g.compareTo(new BigFraction(71.20)) >= 0) {
             r = "82";
-        } else if (g >= 69.60) {
+        } else if (g.compareTo(new BigFraction(69.60)) >= 0) {
             r = "81";
-        } else if (g >= 68.00) {
+        } else if (g.compareTo(new BigFraction(68.00)) >= 0) {
             r = "80";
-        } else if (g >= 66.40) {
+        } else if (g.compareTo(new BigFraction(66.40)) >= 0) {
             r = "79";
-        } else if (g >= 64.80) {
+        } else if (g.compareTo(new BigFraction(64.80)) >= 0) {
             r = "78";
-        } else if (g >= 63.20) {
+        } else if (g.compareTo(new BigFraction(63.20)) >= 0) {
             r = "77";
-        } else if (g >= 61.60) {
+        } else if (g.compareTo(new BigFraction(61.60)) >= 0) {
             r = "76";
-        } else if (g >= 60.00) {
+        } else if (g.compareTo(new BigFraction(60.00)) >= 0) {
             r = "75";
-        } else if (g >= 56.00) {
+        } else if (g.compareTo(new BigFraction(56.00)) >= 0) {
             r = "74";
-        } else if (g >= 52.00) {
+        } else if (g.compareTo(new BigFraction(52.00)) >= 0) {
             r = "73";
-        } else if (g >= 48.00) {
+        } else if (g.compareTo(new BigFraction(48.00)) >= 0) {
             r = "72";
-        } else if (g >= 44.00) {
+        } else if (g.compareTo(new BigFraction(44.00)) >= 0) {
             r = "71";
-        } else if (g >= 40.00) {
+        } else if (g.compareTo(new BigFraction(40.00)) >= 0) {
             r = "70";
-        } else if (g >= 36.00) {
+        } else if (g.compareTo(new BigFraction(36.00)) >= 0) {
             r = "69";
-        } else if (g >= 32.00) {
+        } else if (g.compareTo(new BigFraction(32.00)) >= 0) {
             r = "68";
-        } else if (g >= 28.00) {
+        } else if (g.compareTo(new BigFraction(28.00)) >= 0) {
             r = "67";
-        } else if (g >= 24.00) {
+        } else if (g.compareTo(new BigFraction(24.00)) >= 0) {
             r = "66";
-        } else if (g >= 20.00) {
+        } else if (g.compareTo(new BigFraction(20.00)) >= 0) {
             r = "65";
-        } else if (g >= 16.00) {
+        } else if (g.compareTo(new BigFraction(16.00)) >= 0) {
             r = "64";
-        } else if (g >= 12.00) {
+        } else if (g.compareTo(new BigFraction(12.00)) >= 0) {
             r = "63";
-        } else if (g >= 8.00) {
+        } else if (g.compareTo(new BigFraction(8.00)) >= 0) {
             r = "62";
-        } else if (g >= 4.00) {
+        } else if (g.compareTo(new BigFraction(4.00)) >= 0) {
             r = "61";
         } else {
             r = "60";
@@ -1863,18 +2060,84 @@ public class DB {
         return r;
     }
 
-    private static String finalSHSGrade(ArrayList<String> l) {
-        double total = 0;
-        for (String g : l) {
-            total += Double.parseDouble(g);
+    private static String finalSHSGrade(ArrayList<BigFraction> l) {
+        BigFraction total = BigFraction.ZERO;
+        for (BigFraction g : l) {
+            total = total.add(g);
         }
-        double average = total / ((double) l.size());
-        return Long.toString(Math.round(average));
+        BigFraction average = total.divide(l.size());
+        return Long.toString(Math.round(average.doubleValue()));
     }
 
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Reminders">
+    public static ObservableList<Reminder> getReminders() throws SQLException {
+        LOGGER.log(Level.INFO, "Getting Scores...");
+        ResultSet r;
 
+        PreparedStatement prep;
+        prep = con.prepareStatement("SELECT ID, StartDate, StartTime, EndDate, EndTime, Title, Notes, Location, IsDone FROM Reminders ORDER BY StartDate ASC NULLS FIRST, StartTime ASC NULLS FIRST");
+        r = prep.executeQuery();
+
+        ObservableList<Reminder> reminders = FXCollections.observableArrayList();
+        while (r.next()) {
+            Reminder temp = new Reminder(r.getLong(1));
+            temp.setStartDate(r.getDate(2).toLocalDate());
+            temp.setStartTime(r.getTime(3));
+            temp.setEndDate(r.getDate(4).toLocalDate());
+            temp.setEndTime(r.getTime(5));
+            temp.setTitle(r.getString(6));
+            temp.setNotes(r.getString(7));
+            temp.setLocation(r.getString(8));
+            temp.setDone(r.getShort(9) > 0);
+            reminders.add(temp);
+        }
+        return reminders;
+    }
+
+    public static boolean save(Reminder r) throws SQLException {
+        if (r.getID() == -1) {
+            LOGGER.log(Level.INFO, "Saving new Reminder...");
+            PreparedStatement prep;
+            prep = con.prepareStatement("INSERT INTO Reminders (StartDate, StartTime, EndDate, EndTime, Title, Notes, Location, IsDone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            prep.setDate(1, r.getStartDate());
+            prep.setTime(2, r.getStartTime());
+            prep.setDate(3, r.getEndDate());
+            prep.setTime(4, r.getEndTime());
+            prep.setString(5, r.getTitle());
+            prep.setString(6, r.getNotes());
+            prep.setString(7, r.getLocation());
+            prep.setInt(8, r.isDone() ? 1 : 0);
+            prep.executeUpdate();
+            ResultSet rs = prep.getGeneratedKeys();
+            rs.next();
+            r.setID(rs.getLong(1));
+            return true;
+        } else {
+            LOGGER.log(Level.INFO, "Saving Reminder...");
+            PreparedStatement prep;
+            prep = con.prepareStatement("UPDATE Reminders SET StartDate = ?, StartTime = ?, EndDate = ?, EndTime = ?, Title = ?, Notes = ?, Location = ?, IsDone = ? WHERE ID = ?");
+            prep.setDate(1, r.getStartDate());
+            prep.setTime(2, r.getStartTime());
+            prep.setDate(3, r.getEndDate());
+            prep.setTime(4, r.getEndTime());
+            prep.setString(5, r.getTitle());
+            prep.setString(6, r.getNotes());
+            prep.setString(7, r.getLocation());
+            prep.setInt(8, r.isDone() ? 1 : 0);
+            prep.setLong(9, r.getID());
+            prep.executeUpdate();
+            return false;
+        }
+    }
+
+    public static void delete(Reminder r) throws SQLException {
+        LOGGER.log(Level.INFO, "Deleting Reminder...");
+        PreparedStatement prep;
+        prep = con.prepareStatement("DELETE FROM Reminders WHERE ID = ?");
+        prep.setLong(1, r.getID());
+        prep.executeUpdate();
+    }
     // </editor-fold>
 }

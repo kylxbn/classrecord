@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright © Kyle Alexander Buan - All Rights Reserved.
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited.
+  ~ Proprietary and confidential.
+  ~ Written by Kyle Alexander Buan <orthocube@protonmail.com>, 2018.
+  -->
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="669.0" prefWidth="902.0"
+           xmlns="http://javafx.com/javafx/9.0.1"
+           fx:controller="com.orthocube.classrecord.gui.reminders.RemindersController">
+    <items>
+        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Reminders">
+                    <content>
+                        <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0">
+                            <items>
+                                <VBox fx:id="vbxShow" prefHeight="200.0" prefWidth="100.0" spacing="8.0">
+                                    <children>
+                                        <CheckBox fx:id="chkAll" mnemonicParsing="false" text="Show all reminders"/>
+                                        <TableView fx:id="tblReminders" prefHeight="200.0" prefWidth="200.0"
+                                                   VBox.vgrow="ALWAYS">
+                                            <columns>
+                                                <TableColumn fx:id="colDate" prefWidth="75.0" text="Date"/>
+                                                <TableColumn fx:id="colTitle" prefWidth="75.0" text="Title"/>
+                                            </columns>
+                                            <contextMenu>
+                                                <ContextMenu>
+                                                    <items>
+                                                        <MenuItem fx:id="mnuRemove" mnemonicParsing="false"
+                                                                  onAction="#mnuRemoveAction" text="Remove"/>
+                                                    </items>
+                                                </ContextMenu>
+                                            </contextMenu>
+                                        </TableView>
+                                        <HBox alignment="TOP_RIGHT" maxHeight="-Infinity"
+                                              maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                              minWidth="-Infinity" VBox.vgrow="NEVER">
+                                            <children>
+                                                <Button fx:id="cmdAdd" mnemonicParsing="false" onAction="#cmdAddAction"
+                                                        text="Add"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                    <padding>
+                                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                                    </padding>
+                                </VBox>
+                                <VBox fx:id="vbxEdit" disable="true" prefHeight="200.0" prefWidth="100.0">
+                                    <children>
+                                        <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0"
+                                                    VBox.vgrow="ALWAYS">
+                                            <content>
+                                                <TitledPane animated="false" collapsible="false" text="Info">
+                                                    <content>
+                                                        <GridPane hgap="4.0" vgap="4.0">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES"
+                                                                                   maxWidth="-Infinity"
+                                                                                   minWidth="-Infinity"/>
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+                                                                                   prefWidth="100.0"/>
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+                                                                                   prefWidth="100.0"/>
+                                                                <ColumnConstraints hgrow="NEVER" minWidth="-Infinity"/>
+                                                            </columnConstraints>
+                                                            <rowConstraints>
+                                                                <RowConstraints maxHeight="-Infinity"
+                                                                                minHeight="-Infinity"
+                                                                                vgrow="SOMETIMES"/>
+                                                                <RowConstraints maxHeight="-Infinity"
+                                                                                minHeight="-Infinity"
+                                                                                vgrow="SOMETIMES"/>
+                                                                <RowConstraints maxHeight="-Infinity"
+                                                                                minHeight="-Infinity"
+                                                                                vgrow="SOMETIMES"/>
+                                                                <RowConstraints maxHeight="-Infinity"
+                                                                                minHeight="-Infinity"
+                                                                                vgrow="SOMETIMES"/>
+                                                                <RowConstraints maxHeight="-Infinity"
+                                                                                minHeight="-Infinity" valignment="TOP"
+                                                                                vgrow="SOMETIMES"/>
+                                                            </rowConstraints>
+                                                            <children>
+                                                                <Label text="Title:"/>
+                                                                <Label text="Start:" GridPane.rowIndex="1"/>
+                                                                <Label text="End:" GridPane.rowIndex="2"/>
+                                                                <Label text="Location:" GridPane.rowIndex="3"/>
+                                                                <Label text="Notes:" GridPane.rowIndex="4"/>
+                                                                <TextField fx:id="txtTitle"
+                                                                           maxWidth="1.7976931348623157E308"
+                                                                           GridPane.columnIndex="1"
+                                                                           GridPane.columnSpan="2"/>
+                                                                <TextField fx:id="txtLocation"
+                                                                           maxWidth="1.7976931348623157E308"
+                                                                           GridPane.columnIndex="1"
+                                                                           GridPane.columnSpan="3"
+                                                                           GridPane.rowIndex="3"/>
+                                                                <DatePicker fx:id="dpkStartDate"
+                                                                            maxWidth="1.7976931348623157E308"
+                                                                            GridPane.columnIndex="1"
+                                                                            GridPane.rowIndex="1"/>
+                                                                <DatePicker fx:id="dpkEndDate"
+                                                                            maxWidth="1.7976931348623157E308"
+                                                                            GridPane.columnIndex="1"
+                                                                            GridPane.rowIndex="2"/>
+                                                                <TextField fx:id="txtStartTime"
+                                                                           maxWidth="1.7976931348623157E308"
+                                                                           promptText="N/A" GridPane.columnIndex="2"
+                                                                           GridPane.rowIndex="1"/>
+                                                                <TextField fx:id="txtEndTime"
+                                                                           maxWidth="1.7976931348623157E308"
+                                                                           promptText="N/A" GridPane.columnIndex="2"
+                                                                           GridPane.rowIndex="2"/>
+                                                                <CheckBox fx:id="chkWholeDay" mnemonicParsing="false"
+                                                                          text="Whole day" GridPane.columnIndex="3"
+                                                                          GridPane.rowIndex="1"/>
+                                                                <TextArea fx:id="txtNotes"
+                                                                          maxWidth="1.7976931348623157E308"
+                                                                          prefHeight="200.0" prefWidth="200.0"
+                                                                          GridPane.columnIndex="1"
+                                                                          GridPane.columnSpan="3"
+                                                                          GridPane.rowIndex="4"/>
+                                                                <CheckBox fx:id="chkDone" mnemonicParsing="false"
+                                                                          text="Done" GridPane.columnIndex="3"/>
+                                                            </children>
+                                                        </GridPane>
+                                                    </content>
+                                                </TitledPane>
+                                            </content>
+                                        </ScrollPane>
+                                        <HBox alignment="TOP_RIGHT" maxHeight="-Infinity"
+                                              maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                              minWidth="-Infinity" spacing="8.0" VBox.vgrow="NEVER">
+                                            <children>
+                                                <Button fx:id="cmdCancel" mnemonicParsing="false"
+                                                        onAction="#cmdCancelAction" text="Cancel"/>
+                                                <Button fx:id="cmdSave" defaultButton="true" mnemonicParsing="false"
+                                                        onAction="#cmdSaveAction" text="Save">
+                                                    <HBox.margin>
+                                                        <Insets/>
+                                                    </HBox.margin>
+                                                </Button>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                                            </padding>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </items>
+                        </SplitPane>
+                    </content>
+                </Tab>
+                <Tab text="Class Schedule">
+                    <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0">
+                            <children>
+                                <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" spacing="8.0">
+                                    <children>
+                                        <Label text="Schoolyear:">
+                                            <HBox.margin>
+                                                <Insets/>
+                                            </HBox.margin>
+                                        </Label>
+                                        <ChoiceBox fx:id="cboYear" minHeight="-Infinity" minWidth="-Infinity"/>
+                                        <Label text="Semester:"/>
+                                        <ChoiceBox fx:id="cboSem" minHeight="-Infinity" minWidth="-Infinity"/>
+                                    </children>
+                                </HBox>
+                                <Pane fx:id="pnlSchedule" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                    <children>
+                                        <ImageView fx:id="pboSchedule" fitHeight="300.0" fitWidth="300.0"
+                                                   pickOnBounds="true" smooth="false"/>
+                                    </children>
+                                </Pane>
+                            </children>
+                            <padding>
+                                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                            </padding>
+                        </VBox>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </items>
+</SplitPane>

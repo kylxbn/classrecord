@@ -9,29 +9,29 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.Bloom?>
+<?import javafx.scene.effect.GaussianBlur?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
            maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="100.0" prefHeight="694.0" prefWidth="932.0"
-           xmlns="http://javafx.com/javafx/9" fx:controller="com.orthocube.classrecord.gui.about.AboutController">
+           xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.gui.about.AboutController">
     <items>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="100.0"
-              spacing="8.0">
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" spacing="8.0">
             <children>
                 <HBox alignment="TOP_CENTER">
                     <children>
                         <StackPane>
                             <children>
-                                <Label alignment="CENTER_RIGHT" text="Class Record">
+                                <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
+                                       text="%about.classrecord">
                                     <font>
                                         <Font name="Monospaced Bold" size="36.0"/>
                                     </font>
                                     <effect>
-                                        <Bloom threshold="0.0"/>
+                                        <GaussianBlur radius="15.0"/>
                                     </effect>
                                 </Label>
-                                <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" text="Class Record">
+                                <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" text="%about.classrecord">
                                     <font>
                                         <Font name="Monospaced Bold" size="36.0"/>
                                     </font>
@@ -40,77 +40,103 @@
                         </StackPane>
                     </children>
                 </HBox>
-                <HBox>
+                <HBox alignment="TOP_CENTER" spacing="32.0">
                     <children>
-                        <VBox HBox.hgrow="ALWAYS">
+                        <VBox alignment="CENTER_LEFT" spacing="8.0">
                             <children>
-                                <Label text="Version 3.0 ALPHA, Built on "/>
-                                <Label fx:id="lblDatabaseVersion" text="Database engine version "/>
+                                <HBox>
+                                    <children>
+                                        <VBox HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label text="%about.version"/>
+                                                <Label text="%about.builddate"/>
+                                                <Label fx:id="lblDatabaseVersion" text="Database engine version "/>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+                                <GridPane hgap="8.0" maxHeight="1.7976931348623157E308"
+                                          maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER"
+                                                           maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308"
+                                                           minWidth="-Infinity"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                        vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                    <children>
+                                        <Label fx:id="lblJavaVersion" text="Currently running on Java "
+                                               GridPane.columnIndex="1"/>
+                                        <Label fx:id="lblVendor" text="Label" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="1"/>
+                                        <Label text="%about.jreversion"/>
+                                        <Label text="%about.jredeveloper" GridPane.rowIndex="1"/>
+                                        <Label text="%about.osname" GridPane.rowIndex="2"/>
+                                        <Label text="%about.osversion" GridPane.rowIndex="3"/>
+                                        <Label fx:id="lblOSName" text="Label" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="2"/>
+                                        <Label fx:id="lblOSVersion" text="Label" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="3"/>
+                                        <Label text="%about.osarch" GridPane.rowIndex="4"/>
+                                        <Label fx:id="lblCPUISA" text="Label" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="4"/>
+                                    </children>
+                                </GridPane>
+                            </children>
+                        </VBox>
+                        <VBox fx:id="subscenebox" alignment="TOP_CENTER">
+                            <children>
+                                <Label text="%about.developer"/>
+                                <Label text="Orthographic Cube Software">
+                                    <font>
+                                        <Font name="System Bold" size="12.0"/>
+                                    </font>
+                                </Label>
+                                <Label text="© 2018 Kyle Alexander Buan"/>
                             </children>
                         </VBox>
                     </children>
                 </HBox>
-                <GridPane hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                          minHeight="-Infinity" minWidth="-Infinity">
-                    <columnConstraints>
-                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="1.7976931348623157E308"
-                                           minWidth="-Infinity"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                    </rowConstraints>
+                <HBox alignment="TOP_CENTER">
                     <children>
-                        <Label fx:id="lblJavaVersion" text="Currently running on Java " GridPane.columnIndex="1"/>
-                        <Label fx:id="lblVendor" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                        <Label text="JRE Version:"/>
-                        <Label text="JRE Developer:" GridPane.rowIndex="1"/>
-                        <Label text="OS Name:" GridPane.rowIndex="2"/>
-                        <Label text="OS Version:" GridPane.rowIndex="3"/>
-                        <Label fx:id="lblOSName" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                        <Label fx:id="lblOSVersion" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                        <Label text="OS Architecture:" GridPane.rowIndex="4"/>
-                        <Label fx:id="lblCPUISA" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                    </children>
-                </GridPane>
-                <HBox>
-                    <children>
-                        <VBox>
+                        <VBox alignment="TOP_CENTER">
                             <children>
-                                <Label text="Records student data, attendance, scores, grades," wrapText="true"/>
-                                <Label text="and automatically generates reports for them." wrapText="true"/>
+                                <Label text="%about.about1" wrapText="true"/>
+                                <Label text="%about.about2" wrapText="true"/>
                             </children>
                         </VBox>
                     </children>
                 </HBox>
-                <VBox>
+                <VBox alignment="TOP_CENTER">
                     <children>
-                        <Label text="Programmed in Java 9 by Kyle Alexander Buan"/>
-                        <Label text="© 2018 Kyle Alexander Buan">
-                            <font>
-                                <Font name="System Bold" size="15.0"/>
-                            </font>
-                        </Label>
+                        <Label text="%about.programmedin"/>
                     </children>
                 </VBox>
                 <HBox alignment="CENTER">
                     <children>
                         <VBox alignment="TOP_CENTER">
                             <children>
-                                <Label text="Feel free to send suggestions for improvements, "/>
-                                <Label text="error reports, and anything else to: "/>
+                                <Label text="%about.suggest1"/>
+                                <Label text="%about.suggest2"/>
                                 <Label text="orthocube@protonmail.com"/>
                             </children>
                         </VBox>
                     </children>
                 </HBox>
-                <VBox>
+                <VBox alignment="TOP_CENTER">
                     <children>
-                        <Label text="Song playing while building app:"/>
+                        <Label text="%about.song"/>
                         <Label text="    Carl Orff - “O Fortuna”"/>
                         <Label text="    From the album “Carmina Burana”"/>
                     </children>
@@ -126,9 +152,9 @@
                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
             </padding>
         </VBox>
-        <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0">
+        <VBox spacing="8.0">
             <children>
-                <Label text="Changelog:"/>
+                <Label text="%about.changelog"/>
                 <TextArea fx:id="txtChangelog" editable="false" prefHeight="200.0" prefWidth="200.0" text="tsryth\"
                           wrapText="true" VBox.vgrow="ALWAYS">
                     <font>

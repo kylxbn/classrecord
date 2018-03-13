@@ -150,6 +150,7 @@ public class EnrolleeChooserController implements Initializable {
 
     @FXML
     void mnuSearchOnFacebookAction(ActionEvent event) {
+        if (currentEnrollee == null) return;
         try {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().browse(new URI("https://www.facebook.com/search/top/?q=" + (currentEnrollee.getStudent().getFN() + " " + currentEnrollee.getStudent().getLN()).replace(" ", "%20")));

@@ -7,20 +7,20 @@
 
 package com.orthocube.classrecord.util;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Optional;
 
 public class Dialogs {
+    // TODO: Fix null css
 
     public static void info(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        //if (Settings.isDark) alert.getDialogPane().getStylesheets().add(Dialogs.class.getClassLoader().getResource("../res/modena_dark.css").toExternalForm());
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
@@ -30,6 +30,7 @@ public class Dialogs {
 
     public static ButtonType warning(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
+        //if (Settings.isDark) alert.getDialogPane().getStylesheets().add(Dialogs.class.getClassLoader().getResource("../res/modena_dark.css").toExternalForm());
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
@@ -39,6 +40,7 @@ public class Dialogs {
 
     public static void error(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        //if (Settings.isDark) alert.getDialogPane().getStylesheets().add(Dialogs.class.getClassLoader().getResource("../res/modena_dark.css").toExternalForm());
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
@@ -49,6 +51,7 @@ public class Dialogs {
     public static void exception(Exception ex) {
         ex.printStackTrace();
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        //if (Settings.isDark) alert.getDialogPane().getStylesheets().add(Dialogs.class.getClassLoader().getResource("../res/modena_dark.css").toExternalForm());
         alert.setTitle("Internal Error");
         alert.setHeaderText("An internal error has occurred!");
         alert.setContentText(ex.getLocalizedMessage());
@@ -59,7 +62,7 @@ public class Dialogs {
         ex.printStackTrace(pw);
         String exceptionText = sw.toString();
 
-        Label label = new Label("The program will try its best to recover from the \nerror but to be save, please save all work\nand close the program.\nHere is the stacktrace in case you want to report this error,\nand you are encouraged to :)");
+        Label label = new Label("The program will try its best to recover from the \nerror but to be safe, please save all work\nand close the program.\nHere is the stacktrace in case you want to report this error,\nand you are encouraged to :)");
 
         TextArea textArea = new TextArea(exceptionText);
         textArea.setEditable(false);
@@ -83,10 +86,21 @@ public class Dialogs {
 
     public static ButtonType confirm(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        //if (Settings.isDark) alert.getDialogPane().getStylesheets().add(Dialogs.class.getClassLoader().getResource("../res/modena_dark.css").toExternalForm());
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
 
         return alert.showAndWait().get();
+    }
+
+    public static String textInput(String title, String header, String prompt) {
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(prompt);
+
+        Optional<String> result = dialog.showAndWait();
+        return result.orElse(null);
     }
 }

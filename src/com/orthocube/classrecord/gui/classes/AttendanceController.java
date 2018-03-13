@@ -13,6 +13,7 @@ import com.orthocube.classrecord.data.AttendanceList;
 import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import com.orthocube.classrecord.util.Settings;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,7 +33,6 @@ import java.util.logging.Logger;
 
 public class AttendanceController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(ClassesController.class.getName());
-    private ResourceBundle bundle;
 
     private MainApp mainApp;
     private Clazz currentClass;
@@ -137,7 +137,7 @@ public class AttendanceController implements Initializable {
     }
 
     public String getTitle() {
-        return "Attendance for " + currentClass.getName();
+        return String.format(Settings.bundle.getString("attendance.attendance"), currentClass.getName());
     }
 
     public void setClass(Clazz c) {
@@ -170,7 +170,7 @@ public class AttendanceController implements Initializable {
         currentDay = new AttendanceDay();
         currentDay.setClass(currentClass);
         showDayInfo();
-        cmdSaveDay.setText("Save as new");
+        cmdSaveDay.setText(Settings.bundle.getString("attendance.saveasnew"));
         dayEditMode(true);
     }
 
@@ -281,11 +281,11 @@ public class AttendanceController implements Initializable {
             if (currentDay.getID() == -1) {
                 long existingDay;
                 if ((existingDay = DB.dayAlreadyExists(currentDay)) > 0) {
-                    Dialogs.error("Day already exists", "The attendance day you are\ntrying to add already exists.", "It will now be automatically selected.");
+                    Dialogs.error(Settings.bundle.getString("attendance.dayalreadyexists_title"), Settings.bundle.getString("attendance.dayalreadyexists_header"), Settings.bundle.getString("attendance.dayalreadyexists_content"));
                     for (AttendanceDay ad : attendanceDays) {
                         if (ad.getID() == existingDay) {
                             cmdSaveDay.setDisable(true);
-                            cmdSaveDay.setText("Save");
+                            cmdSaveDay.setText(Settings.bundle.getString("attendance.save"));
                             cmdAddDay.setDisable(false);
                             tblAttendanceDays.getSelectionModel().select(ad);
                             tblAttendanceDays.scrollTo(ad);
@@ -312,6 +312,7 @@ public class AttendanceController implements Initializable {
 
     @FXML
     void mnuRemoveAction(ActionEvent event) {
+        if (currentDay == null) return;
         if (Dialogs.confirm("Delete Attendance day", "Are you sure you want to delete this Attendance day?", (new SimpleDateFormat("yyyy-MM-dd")).format(currentDay.getDate())) == ButtonType.OK)
             try {
                 DB.delete(currentDay);
@@ -452,7 +453,6 @@ public class AttendanceController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = resources;
 
         colDate.setCellValueFactory(cellValue -> cellValue.getValue().dateProperty());
         colDaysNotes.setCellValueFactory(cellValue -> cellValue.getValue().notesProperty());

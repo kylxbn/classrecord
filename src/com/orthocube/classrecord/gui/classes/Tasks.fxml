@@ -31,6 +31,14 @@
                                                 <TableColumn fx:id="colPItems" maxWidth="1.7976931348623157E308"
                                                              minWidth="40.0" prefWidth="-1.0" text="Items"/>
                                             </columns>
+                                            <contextMenu>
+                                                <ContextMenu>
+                                                    <items>
+                                                        <MenuItem mnemonicParsing="false"
+                                                                  onAction="#mnuDeleteTaskAction" text="Delete"/>
+                                                    </items>
+                                                </ContextMenu>
+                                            </contextMenu>
                                         </TableView>
                                     </content>
                                 </TitledPane>
@@ -45,6 +53,14 @@
                                                 <TableColumn fx:id="colMItems" maxWidth="1.7976931348623157E308"
                                                              minWidth="40.0" prefWidth="-1.0" text="Items"/>
                                             </columns>
+                                            <contextMenu>
+                                                <ContextMenu>
+                                                    <items>
+                                                        <MenuItem mnemonicParsing="false"
+                                                                  onAction="#mnuDeleteTaskAction" text="Delete"/>
+                                                    </items>
+                                                </ContextMenu>
+                                            </contextMenu>
                                         </TableView>
                                     </content>
                                 </TitledPane>
@@ -59,6 +75,14 @@
                                                 <TableColumn fx:id="colSItems" maxWidth="1.7976931348623157E308"
                                                              minWidth="40.0" prefWidth="-1.0" text="Items"/>
                                             </columns>
+                                            <contextMenu>
+                                                <ContextMenu>
+                                                    <items>
+                                                        <MenuItem mnemonicParsing="false"
+                                                                  onAction="#mnuDeleteTaskAction" text="Delete"/>
+                                                    </items>
+                                                </ContextMenu>
+                                            </contextMenu>
                                         </TableView>
                                     </content>
                                 </TitledPane>
@@ -73,6 +97,14 @@
                                                 <TableColumn fx:id="colFItems" maxWidth="1.7976931348623157E308"
                                                              minWidth="40.0" prefWidth="-1.0" text="Items"/>
                                             </columns>
+                                            <contextMenu>
+                                                <ContextMenu>
+                                                    <items>
+                                                        <MenuItem mnemonicParsing="false"
+                                                                  onAction="#mnuDeleteTaskAction" text="Delete"/>
+                                                    </items>
+                                                </ContextMenu>
+                                            </contextMenu>
                                         </TableView>
                                     </content>
                                 </TitledPane>

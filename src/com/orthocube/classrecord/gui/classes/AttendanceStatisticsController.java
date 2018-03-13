@@ -77,11 +77,11 @@ public class AttendanceStatisticsController implements Initializable {
 
     public String getTitle() {
         return "Attendance Statistics for " + currentClass.getName();
-    }
+    } // TODO: TL properly
 
     private boolean enrolleeMatchesCourse(Enrollee e, String c) {
         switch (c) {
-            case "All":
+            case "All": // TODO: TL properly
                 return true;
             case "Default":
                 return e.getCourse().trim().isEmpty();

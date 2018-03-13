@@ -194,6 +194,7 @@ public class StudentsController implements Initializable {
 
     @FXML
     private void mnuSearchOnFacebookAction(ActionEvent event) {
+        if (currentStudent == null) return;
         try {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().browse(new URI("https://www.facebook.com/search/top/?q=" + (currentStudent.getFN() + " " + currentStudent.getLN()).replace(" ", "%20")));
@@ -216,6 +217,7 @@ public class StudentsController implements Initializable {
 
     @FXML
     void cmdEnrolledClassesAction(ActionEvent event) {
+        if (currentStudent == null) return;
         try {
             mainApp.showEnrolledClasses(currentStudent);
         } catch (IOException e) {
@@ -241,6 +243,7 @@ public class StudentsController implements Initializable {
 
     @FXML
     void cmdDeleteAction(ActionEvent event) {
+        if (currentStudent == null) return;
         if (Dialogs.confirm("Delete Student", "Are you sure you want to delete this student?", currentStudent.getLN() + ", " + currentStudent.getFN()) == ButtonType.OK)
             try {
                 DB.delete(currentStudent);
@@ -362,13 +365,15 @@ public class StudentsController implements Initializable {
         Utils.setupClearButtonField(txtSearch);
 
         BufferedImage bi1 = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
-        Graphics g1 = bi1.createGraphics();
+        Graphics2D g1 = bi1.createGraphics();
+        g1.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g1.drawString("NO PICTURE SET", 40, 40);
         g1.dispose();
         noPicture = SwingFXUtils.toFXImage(bi1, null);
 
         BufferedImage bi2 = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
-        Graphics g2 = bi2.createGraphics();
+        Graphics2D g2 = bi2.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.drawString("NO STUDENT SELECTED", 40, 40);
         g2.dispose();
         noStudent = SwingFXUtils.toFXImage(bi2, null);

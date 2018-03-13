@@ -7,20 +7,25 @@
 
 package com.orthocube.classrecord.gui.preloader;
 
+import com.interactivemesh.jfx.importer.col.ColModelImporter;
 import com.orthocube.classrecord.MainPreloader;
 import com.orthocube.classrecord.util.Dialogs;
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.SequentialTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.DrawMode;
+import javafx.scene.shape.Shape3D;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
@@ -242,12 +247,12 @@ public class MainPreloaderController implements Initializable {
     }
 
     public void setDark() {
-        pnlBG.setStyle("-fx-background-color: rgba(0,0,0,0.25);");
+        pnlBG.setStyle("-fx-background-color: rgba(0,0,0,0.4);");
         dark = true;
     }
 
     public void setLight() {
-        pnlBG.setStyle("-fx-background-color: rgba(255,255,255,0.25);");
+        pnlBG.setStyle("-fx-background-color: rgba(255,255,255,0.4);");
         dark = false;
     }
 
@@ -266,5 +271,35 @@ public class MainPreloaderController implements Initializable {
             grpMain.setVisible(true);
             vbxFirstStart.setVisible(false);
         }
+
+        ColModelImporter importer = new ColModelImporter();
+        importer.read(getClass().getResource("../../resources/orthocube.dae"));
+        Shape3D orthocube = (Shape3D) (((Group) importer.getImport()[0]).getChildren().get(0));
+        orthocube.setMaterial(new PhongMaterial(Color.TEAL));
+        orthocube.setDrawMode(DrawMode.FILL);
+
+        Rotate yRotate = new Rotate(0, Rotate.Y_AXIS);
+        Camera camera = new PerspectiveCamera(true);
+        camera.getTransforms().addAll(
+                yRotate,
+                new Translate(0, 0, -15));
+        Group root = new Group();
+        root.getChildren().add(camera);
+        root.getChildren().add(orthocube);
+        SubScene subscene = new SubScene(root, 75, 75, true, SceneAntialiasing.BALANCED);
+        subscene.setCamera(camera);
+        vbxInfo.getChildren().add(0, subscene);
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.seconds(0),
+                        new KeyValue(yRotate.angleProperty(), 0)
+                ),
+                new KeyFrame(
+                        Duration.seconds(15),
+                        new KeyValue(yRotate.angleProperty(), 360)
+                )
+        );
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 }

@@ -7,6 +7,8 @@
 
 package com.orthocube.classrecord.util.grade;
 
+import org.apache.commons.math3.fraction.BigFraction;
+
 import java.util.ArrayList;
 
 /**
@@ -15,25 +17,25 @@ import java.util.ArrayList;
 public class SHSCriterion {
 
     private final ArrayList<SHSTask> tasks;
-    private final double percent;
+    private final BigFraction percent;
 
     public SHSCriterion(int p) {
         tasks = new ArrayList<>();
-        percent = ((double) p) / 100.0;
+        percent = new BigFraction(p).divide(100);
     }
 
     public void addTask(int s, int t) {
         tasks.add(new SHSTask(s, t));
     }
 
-    public double getGrade() {
-        double totalTask = 0;
-        double totalStudent = 0;
+    public BigFraction getGrade() {
+        BigFraction totalTask = BigFraction.ZERO;
+        BigFraction totalStudent = BigFraction.ZERO;
         for (SHSTask t : tasks) {
-            totalTask += t.getTotal();
-            totalStudent += t.getScore();
+            totalTask = totalTask.add(t.getTotal());
+            totalStudent = totalStudent.add(t.getScore());
         }
         //JOptionPane.showMessageDialog(null, Double.toString(total*percent), "TEST", JOptionPane.WARNING_MESSAGE);
-        return (totalStudent / totalTask) * percent * 100.0;
+        return totalStudent.divide(totalTask).multiply(percent).multiply(100);
     }
 }

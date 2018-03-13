@@ -11,8 +11,11 @@ import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.gui.preloader.MainPreloaderController;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import com.orthocube.classrecord.util.Settings;
+import com.orthocube.classrecord.util.license.verification.LicenseKeyResult;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
+import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.application.Preloader.StateChangeNotification.Type;
 import javafx.fxml.FXMLLoader;
@@ -27,8 +30,6 @@ import org.controlsfx.control.NotificationPane;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class MainPreloader extends Preloader {
     private CredentialsConsumer consumer = null;
@@ -37,14 +38,10 @@ public class MainPreloader extends Preloader {
     private Scene scene;
     private String username = null;
     private String password = null;
-    private final boolean dark = true;
 
     private Group topGroup;
     private StackPane preloaderParent;
     private StateChangeNotification evt;
-
-    private final Locale language = Locale.ENGLISH;
-    private final ResourceBundle bundle = ResourceBundle.getBundle("com.orthocube.classrecord.bundles.strings", language);
 
     private MainPreloaderController loaderController;
 
@@ -52,7 +49,7 @@ public class MainPreloader extends Preloader {
     public void start(Stage stage) throws Exception {
         this.preloaderStage = stage;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/preloader/Preloader.fxml"), bundle);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/preloader/Preloader.fxml"), Settings.bundle);
         StackPane root = loader.load();
         loaderController = loader.getController();
         loaderController.setMainPreloader(this);
@@ -64,14 +61,13 @@ public class MainPreloader extends Preloader {
         this.preloaderStage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_40px.png")));
         this.preloaderStage.getIcons().add(new Image(getClass().getResourceAsStream("res/Dossier_80px.png")));
 
-        preloaderStage.setTitle(bundle.getString("preloader.title"));
+        preloaderStage.setTitle(Settings.bundle.getString("preloader.title"));
         preloaderStage.setWidth(1024);
         preloaderStage.setHeight(768);
         preloaderStage.setMinWidth(1024);
         preloaderStage.setMinHeight(768);
-        preloaderStage.setMaximized(true);
         scene = new Scene(topGroup);
-        if (dark) {
+        if (Settings.isDark) {
             setDarkTheme();
         } else {
             setLightTheme();
@@ -168,12 +164,12 @@ public class MainPreloader extends Preloader {
             try {
                 if (DB.userExists(username, password)) {
                     User user = DB.getUser(username, password);
-                    consumer.setInitData(user, preloaderStage, scene, dark);
+                    consumer.setInitData(user, preloaderStage, scene);
                     //Platform.runLater(() -> preloaderStage.hide());
                     SharedScene appScene = (SharedScene) evt.getApplication();
                     fadeInTo(appScene.getParentNode());
                 } else {
-                    Dialogs.error(bundle.getString("preloader.loginerror.title"), bundle.getString("preloader.loginerror.header"), bundle.getString("preloader.loginerror.content"));
+                    Dialogs.error(Settings.bundle.getString("preloader.loginerror.title"), Settings.bundle.getString("preloader.loginerror.header"), Settings.bundle.getString("preloader.loginerror.content"));
                     loaderController.disableLogin(false);
                 }
             } catch (SQLException | IOException e) {
@@ -217,21 +213,108 @@ public class MainPreloader extends Preloader {
         // Handle state change notifications.
         StateChangeNotification.Type type = info.getType();
         if (type == Type.BEFORE_START) {
-            evt = info;
-            loaderController.hideProgressBar();
-            consumer = (CredentialsConsumer) info.getApplication();
-            if (DB.isFirstRun()) {
-                loaderController.hideFirstStart();
-                Dialogs.info(bundle.getString("preloader.appinit.title"), bundle.getString("preloader.appinit.header"), bundle.getString("preloader.appinit.content"));
-                username = "admin";
-                password = "admin";
+            try {
+                evt = info;
+                loaderController.hideProgressBar();
+                consumer = (CredentialsConsumer) info.getApplication();
+                if (DB.isFirstRun()) {
+                    loaderController.hideFirstStart();
+
+                    String license = "";
+                    do {
+                        license = Dialogs.textInput("Program License", "To use this program, please provide a valid license key.", "License Key:");
+                        LicenseKeyResult result = LicenseKeyResult.INVALID;
+                        if ((license != null) && (license.trim().length() > 0)) {
+                            result = DB.isValidLicense(license);
+                        } else {
+                            Dialogs.error("Program License", "Program will now exit.", "To try again, please restart the program.");
+                            Platform.exit();
+                            return;
+                        }
+
+                        if (result == LicenseKeyResult.INVALID) {
+                            Dialogs.error("Program License", "Invalid license", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.BLACKLISTED) {
+                            Dialogs.error("Program License", "Blacklisted license", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.FAKE) {
+                            Dialogs.error("Program License", "Fake license", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.EXPIRED) {
+                            Dialogs.error("Program License", "Expired license", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.TOOEARLY) {
+                            Dialogs.error("Program License", "License not yet valid", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.NEEDSREPAIR) {
+                            Dialogs.error("Program License", "Invalidated license", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.GOOD) {
+                            DB.setLicense(license);
+                            Dialogs.info("Program License", "Thank you!", "Your license key is valid.");
+                            Dialogs.info(Settings.bundle.getString("preloader.appinit.title"), Settings.bundle.getString("preloader.appinit.header"), Settings.bundle.getString("preloader.appinit.content"));
+                            username = "admin";
+                            password = "admin";
+                            mayBeHidden();
+                            break;
+                        }
+                    } while (license.trim().length() > 0);
+                } else {
+                    LicenseKeyResult result = DB.hasValidLicense();
+
+                    if (result != LicenseKeyResult.GOOD) {
+                        if (result == LicenseKeyResult.INVALID) {
+                            Dialogs.error("Program License", "Invalid license", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.BLACKLISTED) {
+                            Dialogs.error("Program License", "Blacklisted license", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.FAKE) {
+                            Dialogs.error("Program License", "Fake license", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.EXPIRED) {
+                            Dialogs.error("Program License", "Expired license", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.TOOEARLY) {
+                            Dialogs.error("Program License", "License not yet valid", "To use this program, please provide a valid license key.");
+                        } else if (result == LicenseKeyResult.NEEDSREPAIR) {
+                            Dialogs.error("Program License", "Invalidated license", "To use this program, please provide a valid license key.");
+                        }
+
+                        String license = "";
+                        do {
+                            license = Dialogs.textInput("Program License", "To use this program, please provide a valid license key.", "License Key:");
+                            LicenseKeyResult result2 = LicenseKeyResult.INVALID;
+                            if ((license != null) && (license.trim().length() > 0)) {
+                                result2 = DB.isValidLicense(license);
+                            } else {
+                                Dialogs.error("Program License", "Program will now exit.", "To try again, please restart the program.");
+                                Platform.exit();
+                                return;
+                            }
+
+                            if (result2 == LicenseKeyResult.INVALID) {
+                                Dialogs.error("Program License", "Invalid license", "To use this program, please provide a valid license key.");
+                            } else if (result2 == LicenseKeyResult.BLACKLISTED) {
+                                Dialogs.error("Program License", "Blacklisted license", "To use this program, please provide a valid license key.");
+                            } else if (result2 == LicenseKeyResult.FAKE) {
+                                Dialogs.error("Program License", "Fake license", "To use this program, please provide a valid license key.");
+                            } else if (result2 == LicenseKeyResult.EXPIRED) {
+                                Dialogs.error("Program License", "Expired license", "To use this program, please provide a valid license key.");
+                            } else if (result2 == LicenseKeyResult.TOOEARLY) {
+                                Dialogs.error("Program License", "License not yet valid", "To use this program, please provide a valid license key.");
+                            } else if (result2 == LicenseKeyResult.NEEDSREPAIR) {
+                                Dialogs.error("Program License", "Invalidated license", "To use this program, please provide a valid license key.");
+                            } else if (result2 == LicenseKeyResult.GOOD) {
+                                DB.setLicense(license);
+                                Dialogs.info("Program License", "Thank you!", "Your license key is valid.");
+                                mayBeHidden();
+                                break;
+                            }
+                        } while (license.trim().length() > 0);
+                    } else {
+                        mayBeHidden();
+                    }
+                }
+            } catch (SQLException e) {
+                Dialogs.exception(e);
             }
-            mayBeHidden();
         }
     }
 
     public interface CredentialsConsumer {
-        void setInitData(User user, Stage stage, Scene scene, boolean dark);
+        void setInitData(User user, Stage stage, Scene scene);
     }
 
     public interface SharedScene {

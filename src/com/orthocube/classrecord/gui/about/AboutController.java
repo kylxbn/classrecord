@@ -7,12 +7,26 @@
 
 package com.orthocube.classrecord.gui.about;
 
+import com.interactivemesh.jfx.importer.col.ColModelImporter;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import com.orthocube.classrecord.util.Settings;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.DrawMode;
+import javafx.scene.shape.Shape3D;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
+import javafx.util.Duration;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,17 +59,16 @@ public class AboutController implements Initializable {
     TextArea txtCredits;
     @FXML
     Label lblDatabaseVersion;
-    private ResourceBundle bundle;
+    @FXML
+    VBox subscenebox;
 
     public String getTitle() {
-        // TODO: TL this
-        return "About"; //bundle.getString("about");
+        return Settings.bundle.getString("about.about");
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = rb;
 
         lblJavaVersion.setText(System.getProperty("java.version"));
         lblVendor.setText(System.getProperty("java.vendor"));
@@ -106,9 +119,39 @@ public class AboutController implements Initializable {
         txtCredits.setText(sb2.toString());
 
         try {
-            lblDatabaseVersion.setText("Database engine revision #" + DB.getDatabaseVersion());
+            lblDatabaseVersion.setText(String.format(Settings.bundle.getString("about.dbversion"), DB.getDatabaseVersion()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        ColModelImporter importer = new ColModelImporter();
+        importer.read(getClass().getResource("../../resources/orthocube.dae"));
+        Shape3D orthocube = (Shape3D) (((Group) importer.getImport()[0]).getChildren().get(0));
+        orthocube.setMaterial(new PhongMaterial(Color.TEAL));
+        orthocube.setDrawMode(DrawMode.FILL);
+
+        Rotate yRotate = new Rotate(0, Rotate.Y_AXIS);
+        Camera camera = new PerspectiveCamera(true);
+        camera.getTransforms().addAll(
+                yRotate,
+                new Translate(0, 0, -15));
+        Group root = new Group();
+        root.getChildren().add(camera);
+        root.getChildren().add(orthocube);
+        SubScene subscene = new SubScene(root, 150, 150, true, SceneAntialiasing.BALANCED);
+        subscene.setCamera(camera);
+        subscenebox.getChildren().add(0, subscene);
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.seconds(0),
+                        new KeyValue(yRotate.angleProperty(), 0)
+                ),
+                new KeyFrame(
+                        Duration.seconds(15),
+                        new KeyValue(yRotate.angleProperty(), 360)
+                )
+        );
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 }

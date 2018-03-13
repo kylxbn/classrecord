@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.*?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
            maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="200.0" prefHeight="696.0" prefWidth="891.0"
-           xmlns="http://javafx.com/javafx/9"
+           xmlns="http://javafx.com/javafx/9.0.1"
            fx:controller="com.orthocube.classrecord.gui.classes.AttendanceController">
     <items>
         <VBox fx:id="vbxDays">
@@ -21,13 +21,13 @@
                     <children>
                         <TitledPane fx:id="pnlDays" animated="false" collapsible="false"
                                     maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                    minHeight="100.0" minWidth="100.0" text="Attendance Days" VBox.vgrow="ALWAYS">
+                                    minHeight="100.0" minWidth="100.0" text="%attendance.days" VBox.vgrow="ALWAYS">
                             <content>
                                 <TableView fx:id="tblAttendanceDays" maxHeight="1.7976931348623157E308"
                                            maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0">
                                     <columns>
-                                        <TableColumn fx:id="colDate" prefWidth="75.0" text="Date"/>
-                                        <TableColumn fx:id="colDaysNotes" prefWidth="75.0" text="Notes"/>
+                                        <TableColumn fx:id="colDate" prefWidth="75.0" text="%attendance.date"/>
+                                        <TableColumn fx:id="colDaysNotes" prefWidth="75.0" text="%attendance.notes"/>
                                     </columns>
                                     <contextMenu>
                                         <ContextMenu>
@@ -42,7 +42,7 @@
                         </TitledPane>
                         <TitledPane fx:id="pnlDaysInfo" disable="true" maxHeight="1.7976931348623157E308"
                                     maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="100.0"
-                                    text="Info">
+                                    text="%attendance.info">
                             <content>
                                 <GridPane hgap="4.0" vgap="4.0">
                                     <columnConstraints>
@@ -61,8 +61,8 @@
                                                         vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                     <children>
-                                        <Label text="Date:"/>
-                                        <Label text="Notes:" GridPane.rowIndex="1"/>
+                                        <Label text="%attendance.dateprompt"/>
+                                        <Label text="%attendance.notesprompt" GridPane.rowIndex="1"/>
                                         <DatePicker fx:id="dpkDate" maxWidth="1.7976931348623157E308"
                                                     minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1"
                                                     GridPane.columnSpan="2"/>
@@ -73,10 +73,10 @@
                                               GridPane.rowIndex="2">
                                             <children>
                                                 <Button fx:id="cmdDaysCancel" mnemonicParsing="false"
-                                                        onAction="#cmdDaysCancelAction" text="Cancel"/>
+                                                        onAction="#cmdDaysCancelAction" text="%attendance.cancel"/>
                                                 <Button fx:id="cmdSaveDay" defaultButton="true" disable="true"
                                                         mnemonicParsing="false" onAction="#cmdSaveDayAction"
-                                                        text="Save"/>
+                                                        text="%attendance.save"/>
                                             </children>
                                         </HBox>
                                     </children>
@@ -90,9 +90,10 @@
                 </VBox>
                 <HBox alignment="TOP_RIGHT" spacing="8.0">
                     <children>
-                        <Button fx:id="cmdAddDay" mnemonicParsing="false" onAction="#cmdAddDayAction" text="Add"/>
+                        <Button fx:id="cmdAddDay" mnemonicParsing="false" onAction="#cmdAddDayAction"
+                                text="%attendance.add"/>
                         <Button fx:id="cmdQuickAdd" mnemonicParsing="false" onAction="#cmdQuickAddAction"
-                                text="Quick Add"/>
+                                text="%attendance.quickadd"/>
                     </children>
                     <VBox.margin>
                         <Insets/>
@@ -110,24 +111,26 @@
             <children>
                 <TitledPane fx:id="pnlList" animated="false" collapsible="false" disable="true"
                             maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="100.0"
-                            minWidth="100.0" text="Roll Call" VBox.vgrow="ALWAYS">
+                            minWidth="100.0" text="%attendance.list" VBox.vgrow="ALWAYS">
                     <content>
                         <TableView fx:id="tblAttendanceList" minHeight="50.0" minWidth="50.0" prefHeight="200.0"
                                    prefWidth="200.0">
                             <columns>
-                                <TableColumn fx:id="colName" prefWidth="75.0" text="Name"/>
-                                <TableColumn fx:id="colRemarks" prefWidth="75.0" text="Remarks"/>
-                                <TableColumn fx:id="colListNotes" prefWidth="75.0" text="Notes"/>
+                                <TableColumn fx:id="colName" prefWidth="75.0" text="%attendance.name"/>
+                                <TableColumn fx:id="colRemarks" prefWidth="75.0" text="%attendance.remarks"/>
+                                <TableColumn fx:id="colListNotes" prefWidth="75.0" text="%attendance.notes"/>
                             </columns>
                         </TableView>
                     </content>
                 </TitledPane>
                 <TitledPane fx:id="pnlListInfo" disable="true" maxHeight="1.7976931348623157E308"
-                            maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="100.0" text="Info">
+                            maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="100.0"
+                            text="%attendance.info">
                     <content>
                         <GridPane hgap="4.0" vgap="4.0">
                             <columnConstraints>
-                                <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/>
+                                <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="-Infinity"
+                                                   minWidth="-Infinity"/>
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                                 <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308"
                                                    minWidth="-Infinity"/>
@@ -141,9 +144,9 @@
                                                 vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <Label text="Remarks:"/>
-                                <Label text="Notes:" GridPane.rowIndex="1"/>
-                                <Label text="Last meeting:" GridPane.rowIndex="2"/>
+                                <Label text="%attendance.remarksprompt"/>
+                                <Label text="%attendance.notesprompt" GridPane.rowIndex="1"/>
+                                <Label text="%attendance.lastmeeting" GridPane.rowIndex="2"/>
                                 <ChoiceBox fx:id="cboRemarks" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                                            minWidth="-Infinity" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
                                 <TextField fx:id="txtListNotes" GridPane.columnIndex="1" GridPane.columnSpan="2"
@@ -153,9 +156,10 @@
                                 <HBox spacing="4.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                                     <children>
                                         <Button fx:id="cmdListCancel" mnemonicParsing="false"
-                                                onAction="#cmdListCancelAction" text="Cancel"/>
+                                                onAction="#cmdListCancelAction" text="%attendance.cancel"/>
                                         <Button fx:id="cmdSaveList" defaultButton="true" disable="true"
-                                                mnemonicParsing="false" onAction="#cmdSaveListAction" text="Save"/>
+                                                mnemonicParsing="false" onAction="#cmdSaveListAction"
+                                                text="%attendance.save"/>
                                     </children>
                                 </HBox>
                             </children>
@@ -163,7 +167,7 @@
                     </content>
                 </TitledPane>
                 <TitledPane fx:id="pnlQuickSet" animated="false" collapsible="false" disable="true"
-                            minHeight="-Infinity" minWidth="100.0" text="Quick Set">
+                            minHeight="-Infinity" minWidth="100.0" text="%attendance.quickset">
                     <content>
                         <GridPane hgap="8.0" vgap="8.0">
                             <columnConstraints>
@@ -178,13 +182,14 @@
                             </rowConstraints>
                             <children>
                                 <Button fx:id="cmdOthers" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                        onAction="#cmdOthersAction" text="Others"/>
+                                        onAction="#cmdOthersAction" text="%attendance.others"/>
                                 <Button fx:id="cmdLate" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                        onAction="#cmdLateAction" text="Late" GridPane.columnIndex="1"/>
+                                        onAction="#cmdLateAction" text="%attendance.late" GridPane.columnIndex="1"/>
                                 <Button fx:id="cmdAbsent" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                        onAction="#cmdAbsentAction" text="Absent" GridPane.columnIndex="2"/>
+                                        onAction="#cmdAbsentAction" text="%attendance.absent" GridPane.columnIndex="2"/>
                                 <Button fx:id="cmdPresent" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                        onAction="#cmdPresentAction" text="Present" GridPane.columnIndex="3"/>
+                                        onAction="#cmdPresentAction" text="%attendance.present"
+                                        GridPane.columnIndex="3"/>
                             </children>
                         </GridPane>
                     </content>

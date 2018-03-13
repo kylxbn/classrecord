@@ -241,6 +241,7 @@ public class EnrolleesController implements Initializable {
 
     @FXML
     private void mnuSearchOnFacebookAction(ActionEvent event) {
+        if (currentEnrollee == null) return;
         try {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().browse(new URI("https://www.facebook.com/search/top/?q=" + (currentEnrollee.getStudent().getFN() + " " + currentEnrollee.getStudent().getLN()).replace(" ", "%20")));
@@ -254,11 +255,13 @@ public class EnrolleesController implements Initializable {
 
     @FXML
     private void mnuViewStudentAction(ActionEvent event) {
+        if (currentEnrollee == null) return;
         mainApp.showStudent(currentEnrollee.getStudent());
     }
 
     @FXML
     private void mnuRemoveAction(ActionEvent event) {
+        if (currentEnrollee == null) return;
         if (Dialogs.confirm("Remove Enrollee", "Are you sure you want to delete this enrollee?", currentEnrollee.getStudent().getFN() + " " + currentEnrollee.getStudent().getLN()) == ButtonType.OK)
             try {
                 DB.delete(currentEnrollee);

@@ -36,6 +36,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.orthocube.classrecord.util.Utils.sanitizeTime;
+
 public class ClassesController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(ClassesController.class.getName());
     private final ObservableList<String> collegeYears = FXCollections.observableArrayList("1st", "2nd", "3rd", "4th", "5th");
@@ -302,27 +304,27 @@ public class ClassesController implements Initializable {
             return;
         }
         if (chkMonday.isSelected() && txtMonday.getText().compareTo(txtMonday2.getText()) > 0) {
-            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            Dialogs.error("Invalid input", "Monday start time is later than end time", "Please recheck for errors in input.");
             return;
         }
         if (chkTuesday.isSelected() && txtTuesday.getText().compareTo(txtTuesday2.getText()) > 0) {
-            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            Dialogs.error("Invalid input", "Tuesday start time is later than end time", "Please recheck for errors in input.");
             return;
         }
         if (chkWednesday.isSelected() && txtWednesday.getText().compareTo(txtWednesday2.getText()) > 0) {
-            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            Dialogs.error("Invalid input", "Wednesday start time is later than end time", "Please recheck for errors in input.");
             return;
         }
         if (chkThursday.isSelected() && txtThursday.getText().compareTo(txtThursday2.getText()) > 0) {
-            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            Dialogs.error("Invalid input", "Thursday start time is later than end time", "Please recheck for errors in input.");
             return;
         }
         if (chkFriday.isSelected() && txtFriday.getText().compareTo(txtFriday2.getText()) > 0) {
-            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            Dialogs.error("Invalid input", "Friday start time is later than end time", "Please recheck for errors in input.");
             return;
         }
         if (chkSaturday.isSelected() && txtSaturday.getText().compareTo(txtSaturday2.getText()) > 0) {
-            Dialogs.error("Invalid input", "Sunday start time is later than end time", "Please recheck for errors in input.");
+            Dialogs.error("Invalid input", "Saturday start time is later than end time", "Please recheck for errors in input.");
             return;
         }
 
@@ -385,6 +387,7 @@ public class ClassesController implements Initializable {
 
     @FXML
     void mnuGradesAction(ActionEvent event) {
+        if (currentClass == null) return;
         try {
             mainApp.showGrades(currentClass);
         } catch (Exception e) {
@@ -402,6 +405,7 @@ public class ClassesController implements Initializable {
 
     @FXML
     void mnuEnrolleesAction(ActionEvent event) {
+        if (currentClass == null) return;
         try {
             mainApp.showEnrollees(currentClass);
         } catch (Exception e) {
@@ -411,6 +415,7 @@ public class ClassesController implements Initializable {
 
     @FXML
     void mnuTasksAction(ActionEvent event) {
+        if (currentClass == null) return;
         try {
             mainApp.showTasks(currentClass);
         } catch (Exception e) {
@@ -420,6 +425,7 @@ public class ClassesController implements Initializable {
 
     @FXML
     void mnuCriteriaAction(ActionEvent event) {
+        if (currentClass == null) return;
         try {
             mainApp.showCriteria(currentClass);
         } catch (Exception e) {
@@ -438,6 +444,7 @@ public class ClassesController implements Initializable {
 
     @FXML
     void mnuSummarizeAttendanceAction(ActionEvent event) {
+        if (currentClass == null) return;
         try {
             mainApp.summarizeAttendance(currentClass);
         } catch (Exception e) {
@@ -447,6 +454,7 @@ public class ClassesController implements Initializable {
 
     @FXML
     void mnuDeleteAction(ActionEvent event) {
+        if (currentClass == null) return;
         if (Dialogs.confirm("Delete Class", "Are you sure you want to delete this class?", currentClass.getName()) == ButtonType.OK)
             try {
                 DB.delete(currentClass);
@@ -459,6 +467,7 @@ public class ClassesController implements Initializable {
 
     @FXML
     void mnuViewAttendanceAction(ActionEvent event) {
+        if (currentClass == null) return;
         try {
             mainApp.showAttendance(currentClass);
         } catch (IOException e) {
@@ -468,6 +477,7 @@ public class ClassesController implements Initializable {
 
     @FXML
     void mnuAttendanceStatisticsAction(ActionEvent event) {
+        if (currentClass == null) return;
         try {
             mainApp.showAttendanceStatistics(currentClass);
         } catch (IOException e) {
@@ -593,9 +603,9 @@ public class ClassesController implements Initializable {
             updateFilters();
         });
         timeGroup.selectedToggleProperty().addListener((obs, ov, nv) -> {
-            if (timeGroup.getSelectedToggle().equals(rdoTimeThisSemester))
+            if (timeGroup.getSelectedToggle().equals(rdoTimeToday))
                 timefilter = 0;
-            else if (timeGroup.getSelectedToggle().equals(rdoTimeToday))
+            else if (timeGroup.getSelectedToggle().equals(rdoTimeThisSemester))
                 timefilter = 1;
             else
                 timefilter = 2;
@@ -655,9 +665,20 @@ public class ClassesController implements Initializable {
             }
 
             if (timefilter == 0) {
+                int year = Calendar.getInstance().get(Calendar.YEAR);
+                int month = Calendar.getInstance().get(Calendar.MONTH);
+                include &= (clazz.getSY() == year ? 1 : 0);
+                if ((month >= 5) && (month < 9))
+                    include &= (clazz.getSem() == 1) ? 1 : 0;
+                else if (month == 3 || month == 4)
+                    include &= (clazz.getSem() == 3) ? 1 : 0;
+                else
+                    include &= (clazz.getSem() == 2) ? 1 : 0;
                 include &= (clazz.getDays() & (1 << (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1))) > 0 ? 1 : 0;
             } else if (timefilter == 1) {
+                int year = Calendar.getInstance().get(Calendar.YEAR);
                 int month = Calendar.getInstance().get(Calendar.MONTH);
+                include &= (clazz.getSY() == year ? 1 : 0);
                 if ((month >= 5) && (month < 9))
                     include &= (clazz.getSem() == 1) ? 1 : 0;
                 else if (month == 3 || month == 4)
@@ -674,13 +695,6 @@ public class ClassesController implements Initializable {
 
             return include > 0;
         });
-    }
-
-    private String sanitizeTime(String t) {
-        String[] parts = t.split(":");
-        int hour = Integer.parseInt(parts[0]);
-        int min = Integer.parseInt(parts[1]);
-        return String.format("%02d:%02d", hour, min);
     }
 
     private void editMode(boolean t) {
@@ -726,6 +740,7 @@ public class ClassesController implements Initializable {
                 }
         );
 
+        // TODO: translate this
         cboLevel.setItems(FXCollections.observableArrayList("College", "SHS"));
         cboSemester.setItems(FXCollections.observableArrayList("1st", "2nd", "Summer Class"));
 
@@ -806,7 +821,7 @@ public class ClassesController implements Initializable {
                     else if ((minute < 0) || (minute > 59))
                         condition = true;
                 } catch (Exception e) {
-                    condition = false;
+                    condition = true;
                 }
             }
             return ValidationResult.fromMessageIf(control, "Invalid time format.", Severity.ERROR, condition);

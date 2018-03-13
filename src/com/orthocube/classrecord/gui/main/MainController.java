@@ -11,6 +11,7 @@ import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import com.orthocube.classrecord.util.Settings;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -30,14 +31,12 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
  * @author OrthoCube
  */
 public class MainController implements Initializable {
-    private boolean dark = true;
     private User currentUser;
     private MainApp mainApp;
     private ResourceBundle bundle;
@@ -153,24 +152,18 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    void mnuDarkThemeAction(ActionEvent event) {
-        if (!dark) {
-            mainApp.setDarkTheme();
-            dark = true;
-        }
+    void mnuRemindersAction(ActionEvent event) {
+        mainApp.showReminders();
     }
 
     @FXML
-    void mnuLightThemeAction(ActionEvent event) {
-        if (dark) {
-            mainApp.setLightTheme();
-            dark = false;
-        }
+    void mnuSettingsAction(ActionEvent event) {
+        mainApp.showSettingsDialog();
     }
 
     @FXML
     void cmdDetachAction() {
-        mainApp.detatch();
+        mainApp.detach();
     }
 
     public void setMainApp(MainApp mainApp) {
@@ -222,9 +215,9 @@ public class MainController implements Initializable {
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
 
             Date now = new Date();
-            DateFormat df = DateFormat.getDateInstance(DateFormat.FULL, Locale.ENGLISH);
+            DateFormat df = DateFormat.getDateInstance(DateFormat.FULL, Settings.language);
             String formattedDate = df.format(now);
-            DateFormat tf = DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.ENGLISH);
+            DateFormat tf = DateFormat.getTimeInstance(DateFormat.DEFAULT, Settings.language);
             String formattedTime = tf.format(now);
             //System.out.println(hour + ":" + (minute) + ":" + second);
             lblDate.setText(formattedDate);
@@ -242,16 +235,6 @@ public class MainController implements Initializable {
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
 
-    }
-
-    public void setDark() {
-        dark = true;
-        mnuDarkTheme.setSelected(true);
-    }
-
-    public void setLight() {
-        dark = false;
-        mnuLightTheme.setSelected(true);
     }
 
     public void setUser(User user) {

@@ -13,8 +13,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-            minHeight="100.0" minWidth="100.0" prefHeight="686.0" prefWidth="899.0" xmlns="http://javafx.com/javafx/9"
-            fx:controller="com.orthocube.classrecord.gui.main.MainController">
+            minHeight="100.0" minWidth="100.0" prefHeight="686.0" prefWidth="899.0"
+            xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.gui.main.MainController">
     <top>
         <VBox BorderPane.alignment="CENTER">
             <children>
@@ -74,19 +74,7 @@
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <Menu mnemonicParsing="false" text="%main.theme">
-                                    <items>
-                                        <RadioMenuItem fx:id="mnuDarkTheme" mnemonicParsing="false"
-                                                       onAction="#mnuDarkThemeAction" selected="true" text="%main.dark">
-                                            <toggleGroup>
-                                                <ToggleGroup fx:id="mnuTheme"/>
-                                            </toggleGroup>
-                                        </RadioMenuItem>
-                                        <RadioMenuItem fx:id="mnuLightTheme" mnemonicParsing="false"
-                                                       onAction="#mnuLightThemeAction" text="%main.light"
-                                                       toggleGroup="$mnuTheme"/>
-                                    </items>
-                                </Menu>
+                                <MenuItem mnemonicParsing="false" onAction="#mnuSettingsAction" text="%main.settings"/>
                             </items>
                         </Menu>
                         <Menu fx:id="mnuTools" mnemonicParsing="false" text="%main.tools">
@@ -281,8 +269,8 @@
                         </ToggleButton>
                         <ToggleButton fx:id="cmdReminders" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
                                       maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-                                      mnemonicParsing="false" styleClass="navigation" text="%main.reminders"
-                                      GridPane.rowIndex="4">
+                                      mnemonicParsing="false" onAction="#mnuRemindersAction" styleClass="navigation"
+                                      text="%main.reminders" GridPane.rowIndex="4">
                             <graphic>
                                 <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
                                     <image>

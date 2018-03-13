@@ -7,28 +7,30 @@
 
 package com.orthocube.classrecord.util.grade;
 
+import org.apache.commons.math3.fraction.BigFraction;
+
 import java.util.ArrayList;
 
 public class Criterion {
 
     private final ArrayList<Task> tasks;
-    private final double percent;
+    private final BigFraction percent;
 
     public Criterion(int p) {
         tasks = new ArrayList<>();
-        percent = ((double) p) / 100.0;
+        percent = new BigFraction(p, 100);
     }
 
     public void addTask(int s, int t) {
         tasks.add(new Task(s, t));
     }
 
-    public double getGrade() {
-        double total = 0;
+    public BigFraction getGrade() {
+        BigFraction total = BigFraction.ZERO;
         for (Task t : tasks) {
-            total += t.getGrade() / tasks.size();
+            total = total.add(t.getGrade()).divide(tasks.size());
         }
         //JOptionPane.showMessageDialog(null, Double.toString(total*percent), "TEST", JOptionPane.WARNING_MESSAGE);
-        return total * percent;
+        return total.multiply(percent);
     }
 }

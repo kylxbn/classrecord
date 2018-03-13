@@ -130,6 +130,7 @@ public class UsersController implements Initializable {
 
     @FXML
     void mnuRemoveAction(ActionEvent event) {
+        if (currentUser == null) return;
         if (currentUser.getID() == 1) {
             Dialogs.error("Cannot delete master user", "The master user cannot be deleted.", "This is the first ever created user\nand it can't be deleted.");
             return;
@@ -330,7 +331,8 @@ public class UsersController implements Initializable {
         noPicture = new Image(getClass().getResourceAsStream("../../res/Businessman_100px.png"));
 
         BufferedImage bi2 = new BufferedImage(125, 125, BufferedImage.TYPE_INT_RGB);
-        Graphics g2 = bi2.createGraphics();
+        Graphics2D g2 = bi2.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.drawString("NO USER SELECTED", 5, 20);
         g2.dispose();
         noUser = SwingFXUtils.toFXImage(bi2, null);

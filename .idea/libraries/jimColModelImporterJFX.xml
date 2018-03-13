@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="snakeyaml-1.18">
+  <library name="jimColModelImporterJFX">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/snakeyaml-1.18.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jimColModelImporterJFX.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

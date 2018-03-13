@@ -54,11 +54,13 @@ public class StudentEnrolledInController implements Initializable {
 
     @FXML
     void viewClassAction(ActionEvent event) {
+        if (lstCollege.getSelectionModel().getSelectedItem() == null) return;
         mainApp.showClass(lstCollege.getSelectionModel().getSelectedItem());
     }
 
     @FXML
     void viewSHSClassAction(ActionEvent event) {
+        if (lstSHS.getSelectionModel().getSelectedItem() == null) return;
         mainApp.showClass(lstSHS.getSelectionModel().getSelectedItem());
     }
 

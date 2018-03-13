@@ -15,16 +15,6 @@ import java.util.ArrayList;
  * @author OrthoCube
  */
 public final class Clazz {
-    //ID     NUMBER PRIMARY KEY NOT NULL
-//    Name   TEXT
-//    SY     NUMBER
-//    Sem    NUMBER
-//    Course TEXT
-//    Room   TEXT
-//    Sched  TEXT
-//    Level  TEXT
-//    C1     TEXT
-//    P1     NUMBER
     private final LongProperty id = new SimpleLongProperty();
     private final StringProperty name = new SimpleStringProperty();
     private final IntegerProperty sy = new SimpleIntegerProperty();

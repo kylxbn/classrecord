@@ -233,6 +233,7 @@ public class CriteriaController implements Initializable {
 
     @FXML
     void mnuDeleteAction(ActionEvent event) {
+        if (currentCriterion == null) return;
         if (Dialogs.confirm("Delete Criterion", "Are you sure you want to delete this criterion?", currentCriterion.getName()) == ButtonType.OK)
             try {
                 DB.delete(currentCriterion);

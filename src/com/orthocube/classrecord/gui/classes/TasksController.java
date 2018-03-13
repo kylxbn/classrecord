@@ -187,6 +187,18 @@ public class TasksController implements Initializable {
     public void setClass(Clazz c) {
         try {
             currentClass = c;
+
+            if (currentClass.isSHS()) {
+                tpnPrelims.setExpanded(false);
+                tpnPrelims.setDisable(true);
+                tpnSemis.setExpanded(false);
+                tpnSemis.setDisable(true);
+                cboTTerm.setItems(FXCollections.observableArrayList("Midterms", "Finals"));
+            } else {
+                cboTTerm.setItems(FXCollections.observableArrayList("Prelims", "Midterms", "Semis", "Finals"));
+
+            }
+
             tasks = DB.getTasks(c);
             ObservableList<Criterion> criteria = DB.getCriteria(c);
 
@@ -237,6 +249,11 @@ public class TasksController implements Initializable {
 
     @FXML
     void cmdSSaveAction(ActionEvent event) {
+        if (scoreValidationSupport.isInvalid()) {
+            Dialogs.error("Invalid values", "The score you entered is invalid.", "Please fix the invalid input first.");
+            return;
+        }
+
         try {
             currentScore.setScore(Integer.parseInt(txtSScore.getText()));
             currentScore.setNotes(txtSNotes.getText());
@@ -277,7 +294,11 @@ public class TasksController implements Initializable {
         try {
             currentTask.setName(txtTName.getText());
             currentTask.setItems(Integer.parseInt(txtTItems.getText()));
-            currentTask.setTerm(1 << cboTTerm.getSelectionModel().getSelectedIndex());
+            if (currentClass.isSHS()) {
+                currentTask.setTerm(1 << (cboTTerm.getSelectionModel().getSelectedIndex() == 0 ? 1 : 3));
+            } else {
+                currentTask.setTerm(1 << cboTTerm.getSelectionModel().getSelectedIndex());
+            }
 
             Criterion selectedCriterion = cboTCriterion.getSelectionModel().getSelectedItem();
             currentTask.setCriterion(selectedCriterion);
@@ -337,21 +358,32 @@ public class TasksController implements Initializable {
         if (currentTask != null) {
             txtTName.setText(currentTask.getName());
             txtTItems.setText(Integer.toString(currentTask.getItems()));
-            if ((currentTask.getTerm() & 1) > 0)
-                cboTTerm.getSelectionModel().select(0);
-            else if ((currentTask.getTerm() & 2) > 0)
-                cboTTerm.getSelectionModel().select(1);
-            else if ((currentTask.getTerm() & 4) > 0)
-                cboTTerm.getSelectionModel().select(2);
-            else if ((currentTask.getTerm() & 8) > 0)
-                cboTTerm.getSelectionModel().select(3);
-            else
-                cboTTerm.getSelectionModel().select(-1);
+            if (currentClass.isSHS()) {
+                if ((currentTask.getTerm() & 2) > 0)
+                    cboTTerm.getSelectionModel().select(0);
+                else if ((currentTask.getTerm() & 8) > 0)
+                    cboTTerm.getSelectionModel().select(1);
+                else
+                    cboTTerm.getSelectionModel().select(-1);
+            } else {
+                if ((currentTask.getTerm() & 1) > 0)
+                    cboTTerm.getSelectionModel().select(0);
+                else if ((currentTask.getTerm() & 2) > 0)
+                    cboTTerm.getSelectionModel().select(1);
+                else if ((currentTask.getTerm() & 4) > 0)
+                    cboTTerm.getSelectionModel().select(2);
+                else if ((currentTask.getTerm() & 8) > 0)
+                    cboTTerm.getSelectionModel().select(3);
+                else
+                    cboTTerm.getSelectionModel().select(-1);
+            }
 
             for (Criterion c : filteredCriteria) {
-                if (c.getID() == currentTask.getCriterion().getID()) {
-                    cboTCriterion.getSelectionModel().select(c);
-                    break;
+                if (currentTask.getCriterion() != null) {
+                    if (c.getID() == currentTask.getCriterion().getID()) {
+                        cboTCriterion.getSelectionModel().select(c);
+                        break;
+                    }
                 }
             }
 
@@ -374,11 +406,25 @@ public class TasksController implements Initializable {
 
     @FXML
     void cmdDeleteScoreAction(ActionEvent event) {
+        if (currentScore == null) return;
         if (Dialogs.confirm("Remove Score", "Are you sure you want to delete this score?", currentScore.getEnrollee().getStudent().getLN() + ", " + currentScore.getEnrollee().getStudent().getFN()) == ButtonType.OK)
             try {
                 DB.delete(currentScore);
                 scores.remove(currentScore);
                 mainApp.getRootNotification().show("Score removed from task.");
+            } catch (SQLException e) {
+                Dialogs.exception(e);
+            }
+    }
+
+    @FXML
+    void mnuDeleteTaskAction(ActionEvent event) {
+        if (currentTask == null) return;
+        if (Dialogs.confirm("Remove Task", "Are you sure you want to delete this task?", currentTask.getName()) == ButtonType.OK)
+            try {
+                DB.delete(currentTask);
+                tasks.remove(currentTask);
+                mainApp.getRootNotification().show("Task removed from class.");
             } catch (SQLException e) {
                 Dialogs.exception(e);
             }
@@ -489,8 +535,18 @@ public class TasksController implements Initializable {
             taskEditMode(false);
         });
 
-        cboTTerm.getSelectionModel().selectedIndexProperty().addListener((obs, oldv, newv) ->
-                filteredCriteria.setPredicate(p -> (p.getTerms() & (1 << newv.intValue())) > 0));
+        cboTTerm.getSelectionModel().selectedIndexProperty().addListener((obs, oldv, newv) -> {
+            if (currentClass.isSHS()) {
+                if (newv.intValue() == 0)
+                    filteredCriteria.setPredicate(p -> ((p.getTerms() & (1 << 1)) > 0));
+                else if (newv.intValue() == 1)
+                    filteredCriteria.setPredicate(p -> ((p.getTerms() & (1 << 3)) > 0));
+                else
+                    filteredCriteria.setPredicate(p -> false);
+            } else {
+                filteredCriteria.setPredicate(p -> (p.getTerms() & (1 << newv.intValue())) > 0);
+            }
+        });
 
         cboTCriterion.setConverter(new CriterionConverter());
 
@@ -521,7 +577,6 @@ public class TasksController implements Initializable {
             scoreEditMode(false);
         });
 
-        cboTTerm.setItems(FXCollections.observableArrayList("Prelim", "Midterms", "Semis", "Finals"));
 
         Calendar calendar = Calendar.getInstance();
         int month = calendar.get(Calendar.MONTH);

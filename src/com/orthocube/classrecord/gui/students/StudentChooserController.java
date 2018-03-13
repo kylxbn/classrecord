@@ -88,6 +88,7 @@ public class StudentChooserController implements Initializable {
 
     @FXML
     void mnuSearchOnFacebookAction(ActionEvent event) {
+        if (currentStudent == null) return;
         try {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().browse(new URI("https://www.facebook.com/search/top/?q=" + (currentStudent.getFN() + " " + currentStudent.getLN()).replace(" ", "%20")));

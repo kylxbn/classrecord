@@ -14,6 +14,8 @@
  */
 package com.orthocube.classrecord.util.grade;
 
+import org.apache.commons.math3.fraction.BigFraction;
+
 /**
  * @author OrthoCube
  */
@@ -27,29 +29,29 @@ class Task {
         total = t;
     }
 
-    public double getGrade() {
-        double p = ((double) score) / ((double) total) * 100.0;
-        double r;
-        if (p < 50) {
-            r = 5.00;
-        } else if (p < 60) {
-            r = 3.00;
-        } else if (p < 66) {
-            r = 2.75;
-        } else if (p < 70) {
-            r = 2.50;
-        } else if (p < 76) {
-            r = 2.25;
-        } else if (p < 80) {
-            r = 2.00;
-        } else if (p < 86) {
-            r = 1.75;
-        } else if (p < 90) {
-            r = 1.50;
-        } else if (p < 96) {
-            r = 1.25;
+    public BigFraction getGrade() {
+        BigFraction p = new BigFraction(score, total).multiply(100);
+        BigFraction r;
+        if (p.compareTo(new BigFraction(50, 1)) < 0) {
+            r = new BigFraction(5.00);
+        } else if (p.compareTo(new BigFraction(60, 1)) < 0) {
+            r = new BigFraction(3.00);
+        } else if (p.compareTo(new BigFraction(66, 1)) < 0) {
+            r = new BigFraction(2.75);
+        } else if (p.compareTo(new BigFraction(70, 1)) < 0) {
+            r = new BigFraction(2.50);
+        } else if (p.compareTo(new BigFraction(76, 1)) < 0) {
+            r = new BigFraction(2.25);
+        } else if (p.compareTo(new BigFraction(80, 1)) < 0) {
+            r = new BigFraction(2.00);
+        } else if (p.compareTo(new BigFraction(86, 1)) < 0) {
+            r = new BigFraction(1.75);
+        } else if (p.compareTo(new BigFraction(90, 1)) < 0) {
+            r = new BigFraction(1.50);
+        } else if (p.compareTo(new BigFraction(96, 1)) < 0) {
+            r = new BigFraction(1.25);
         } else {
-            r = 1.00;
+            r = new BigFraction(1.00);
         }
         return r;
     }
