@@ -52,7 +52,6 @@ public class EnrolleesController implements Initializable {
     private MainApp mainApp;
     private Clazz currentClass;
     private Enrollee currentEnrollee;
-    private ResourceBundle bundle;
     private ObservableList<String> courses;
 
     private boolean saveInProgress = false;
@@ -207,7 +206,6 @@ public class EnrolleesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = rb;
 
         colName.setCellValueFactory(cellData -> Bindings.concat(cellData.getValue().getStudent().lnProperty(), ", ", cellData.getValue().getStudent().fnProperty()));
         colCourse.setCellValueFactory(cellData -> cellData.getValue().courseProperty());

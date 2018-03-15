@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 
 public class ImageRefinerController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(StudentsController.class.getName());
-    private ResourceBundle bundle;
 
     private Stage dialogStage;
     private BufferedImage image;
@@ -121,7 +120,6 @@ public class ImageRefinerController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = resources;
 
         lblInstructions.setText("Please click on left eye or click [Done] to accept the image as is.");
     }

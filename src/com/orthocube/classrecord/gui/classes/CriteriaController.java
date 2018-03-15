@@ -37,8 +37,6 @@ import java.util.logging.Logger;
 public class CriteriaController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(EnrolleesController.class.getName());
 
-    private ResourceBundle bundle;
-
     private MainApp mainApp;
     private ObservableList<Criterion> criteria;
     private Clazz currentClass;
@@ -466,7 +464,6 @@ public class CriteriaController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = rb;
 
         colName.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         //colPercent.setCellValueFactory(cellData -> cellData.getValue().percentageProperty().asString());

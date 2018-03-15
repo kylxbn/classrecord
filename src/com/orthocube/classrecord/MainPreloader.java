@@ -220,7 +220,8 @@ public class MainPreloader extends Preloader {
                 if (DB.isFirstRun()) {
                     loaderController.hideFirstStart();
 
-                    String license = "";
+                    String license;
+                    label:
                     do {
                         license = Dialogs.textInput("Program License", "To use this program, please provide a valid license key.", "License Key:");
                         LicenseKeyResult result = LicenseKeyResult.INVALID;
@@ -232,47 +233,62 @@ public class MainPreloader extends Preloader {
                             return;
                         }
 
-                        if (result == LicenseKeyResult.INVALID) {
-                            Dialogs.error("Program License", "Invalid license", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.BLACKLISTED) {
-                            Dialogs.error("Program License", "Blacklisted license", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.FAKE) {
-                            Dialogs.error("Program License", "Fake license", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.EXPIRED) {
-                            Dialogs.error("Program License", "Expired license", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.TOOEARLY) {
-                            Dialogs.error("Program License", "License not yet valid", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.NEEDSREPAIR) {
-                            Dialogs.error("Program License", "Invalidated license", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.GOOD) {
-                            DB.setLicense(license);
-                            Dialogs.info("Program License", "Thank you!", "Your license key is valid.");
-                            Dialogs.info(Settings.bundle.getString("preloader.appinit.title"), Settings.bundle.getString("preloader.appinit.header"), Settings.bundle.getString("preloader.appinit.content"));
-                            username = "admin";
-                            password = "admin";
-                            mayBeHidden();
-                            break;
+                        switch (result) {
+                            case INVALID:
+                                Dialogs.error("Program License", "Invalid license", "To use this program, please provide a valid license key.");
+                                break;
+                            case BLACKLISTED:
+                                Dialogs.error("Program License", "Blacklisted license", "To use this program, please provide a valid license key.");
+                                break;
+                            case FAKE:
+                                Dialogs.error("Program License", "Fake license", "To use this program, please provide a valid license key.");
+                                break;
+                            case EXPIRED:
+                                Dialogs.error("Program License", "Expired license", "To use this program, please provide a valid license key.");
+                                break;
+                            case TOOEARLY:
+                                Dialogs.error("Program License", "License not yet valid", "To use this program, please provide a valid license key.");
+                                break;
+                            case NEEDSREPAIR:
+                                Dialogs.error("Program License", "Invalidated license", "To use this program, please provide a valid license key.");
+                                break;
+                            case GOOD:
+                                DB.setLicense(license);
+                                Dialogs.info("Program License", "Thank you!", "Your license key is valid.");
+                                Dialogs.info(Settings.bundle.getString("preloader.appinit.title"), Settings.bundle.getString("preloader.appinit.header"), Settings.bundle.getString("preloader.appinit.content"));
+                                username = "admin";
+                                password = "admin";
+                                mayBeHidden();
+                                break label;
                         }
                     } while (license.trim().length() > 0);
                 } else {
                     LicenseKeyResult result = DB.hasValidLicense();
 
                     if (result != LicenseKeyResult.GOOD) {
-                        if (result == LicenseKeyResult.INVALID) {
-                            Dialogs.error("Program License", "Invalid license", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.BLACKLISTED) {
-                            Dialogs.error("Program License", "Blacklisted license", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.FAKE) {
-                            Dialogs.error("Program License", "Fake license", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.EXPIRED) {
-                            Dialogs.error("Program License", "Expired license", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.TOOEARLY) {
-                            Dialogs.error("Program License", "License not yet valid", "To use this program, please provide a valid license key.");
-                        } else if (result == LicenseKeyResult.NEEDSREPAIR) {
-                            Dialogs.error("Program License", "Invalidated license", "To use this program, please provide a valid license key.");
+                        switch (result) {
+                            case INVALID:
+                                Dialogs.error("Program License", "Invalid license", "To use this program, please provide a valid license key.");
+                                break;
+                            case BLACKLISTED:
+                                Dialogs.error("Program License", "Blacklisted license", "To use this program, please provide a valid license key.");
+                                break;
+                            case FAKE:
+                                Dialogs.error("Program License", "Fake license", "To use this program, please provide a valid license key.");
+                                break;
+                            case EXPIRED:
+                                Dialogs.error("Program License", "Expired license", "To use this program, please provide a valid license key.");
+                                break;
+                            case TOOEARLY:
+                                Dialogs.error("Program License", "License not yet valid", "To use this program, please provide a valid license key.");
+                                break;
+                            case NEEDSREPAIR:
+                                Dialogs.error("Program License", "Invalidated license", "To use this program, please provide a valid license key.");
+                                break;
                         }
 
-                        String license = "";
+                        String license;
+                        label1:
                         do {
                             license = Dialogs.textInput("Program License", "To use this program, please provide a valid license key.", "License Key:");
                             LicenseKeyResult result2 = LicenseKeyResult.INVALID;
@@ -284,23 +300,30 @@ public class MainPreloader extends Preloader {
                                 return;
                             }
 
-                            if (result2 == LicenseKeyResult.INVALID) {
-                                Dialogs.error("Program License", "Invalid license", "To use this program, please provide a valid license key.");
-                            } else if (result2 == LicenseKeyResult.BLACKLISTED) {
-                                Dialogs.error("Program License", "Blacklisted license", "To use this program, please provide a valid license key.");
-                            } else if (result2 == LicenseKeyResult.FAKE) {
-                                Dialogs.error("Program License", "Fake license", "To use this program, please provide a valid license key.");
-                            } else if (result2 == LicenseKeyResult.EXPIRED) {
-                                Dialogs.error("Program License", "Expired license", "To use this program, please provide a valid license key.");
-                            } else if (result2 == LicenseKeyResult.TOOEARLY) {
-                                Dialogs.error("Program License", "License not yet valid", "To use this program, please provide a valid license key.");
-                            } else if (result2 == LicenseKeyResult.NEEDSREPAIR) {
-                                Dialogs.error("Program License", "Invalidated license", "To use this program, please provide a valid license key.");
-                            } else if (result2 == LicenseKeyResult.GOOD) {
-                                DB.setLicense(license);
-                                Dialogs.info("Program License", "Thank you!", "Your license key is valid.");
-                                mayBeHidden();
-                                break;
+                            switch (result2) {
+                                case INVALID:
+                                    Dialogs.error("Program License", "Invalid license", "To use this program, please provide a valid license key.");
+                                    break;
+                                case BLACKLISTED:
+                                    Dialogs.error("Program License", "Blacklisted license", "To use this program, please provide a valid license key.");
+                                    break;
+                                case FAKE:
+                                    Dialogs.error("Program License", "Fake license", "To use this program, please provide a valid license key.");
+                                    break;
+                                case EXPIRED:
+                                    Dialogs.error("Program License", "Expired license", "To use this program, please provide a valid license key.");
+                                    break;
+                                case TOOEARLY:
+                                    Dialogs.error("Program License", "License not yet valid", "To use this program, please provide a valid license key.");
+                                    break;
+                                case NEEDSREPAIR:
+                                    Dialogs.error("Program License", "Invalidated license", "To use this program, please provide a valid license key.");
+                                    break;
+                                case GOOD:
+                                    DB.setLicense(license);
+                                    Dialogs.info("Program License", "Thank you!", "Your license key is valid.");
+                                    mayBeHidden();
+                                    break label1;
                             }
                         } while (license.trim().length() > 0);
                     } else {

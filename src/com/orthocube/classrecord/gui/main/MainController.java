@@ -39,7 +39,6 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable {
     private User currentUser;
     private MainApp mainApp;
-    private ResourceBundle bundle;
     private ToggleGroup group = null;
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
@@ -188,9 +187,6 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        bundle = rb;
-
-
         group = new ToggleGroup();
         cmdDashboard.setToggleGroup(group);
         cmdStudents.setToggleGroup(group);

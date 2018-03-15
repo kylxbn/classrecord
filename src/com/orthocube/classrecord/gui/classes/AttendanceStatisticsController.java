@@ -41,7 +41,7 @@ public class AttendanceStatisticsController implements Initializable {
     private final NumberAxis yAxis1 = new NumberAxis();
     private final NumberAxis xAxis2 = new NumberAxis();
     private final CategoryAxis yAxis2 = new CategoryAxis();
-    private ResourceBundle bundle;
+
     private StackedBarChart<String, Number> chtHistory;
     private StackedBarChart<Number, String> chtStudents;
     private ObservableList<AttendanceDay> attendanceDays;
@@ -156,7 +156,6 @@ public class AttendanceStatisticsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = resources;
 
         xAxis1.setLabel("Days");
         yAxis1.setLabel("Attendance");

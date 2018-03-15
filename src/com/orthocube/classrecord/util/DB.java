@@ -42,11 +42,6 @@ public class DB {
 
     private static boolean isFirstRun = false;
     private static Connection con;
-    public static Info licenseInfo;
-
-    public static boolean isFirstRun() {
-        return isFirstRun;
-    }
 
     // <editor-fold defaultstate="collapsed" desc="Tools">
     static {
@@ -69,6 +64,10 @@ public class DB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean isFirstRun() {
+        return isFirstRun;
     }
 
     private static void createTables() {
@@ -349,7 +348,9 @@ public class DB {
             }
         }
     }
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Settings">
     private static void setSetting(String key, String value) throws SQLException {
         PreparedStatement prep = con.prepareStatement("SELECT SettingKey FROM Settings WHERE SettingKey = ?");
         prep.setString(1, key);
@@ -381,7 +382,9 @@ public class DB {
             return null;
         }
     }
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Licensing">
     public static LicenseKeyResult hasValidLicense() throws SQLException {
         String failed = getSetting("failedboot");
         if ((failed != null) && (failed.equals("true")))
@@ -416,7 +419,6 @@ public class DB {
         LicenseKeyResult result = licenseKeyCheck.checkKey(productkey, keyBytes, 8, null);
         if (result == LicenseKeyResult.GOOD) {
             Info info = licenseKeyCheck.getDecodedInfo();
-            licenseInfo = info;
             if (info.getLength() == 0)
                 return LicenseKeyResult.INVALID;
             if (Info.base.plusMonths(info.getStartMonth()).compareTo(LocalDate.now()) > 0) {

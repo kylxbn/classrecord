@@ -43,7 +43,6 @@ public class ClassesController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(ClassesController.class.getName());
     private final ObservableList<String> collegeYears = FXCollections.observableArrayList("1st", "2nd", "3rd", "4th", "5th");
     private final ObservableList<String> shsYears = FXCollections.observableArrayList("11", "12");
-    private ResourceBundle bundle;
     private MainApp mainApp;
     private ObservableList<Clazz> classes;
     private FilteredList<Clazz> filteredClasses;
@@ -721,7 +720,6 @@ public class ClassesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = rb;
 
         colName.setCellValueFactory(
                 cellData -> cellData.getValue().nameProperty()

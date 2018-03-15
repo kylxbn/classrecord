@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 
 public class AttendanceSummaryController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(ClassesController.class.getName());
-    private ResourceBundle bundle;
     private Clazz currentClass;
     private ObservableList<AttendanceDay> attendanceDays;
 
@@ -243,7 +242,6 @@ public class AttendanceSummaryController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.log(Level.INFO, "Initializing");
-        bundle = resources;
 
         cboMonth.getSelectionModel().selectedItemProperty().addListener((obs, oldv, newv) -> showSummary(cboYear.getSelectionModel().getSelectedItem(), newv));
 

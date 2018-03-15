@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class GradesController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(StudentEnrolledInController.class.getName());
     private Clazz currentClass;
-    private ResourceBundle bundle;
+
     @FXML
     private TableView<Grade> tblGrades;
 
@@ -76,7 +76,6 @@ public class GradesController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = rb;
     }
 
     public String getTitle() {

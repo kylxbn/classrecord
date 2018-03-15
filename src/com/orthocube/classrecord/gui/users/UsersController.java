@@ -41,7 +41,6 @@ import java.util.logging.Logger;
  */
 public class UsersController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(UsersController.class.getName());
-    private ResourceBundle bundle;
     private MainApp mainApp;
 
     private User currentUser;
@@ -273,7 +272,6 @@ public class UsersController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = rb;
 
         cboAccessLevel.setItems(FXCollections.observableArrayList("Viewer", "Superuser", "Administrator"));
         cboAccessLevel.valueProperty().addListener(e -> {

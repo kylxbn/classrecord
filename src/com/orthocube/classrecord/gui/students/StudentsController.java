@@ -46,7 +46,6 @@ public class StudentsController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(StudentsController.class.getName());
     private Student currentStudent = null;
     private ObservableList<Student> students;
-    private ResourceBundle bundle;
 
     private MainApp mainApp;
 
@@ -335,7 +334,6 @@ public class StudentsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = rb;
 
 
         colID.setCellValueFactory(

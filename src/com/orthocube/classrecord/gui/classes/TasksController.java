@@ -37,7 +37,7 @@ public class TasksController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(ClassesController.class.getName());
     int warningShowCount = 0;
     boolean nullifyPending = false;
-    private ResourceBundle bundle;
+
     private MainApp mainApp;
     private Clazz currentClass;
     private Task currentTask;
@@ -484,7 +484,6 @@ public class TasksController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = resources;
 
         colPName.setCellValueFactory(cellValue -> cellValue.getValue().nameProperty());
         colPCriterion.setCellValueFactory(cellValue -> cellValue.getValue().getCriterion().nameProperty());
@@ -537,12 +536,17 @@ public class TasksController implements Initializable {
 
         cboTTerm.getSelectionModel().selectedIndexProperty().addListener((obs, oldv, newv) -> {
             if (currentClass.isSHS()) {
-                if (newv.intValue() == 0)
-                    filteredCriteria.setPredicate(p -> ((p.getTerms() & (1 << 1)) > 0));
-                else if (newv.intValue() == 1)
-                    filteredCriteria.setPredicate(p -> ((p.getTerms() & (1 << 3)) > 0));
-                else
-                    filteredCriteria.setPredicate(p -> false);
+                switch (newv.intValue()) {
+                    case 0:
+                        filteredCriteria.setPredicate(p -> ((p.getTerms() & (1 << 1)) > 0));
+                        break;
+                    case 1:
+                        filteredCriteria.setPredicate(p -> ((p.getTerms() & (1 << 3)) > 0));
+                        break;
+                    default:
+                        filteredCriteria.setPredicate(p -> false);
+                        break;
+                }
             } else {
                 filteredCriteria.setPredicate(p -> (p.getTerms() & (1 << newv.intValue())) > 0);
             }

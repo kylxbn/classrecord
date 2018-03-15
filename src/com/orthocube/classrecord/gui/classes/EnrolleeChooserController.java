@@ -41,7 +41,6 @@ import java.util.logging.Logger;
 public class EnrolleeChooserController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(EnrolleeChooserController.class.getName());
     private Enrollee currentEnrollee = null;
-    private ResourceBundle bundle;
     private Enrollee result = null;
 
     @FXML
@@ -165,7 +164,6 @@ public class EnrolleeChooserController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = resources;
 
         colName.setCellValueFactory(
                 cellData -> Bindings.concat(cellData.getValue().getStudent().lnProperty(), ", "/*bundle.getString("nameseparator")*/, cellData.getValue().getStudent().fnProperty())

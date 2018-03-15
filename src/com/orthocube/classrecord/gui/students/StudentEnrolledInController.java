@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 public class StudentEnrolledInController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(StudentEnrolledInController.class.getName());
     private MainApp mainApp;
-    private ResourceBundle bundle;
     private Student currentStudent;
 
     @FXML
@@ -87,7 +86,6 @@ public class StudentEnrolledInController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = rb;
 
 
         lstCollege.setCellFactory(new Callback<>() {

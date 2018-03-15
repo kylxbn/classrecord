@@ -39,7 +39,6 @@ import java.util.logging.Logger;
 public class StudentChooserController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(StudentsController.class.getName());
     private Student currentStudent = null;
-    private ResourceBundle bundle;
     private Clazz currentClass;
     private Student result = null;
 
@@ -122,7 +121,6 @@ public class StudentChooserController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOGGER.log(Level.INFO, "Initializing...");
-        bundle = rb;
 
         colID.setCellValueFactory(
                 cellData -> cellData.getValue().sidProperty()
