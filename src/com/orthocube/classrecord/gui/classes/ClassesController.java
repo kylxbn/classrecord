@@ -9,6 +9,7 @@ package com.orthocube.classrecord.gui.classes;
 
 import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
+import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import com.orthocube.classrecord.util.Utils;
@@ -52,6 +53,8 @@ public class ClassesController implements Initializable {
     private ToggleGroup timeGroup = null;
     private ToggleGroup levelGroup = null;
     private ToggleGroup sortingGroup = null;
+
+    private User currentUser = new User();
 
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
@@ -263,6 +266,10 @@ public class ClassesController implements Initializable {
     private MenuItem mnuCriteria;
     private ValidationSupport validationSupport;
     // </editor-fold>
+
+    public void setUser(User u) {
+        currentUser = u;
+    }
 
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
@@ -698,7 +705,7 @@ public class ClassesController implements Initializable {
     }
 
     private void editMode(boolean t) {
-        if (t) {
+        if (t && (currentUser.getAccessLevel() > 0)) {
             vbxShow.setDisable(true);
             cmdAdd.setDisable(true);
             cmdCancel.setVisible(true);

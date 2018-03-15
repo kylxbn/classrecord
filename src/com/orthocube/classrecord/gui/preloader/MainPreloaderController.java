@@ -273,7 +273,7 @@ public class MainPreloaderController implements Initializable {
         }
 
         ColModelImporter importer = new ColModelImporter();
-        importer.read(getClass().getResource("../../resources/orthocube.dae"));
+        importer.read(getClass().getResource("/com/orthocube/classrecord/resources/orthocube.dae"));
         Shape3D orthocube = (Shape3D) (((Group) importer.getImport()[0]).getChildren().get(0));
         orthocube.setMaterial(new PhongMaterial(Color.TEAL));
         orthocube.setDrawMode(DrawMode.FILL);

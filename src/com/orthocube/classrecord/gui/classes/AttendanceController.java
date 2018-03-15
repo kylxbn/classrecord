@@ -11,6 +11,7 @@ import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.AttendanceDay;
 import com.orthocube.classrecord.data.AttendanceList;
 import com.orthocube.classrecord.data.Clazz;
+import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import com.orthocube.classrecord.util.Settings;
@@ -39,6 +40,8 @@ public class AttendanceController implements Initializable {
     private AttendanceDay currentDay;
     private AttendanceList currentList;
     private ObservableList<AttendanceDay> attendanceDays;
+
+    private User currentUser = new User();
 
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
@@ -131,6 +134,10 @@ public class AttendanceController implements Initializable {
     @FXML
     private Button cmdPresent;
     // </editor-fold>
+
+    public void setUser(User u) {
+        currentUser = u;
+    }
 
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
@@ -417,7 +424,7 @@ public class AttendanceController implements Initializable {
     }
 
     private void dayEditMode(boolean t) {
-        if (t) {
+        if (t && (currentUser.getAccessLevel() > 0)) {
             pnlDays.setDisable(true);
             cmdSaveDay.setDisable(false);
             cmdDaysCancel.setVisible(true);
@@ -435,7 +442,7 @@ public class AttendanceController implements Initializable {
     }
 
     private void listEditMode(boolean t) {
-        if (t) {
+        if (t && (currentUser.getAccessLevel() > 0)) {
             vbxDays.setDisable(true);
             pnlList.setDisable(true);
             cmdSaveList.setDisable(false);

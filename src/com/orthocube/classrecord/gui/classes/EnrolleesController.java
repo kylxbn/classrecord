@@ -11,6 +11,7 @@ import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.data.Enrollee;
 import com.orthocube.classrecord.data.Student;
+import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.beans.binding.Bindings;
@@ -58,7 +59,10 @@ public class EnrolleesController implements Initializable {
 
     private ObservableList<Enrollee> enrollees;
 
+    private User currentUser = new User();
+
     // <editor-fold defaultstate="collapsed" desc="Controls">
+
     @FXML
     private Button cmdCancel;
 
@@ -97,6 +101,11 @@ public class EnrolleesController implements Initializable {
     @FXML
     private Button cmdSave;
     // </editor-fold>
+
+    private void setUser(User u) {
+        currentUser = u;
+    }
+
 
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
@@ -177,7 +186,7 @@ public class EnrolleesController implements Initializable {
     }
 
     private void editMode(boolean t) {
-        if (t) {
+        if (t && (currentUser.getAccessLevel() > 0)) {
             cboCourse.setDisable(true);
             tblEnrollees.setDisable(true);
             cmdAdd.setDisable(true);

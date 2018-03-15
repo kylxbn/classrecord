@@ -10,6 +10,7 @@ package com.orthocube.classrecord.gui.classes;
 import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.data.Criterion;
+import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import javafx.beans.binding.Bindings;
@@ -44,6 +45,8 @@ public class CriteriaController implements Initializable {
     private Criterion currentCriterion;
 
     private ValidationSupport validationSupport;
+
+    private User currentUser = new User();
 
     // <editor-fold defaultstate="collapsed" desc="controls">
     @FXML
@@ -159,6 +162,11 @@ public class CriteriaController implements Initializable {
 
 
     // </editor-fold>
+
+    public void setUser(User u) {
+        currentUser = u;
+    }
+
     @FXML
     void cmdCancelAction(ActionEvent event) {
         currentCriterion = tblCriteria.getSelectionModel().getSelectedItem();
@@ -434,7 +442,7 @@ public class CriteriaController implements Initializable {
     }
 
     private void editMode(boolean t) {
-        if (t) {
+        if (t && (currentUser.getAccessLevel() > 0)) {
             tblCriteria.setDisable(true);
             cmdAppend.setDisable(true);
             cmdReplace.setDisable(true);

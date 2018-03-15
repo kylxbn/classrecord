@@ -93,7 +93,7 @@ public class DB {
             }
 
             isFirstRun = true;
-            s.executeUpdate("INSERT INTO USERS (Username, Nickname, Password, AccessLevel) VALUES ('admin', 'Administrator', 'admin', 3)");
+            s.executeUpdate("INSERT INTO USERS (Username, Nickname, Password, AccessLevel) VALUES ('admin', 'Administrator', 'admin', 2)");
 
             try {
                 s.executeUpdate("CREATE TABLE Students (StudentID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
@@ -115,7 +115,6 @@ public class DB {
             try {
                 s.executeUpdate("CREATE TABLE Classes (ClassID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                         "Name VARCHAR(60), " +
-                        "Owner BIGINT NOT NULL, " +
                         "SY SMALLINT, " +
                         "Sem SMALLINT, " +
                         "YearLevel SMALLINT, " +
@@ -276,7 +275,6 @@ public class DB {
 
             try {
                 s.executeUpdate("CREATE TABLE Reminders (ID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                        "Owner BIGINT NOT NULL, " +
                         "StartDate DATE NOT NULL, " +
                         "StartTime TIME, " +
                         "EndDate DATE NOT NULL, " +

@@ -275,12 +275,21 @@ public class UsersController implements Initializable {
         LOGGER.log(Level.INFO, "Initializing...");
         bundle = rb;
 
-        cboAccessLevel.setItems(FXCollections.observableArrayList("Superuser", "Administrator"));
+        cboAccessLevel.setItems(FXCollections.observableArrayList("Viewer", "Superuser", "Administrator"));
         cboAccessLevel.valueProperty().addListener(e -> {
-            if (cboAccessLevel.getSelectionModel().getSelectedIndex() == 0) {
-                lblAccessExplanation.setText("Can modify records but\nunable to modify the credentials of other users");
-            } else {
-                lblAccessExplanation.setText("Can do anything. Literally.");
+            switch (cboAccessLevel.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                    lblAccessExplanation.setText("Can only view records.");
+                    break;
+                case 1:
+                    lblAccessExplanation.setText("Can modify records but\nunable to modify the credentials of other users");
+                    break;
+                case 2:
+                    lblAccessExplanation.setText("Can do anything. Literally.");
+                    break;
+                default:
+                    lblAccessExplanation.setText("Invalid access level.");
+                    break;
             }
         });
 
@@ -328,7 +337,7 @@ public class UsersController implements Initializable {
             if (currentUser != null) editMode(true);
         });
 
-        noPicture = new Image(getClass().getResourceAsStream("../../res/Businessman_100px.png"));
+        noPicture = new Image(getClass().getResourceAsStream("/com/orthocube/classrecord/res/Businessman_100px.png"));
 
         BufferedImage bi2 = new BufferedImage(125, 125, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2 = bi2.createGraphics();

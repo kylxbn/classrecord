@@ -240,14 +240,14 @@ public class MainController implements Initializable {
     public void setUser(User user) {
         this.currentUser = user;
         lblUser.setText(currentUser.getNickname().isEmpty() ? currentUser.getUsername() : currentUser.getNickname());
-        pboUser.setImage(currentUser.getPicture() == null ? new Image(getClass().getResourceAsStream("../../res/Businessman_100px.png")) : currentUser.getPicture());
+        pboUser.setImage(currentUser.getPicture() == null ? new Image(getClass().getResourceAsStream("/com/orthocube/classrecord/res/Businessman_100px.png")) : currentUser.getPicture());
     }
 
     public void refreshUser() {
         try {
             this.currentUser = DB.getUser(currentUser.getID());
             lblUser.setText(currentUser.getNickname().isEmpty() ? currentUser.getUsername() : currentUser.getNickname());
-            pboUser.setImage(currentUser.getPicture() == null ? new Image(getClass().getResourceAsStream("../../res/Businessman_100px.png")) : currentUser.getPicture());
+            pboUser.setImage(currentUser.getPicture() == null ? new Image(getClass().getResourceAsStream("/com/orthocube/classrecord/res/Businessman_100px.png")) : currentUser.getPicture());
         } catch (SQLException | IOException e) {
             Dialogs.exception(e);
         }

@@ -22,7 +22,7 @@ public class User {
         this.username.set("");
         this.nickname.set("");
         this.picture.set(null);
-        this.accessLevel.set(0);
+        this.accessLevel.set(2);
     }
 
     public User() {
