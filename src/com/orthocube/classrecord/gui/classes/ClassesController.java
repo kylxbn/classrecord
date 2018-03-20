@@ -13,6 +13,7 @@ import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import com.orthocube.classrecord.util.Utils;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -57,6 +58,12 @@ public class ClassesController implements Initializable {
 
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    private Label lblTotalClasses;
+    @FXML
+    private MenuItem mnuDelete;
+    @FXML
+    private MenuItem mnuQuickAdd;
     @FXML
     private VBox vbxShow;
 
@@ -268,6 +275,32 @@ public class ClassesController implements Initializable {
 
     public void setUser(User u) {
         currentUser = u;
+        if (currentUser.getAccessLevel() < 2) {
+            cmdAdd.setDisable(true);
+            mnuDelete.setDisable(true);
+            mnuQuickAdd.setDisable(true);
+
+            txtName.setEditable(false);
+            txtSY.setEditable(false);
+            txtCourse.setEditable(false);
+            txtRoom.setEditable(false);
+            txtNotes.setEditable(false);
+
+            txtSunday.setEditable(false);
+            txtMonday.setEditable(false);
+            txtTuesday.setEditable(false);
+            txtWednesday.setEditable(false);
+            txtThursday.setEditable(false);
+            txtFriday.setEditable(false);
+            txtSaturday.setEditable(false);
+            txtSunday2.setEditable(false);
+            txtMonday2.setEditable(false);
+            txtTuesday2.setEditable(false);
+            txtWednesday2.setEditable(false);
+            txtThursday2.setEditable(false);
+            txtFriday2.setEditable(false);
+            txtSaturday2.setEditable(false);
+        }
     }
 
     public void setMainApp(MainApp mainApp) {
@@ -638,6 +671,9 @@ public class ClassesController implements Initializable {
         SortedList<Clazz> sortedClasses = new SortedList<>(filteredClasses);
         sortedClasses.comparatorProperty().bind(tblClasses.comparatorProperty());
         tblClasses.setItems(sortedClasses);
+
+        lblTotalClasses.textProperty().bind(Bindings.concat(Bindings.size(classes), Bindings.when(Bindings.size(classes).greaterThan(1)).then(" classes").otherwise(" class")));
+
     }
 
     private void updateFilters() {
@@ -673,24 +709,43 @@ public class ClassesController implements Initializable {
             if (timefilter == 0) {
                 int year = Calendar.getInstance().get(Calendar.YEAR);
                 int month = Calendar.getInstance().get(Calendar.MONTH);
+
+                int sem;
+                if ((month >= 5) && (month < 9)) {
+                    sem = 1;
+                } else if ((month == 3) || (month == 4)) {
+                    sem = 3;
+                    year--;
+                } else {
+                    sem = 2;
+                    year--;
+                }
+
+                LOGGER.log(Level.INFO, "Current SY: " + year + "\nCurrent Sem: " + sem);
+
+                include &= (clazz.getSem() == sem) ? 1 : 0;
                 include &= (clazz.getSY() == year ? 1 : 0);
-                if ((month >= 5) && (month < 9))
-                    include &= (clazz.getSem() == 1) ? 1 : 0;
-                else if (month == 3 || month == 4)
-                    include &= (clazz.getSem() == 3) ? 1 : 0;
-                else
-                    include &= (clazz.getSem() == 2) ? 1 : 0;
+
                 include &= (clazz.getDays() & (1 << (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1))) > 0 ? 1 : 0;
             } else if (timefilter == 1) {
                 int year = Calendar.getInstance().get(Calendar.YEAR);
                 int month = Calendar.getInstance().get(Calendar.MONTH);
+
+                int sem;
+                if ((month >= 5) && (month < 9)) {
+                    sem = 1;
+                } else if ((month == 3) || (month == 4)) {
+                    sem = 3;
+                    year--;
+                } else {
+                    sem = 2;
+                    year--;
+                }
+
+                LOGGER.log(Level.INFO, "Current SY: " + year + "\nCurrent Sem: " + sem);
+
+                include &= (clazz.getSem() == sem) ? 1 : 0;
                 include &= (clazz.getSY() == year ? 1 : 0);
-                if ((month >= 5) && (month < 9))
-                    include &= (clazz.getSem() == 1) ? 1 : 0;
-                else if (month == 3 || month == 4)
-                    include &= (clazz.getSem() == 3) ? 1 : 0;
-                else
-                    include &= (clazz.getSem() == 2) ? 1 : 0;
             }
 
             if (levelfilter == 0) {
@@ -704,14 +759,15 @@ public class ClassesController implements Initializable {
     }
 
     private void editMode(boolean t) {
-        if (t && (currentUser.getAccessLevel() > 0)) {
+        if (t && (currentUser.getAccessLevel() > 1)) {
             vbxShow.setDisable(true);
             cmdAdd.setDisable(true);
             cmdCancel.setVisible(true);
             cmdSave.setDisable(false);
         } else {
             vbxShow.setDisable(false);
-            cmdAdd.setDisable(false);
+            if (currentUser.getAccessLevel() > 1)
+                cmdAdd.setDisable(false);
             cmdCancel.setVisible(false);
             cmdSave.setDisable(true);
         }
@@ -832,6 +888,12 @@ public class ClassesController implements Initializable {
             return ValidationResult.fromMessageIf(control, "Invalid time format.", Severity.ERROR, condition);
         };
 
+        Validator<String> semValidator = (control, value) -> {
+            boolean condition = value == null;
+
+            return ValidationResult.fromMessageIf(control, "Please choose a semester.", Severity.ERROR, condition);
+        };
+
         validationSupport.registerValidator(txtSY, false, syValidator);
         validationSupport.registerValidator(txtSunday, false, timeValidator);
         validationSupport.registerValidator(txtMonday, false, timeValidator);
@@ -847,6 +909,7 @@ public class ClassesController implements Initializable {
         validationSupport.registerValidator(txtThursday2, false, timeValidator);
         validationSupport.registerValidator(txtFriday2, false, timeValidator);
         validationSupport.registerValidator(txtSaturday2, false, timeValidator);
+        validationSupport.registerValidator(cboSemester, false, semValidator);
 
         // <editor-fold defaultstate="collapsed" desc="Change listeners">
         txtName.textProperty().addListener((obs, ov, nv) -> {

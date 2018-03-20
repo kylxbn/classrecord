@@ -21,8 +21,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.CustomTextField;
 
@@ -115,6 +114,18 @@ public class StudentChooserController implements Initializable {
 
         SortedList<Student> sortedStudents = new SortedList<>(filteredStudents);
         sortedStudents.comparatorProperty().bind(tblStudents.comparatorProperty());
+
+        tblStudents.setRowFactory(tv -> {
+            TableRow<Student> row = new TableRow<>();
+            row.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && (!row.isEmpty())) {
+                    currentStudent = row.getItem();
+                    cmdChooseAction(null);
+                }
+            });
+            return row;
+        });
+
         tblStudents.setItems(sortedStudents);
     }
 

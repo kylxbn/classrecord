@@ -9,6 +9,7 @@ package com.orthocube.classrecord.gui.students;
 
 import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Student;
+import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import com.orthocube.classrecord.util.Utils;
@@ -24,6 +25,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -55,6 +57,8 @@ public class StudentsController implements Initializable {
     private Image showedImage = null;
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    private MenuItem mnuDelete;
     @FXML
     private VBox vbxEdit;
     @FXML
@@ -148,8 +152,28 @@ public class StudentsController implements Initializable {
 
     // </editor-fold>
 
+    private User currentUser = new User();
+
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
+    }
+
+    public void setUser(User currentUser) {
+        this.currentUser = currentUser;
+        if (this.currentUser.getAccessLevel() < 2) {
+            mnuDelete.setDisable(true);
+            cmdAdd.setDisable(true);
+
+            cmdChangeImage.setDisable(true);
+            cmdRemoveImage.setDisable(true);
+            txtSID.setEditable(false);
+            txtFN.setEditable(false);
+            txtLN.setEditable(false);
+            txtMN.setEditable(false);
+            txtContact.setEditable(false);
+            txtAddress.setEditable(false);
+            txtNotes.setEditable(false);
+        }
     }
 
     @FXML
@@ -313,10 +337,12 @@ public class StudentsController implements Initializable {
         SortedList<Student> sortedStudents = new SortedList<>(filteredStudents);
         sortedStudents.comparatorProperty().bind(tblStudents.comparatorProperty());
         tblStudents.setItems(sortedStudents);
+
+        lblTotalStudents.textProperty().bind(Bindings.concat(Bindings.size(students), Bindings.when(Bindings.size(students).greaterThan(1)).then(" students").otherwise(" student")));
     }
 
     private void editMode(boolean t) {
-        if (t) {
+        if (t && (currentUser.getAccessLevel() > 1)) {
             txtSearch.setDisable(true);
             tblStudents.setDisable(true);
             cmdAdd.setDisable(true);
@@ -325,7 +351,8 @@ public class StudentsController implements Initializable {
         } else {
             txtSearch.setDisable(false);
             tblStudents.setDisable(false);
-            cmdAdd.setDisable(false);
+            if (currentUser.getAccessLevel() > 1)
+                cmdAdd.setDisable(false);
             cmdSave.setDisable(true);
             cmdCancel.setVisible(false);
         }

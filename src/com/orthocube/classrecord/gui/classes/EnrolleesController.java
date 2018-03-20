@@ -101,10 +101,17 @@ public class EnrolleesController implements Initializable {
     private Button cmdSave;
     // </editor-fold>
 
-    private void setUser(User u) {
+    public void setUser(User u) {
         currentUser = u;
-    }
+        if (currentUser.getAccessLevel() < 2) {
+            mnuRemove.setDisable(true);
+            cmdAdd.setDisable(true);
 
+            txtClassCard.setEditable(false);
+            txtCourse.setEditable(false);
+            txtNotes.setEditable(false);
+        }
+    }
 
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
@@ -159,6 +166,8 @@ public class EnrolleesController implements Initializable {
             sortedEnrollees.comparatorProperty().bind(tblEnrollees.comparatorProperty());
 
             tblEnrollees.setItems(sortedEnrollees);
+            lblNum.textProperty().bind(Bindings.concat(Bindings.size(enrollees), Bindings.when(Bindings.size(enrollees).greaterThan(1)).then(" enrollees").otherwise(" enrollee")));
+
         } catch (SQLException e) {
             Dialogs.exception(e);
         }
@@ -185,7 +194,7 @@ public class EnrolleesController implements Initializable {
     }
 
     private void editMode(boolean t) {
-        if (t && (currentUser.getAccessLevel() > 0)) {
+        if (t && (currentUser.getAccessLevel() > 1)) {
             cboCourse.setDisable(true);
             tblEnrollees.setDisable(true);
             cmdAdd.setDisable(true);
@@ -194,7 +203,8 @@ public class EnrolleesController implements Initializable {
         } else {
             cboCourse.setDisable(false);
             tblEnrollees.setDisable(false);
-            cmdAdd.setDisable(false);
+            if (currentUser.getAccessLevel() > 1)
+                cmdAdd.setDisable(false);
             cmdCancel.setVisible(false);
             cmdSave.setDisable(true);
         }
@@ -296,12 +306,18 @@ public class EnrolleesController implements Initializable {
             showEnrolleeInfo();
             cmdSave.setText("Save as new");
             editMode(true);
+            txtClassCard.requestFocus();
         }
     }
 
     @FXML
     private void cmdSaveAction(ActionEvent event) {
         try {
+            try {
+                Integer.parseInt(txtClassCard.getText());
+            } catch (Exception e) {
+                txtClassCard.setText("0");
+            }
             currentEnrollee.setClasscard(Integer.parseInt(txtClassCard.getText()));
             currentEnrollee.setCourse(txtCourse.getText());
             currentEnrollee.setNotes(txtNotes.getText());

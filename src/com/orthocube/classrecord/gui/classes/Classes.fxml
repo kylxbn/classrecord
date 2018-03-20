@@ -14,7 +14,8 @@
 <?import org.controlsfx.control.textfield.CustomTextField?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
            maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="687.0" prefWidth="921.0"
-           xmlns="http://javafx.com/javafx/9" fx:controller="com.orthocube.classrecord.gui.classes.ClassesController">
+           xmlns="http://javafx.com/javafx/9.0.1"
+           fx:controller="com.orthocube.classrecord.gui.classes.ClassesController">
     <items>
         <VBox fx:id="vbxShow" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="100.0"
               minWidth="100.0" spacing="8.0">
@@ -155,14 +156,15 @@
                                 <MenuItem fx:id="mnuGrades" mnemonicParsing="false" onAction="#mnuGradesAction"
                                           text="Grades"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#mnuDeleteAction" text="Remove"/>
+                                <MenuItem fx:id="mnuDelete" mnemonicParsing="false" onAction="#mnuDeleteAction"
+                                          text="Remove"/>
                             </items>
                         </ContextMenu>
                     </contextMenu>
                 </TableView>
                 <HBox alignment="CENTER_LEFT">
                     <children>
-                        <Label text=" subjects shown." visible="false"/>
+                        <Label fx:id="lblTotalClasses" text=" subjects shown."/>
                         <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                               minWidth="-Infinity" prefHeight="1.0" prefWidth="1.0" HBox.hgrow="ALWAYS"/>
                         <Button fx:id="cmdAdd" mnemonicParsing="false" onAction="#cmdAddAction" text="Add"/>
@@ -287,30 +289,43 @@
                                             </rowConstraints>
                                             <children>
                                                 <CheckBox fx:id="chkSunday" mnemonicParsing="false" text="Sunday"/>
-                                                <CheckBox fx:id="chkFriday" mnemonicParsing="false" text="Friday"
-                                                          GridPane.rowIndex="5"/>
-                                                <CheckBox fx:id="chkSaturday" mnemonicParsing="false" text="Saturday"
-                                                          GridPane.rowIndex="6"/>
-                                                <CheckBox fx:id="chkThursday" mnemonicParsing="false" text="Thursday"
-                                                          GridPane.rowIndex="4"/>
-                                                <CheckBox fx:id="chkWednesday" mnemonicParsing="false" text="Wednesday"
-                                                          GridPane.rowIndex="3"/>
-                                                <CheckBox fx:id="chkTuesday" mnemonicParsing="false" text="Tuesday"
-                                                          GridPane.rowIndex="2"/>
+                                                <TextField fx:id="txtSunday" GridPane.columnIndex="1"/>
+                                                <TextField fx:id="txtSunday2" GridPane.columnIndex="3"/>
                                                 <CheckBox fx:id="chkMonday" mnemonicParsing="false" text="Monday"
                                                           GridPane.rowIndex="1"/>
-                                                <TextField fx:id="txtSunday" GridPane.columnIndex="1"/>
                                                 <TextField fx:id="txtMonday" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="1"/>
+                                                <TextField fx:id="txtMonday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="1"/>
+                                                <CheckBox fx:id="chkTuesday" mnemonicParsing="false" text="Tuesday"
+                                                          GridPane.rowIndex="2"/>
                                                 <TextField fx:id="txtTuesday" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="2"/>
+                                                <TextField fx:id="txtTuesday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="2"/>
+                                                <CheckBox fx:id="chkWednesday" mnemonicParsing="false" text="Wednesday"
+                                                          GridPane.rowIndex="3"/>
                                                 <TextField fx:id="txtWednesday" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="3"/>
+                                                <TextField fx:id="txtWednesday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="3"/>
+                                                <CheckBox fx:id="chkThursday" mnemonicParsing="false" text="Thursday"
+                                                          GridPane.rowIndex="4"/>
                                                 <TextField fx:id="txtThursday" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="4"/>
+                                                <TextField fx:id="txtThursday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="4"/>
+                                                <CheckBox fx:id="chkFriday" mnemonicParsing="false" text="Friday"
+                                                          GridPane.rowIndex="5"/>
                                                 <TextField fx:id="txtFriday" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="5"/>
+                                                <TextField fx:id="txtFriday2" GridPane.columnIndex="3"
+                                                           GridPane.rowIndex="5"/>
+                                                <CheckBox fx:id="chkSaturday" mnemonicParsing="false" text="Saturday"
+                                                          GridPane.rowIndex="6"/>
                                                 <TextField fx:id="txtSaturday" GridPane.columnIndex="1"
+                                                           GridPane.rowIndex="6"/>
+                                                <TextField fx:id="txtSaturday2" GridPane.columnIndex="3"
                                                            GridPane.rowIndex="6"/>
                                                 <Label text=" - " GridPane.columnIndex="2"/>
                                                 <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="1"/>
@@ -319,19 +334,6 @@
                                                 <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="4"/>
                                                 <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="5"/>
                                                 <Label text=" - " GridPane.columnIndex="2" GridPane.rowIndex="6"/>
-                                                <TextField fx:id="txtSunday2" GridPane.columnIndex="3"/>
-                                                <TextField fx:id="txtMonday2" GridPane.columnIndex="3"
-                                                           GridPane.rowIndex="1"/>
-                                                <TextField fx:id="txtTuesday2" GridPane.columnIndex="3"
-                                                           GridPane.rowIndex="2"/>
-                                                <TextField fx:id="txtWednesday2" GridPane.columnIndex="3"
-                                                           GridPane.rowIndex="3"/>
-                                                <TextField fx:id="txtThursday2" GridPane.columnIndex="3"
-                                                           GridPane.rowIndex="4"/>
-                                                <TextField fx:id="txtFriday2" GridPane.columnIndex="3"
-                                                           GridPane.rowIndex="5"/>
-                                                <TextField fx:id="txtSaturday2" GridPane.columnIndex="3"
-                                                           GridPane.rowIndex="6"/>
                                             </children>
                                         </GridPane>
                                     </content>

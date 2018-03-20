@@ -23,13 +23,20 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import org.controlsfx.validation.Severity;
 import org.controlsfx.validation.ValidationResult;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -163,6 +170,14 @@ public class CriteriaController implements Initializable {
 
     public void setUser(User u) {
         currentUser = u;
+        if (currentUser.getAccessLevel() < 2) {
+            mnuDelete.setDisable(true);
+            tpnPresets.setDisable(true);
+            cmdAdd.setDisable(true);
+
+            txtName.setEditable(false);
+            txtPercent.setEditable(false);
+        }
     }
 
     @FXML
@@ -184,17 +199,99 @@ public class CriteriaController implements Initializable {
 
     @FXML
     void cmdAppendAction(ActionEvent event) {
-        // TODO: Append criteria preset
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Append criteria preset");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Criterion presets", "*.criteria"));
+        File chosenFile = fileChooser.showOpenDialog(mainApp.getStage());
+        if (chosenFile != null) {
+            try {
+                List<Criterion> loadedCriteria = loadCriteriaPreset(chosenFile);
+                if (loadedCriteria != null) {
+                    // just add all loaded criteria
+                    for (Criterion c : loadedCriteria) {
+                        c.setClass(currentClass);
+                        DB.save(c);
+                        criteria.add(c);
+                    }
+                    mainApp.getRootNotification().show("Criteria appended to current class.");
+                }
+            } catch (Exception e) {
+                Dialogs.exception(e);
+            }
+        }
     }
 
     @FXML
     void cmdDeleteAction(ActionEvent event) {
-        // TODO: Delete criteria preset
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Delete criteria preset");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Criterion presets", "*.criteria"));
+        File chosenFile = fileChooser.showOpenDialog(mainApp.getStage());
+        if (chosenFile != null) {
+            try {
+                if (!chosenFile.delete()) {
+                    Dialogs.error("Deletion failed", "Unable to delete the file", "Check that it is not open in any other application.");
+                }
+                mainApp.getRootNotification().show("Criteria preset deleted.");
+            } catch (Exception e) {
+                Dialogs.exception(e);
+            }
+        }
     }
 
     @FXML
     void cmdReplaceAction(ActionEvent event) {
-        // TODO: Replace criteria with preset
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Replace with criteria preset");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Criterion presets", "*.criteria"));
+        File chosenFile = fileChooser.showOpenDialog(mainApp.getStage());
+        if (chosenFile != null) {
+            try {
+                List<Criterion> loadedCriteria = loadCriteriaPreset(chosenFile);
+                if (loadedCriteria != null) {
+                    // delete all current criteria
+                    List<Criterion> currentCriteria = new ArrayList<>(this.criteria);
+                    this.criteria.clear();
+                    for (Criterion c : currentCriteria) {
+                        DB.delete(c);
+                    }
+                    // and add all loaded criteria
+                    for (Criterion c : loadedCriteria) {
+                        c.setClass(currentClass);
+                        DB.save(c);
+                        criteria.add(c);
+                    }
+                    mainApp.getRootNotification().show("Criteria in this class was successfully replaced.");
+                }
+            } catch (Exception e) {
+                Dialogs.exception(e);
+            }
+        }
+    }
+
+    @FXML
+    void cmdSaveAsAction(ActionEvent event) {
+        if (this.criteria.size() > 255) {
+            Dialogs.error("Criteria too big", "The criteria list exceeds 255.", "This can't be saved in a preset.");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save criteria preset");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Criteria presets", "*.criteria"));
+        File chosenFile = fileChooser.showSaveDialog(mainApp.getStage());
+        if (chosenFile != null) {
+            try {
+                saveCriteriaPreset(chosenFile);
+                mainApp.getRootNotification().show("Criteria preset saved.");
+            } catch (IOException e) {
+                Dialogs.exception(e);
+            }
+        }
     }
 
     @FXML
@@ -230,11 +327,6 @@ public class CriteriaController implements Initializable {
         } catch (Exception e) {
             Dialogs.exception(e);
         }
-    }
-
-    @FXML
-    void cmdSaveAsAction(ActionEvent event) {
-        // TODO: Save criteria preset
     }
 
     @FXML
@@ -440,7 +532,7 @@ public class CriteriaController implements Initializable {
     }
 
     private void editMode(boolean t) {
-        if (t && (currentUser.getAccessLevel() > 0)) {
+        if (t && (currentUser.getAccessLevel() > 1)) {
             tblCriteria.setDisable(true);
             cmdAppend.setDisable(true);
             cmdReplace.setDisable(true);
@@ -451,13 +543,15 @@ public class CriteriaController implements Initializable {
             cmdSave.setDisable(false);
         } else {
             tblCriteria.setDisable(false);
-            cmdAppend.setDisable(false);
-            cmdReplace.setDisable(false);
-            cmdSaveAs.setDisable(false);
-            cmdDelete.setDisable(false);
-            cmdAdd.setDisable(false);
             cmdCancel.setVisible(false);
             cmdSave.setDisable(true);
+            if (currentUser.getAccessLevel() > 1) {
+                cmdAppend.setDisable(false);
+                cmdReplace.setDisable(false);
+                cmdSaveAs.setDisable(false);
+                cmdDelete.setDisable(false);
+                cmdAdd.setDisable(false);
+            }
         }
     }
 
@@ -530,5 +624,124 @@ public class CriteriaController implements Initializable {
 
     public String getTitle() {
         return "Criteria for " + currentClass.getName();
+    }
+
+    private List<Criterion> loadCriteriaPreset(File f) {
+        if (!f.exists()) {
+            Dialogs.error("Invalid file", "The file you chose does not exist.", "Did you type the file name manually?.");
+            return null;
+        }
+        try (FileInputStream criteria = new FileInputStream(f)) {
+            byte[] magicnumber = new byte[4];
+            int magicnumberlength = criteria.read(magicnumber, 0, 4);
+            if (magicnumberlength != 4) {
+                criteria.close();
+                Dialogs.error("Invalid file", "The file you chose is not a criteria preset.", "It may be another type of file.");
+                return null;
+            }
+            byte[] realmagicnumber = new byte[]{(byte) 0xC5, (byte) 0x17, (byte) 0xE5, (byte) 0x1A};
+            for (int i = 0; i < 4; i++) {
+                if (realmagicnumber[i] != magicnumber[i]) {
+                    criteria.close();
+                    Dialogs.error("Invalid file", "The file you chose is not a criteria preset.", "It may be another type of file.");
+                    return null;
+                }
+            }
+
+            int i_isSHS = criteria.read();
+            if (i_isSHS < 0) {
+                criteria.close();
+                Dialogs.error("Corrupted file", "The file you chose is truncated.", "The program failed to determine the class type.");
+                return null;
+            }
+            boolean isSHS = i_isSHS == 1;
+            if (currentClass.isSHS() && (!isSHS)) {
+                criteria.close();
+                Dialogs.error("Wrong file", "The file you chose is for College classes.", "Choose a preset for SHS classes instead.");
+                return null;
+            }
+            if ((!currentClass.isSHS()) && (isSHS)) {
+                criteria.close();
+                Dialogs.error("Wrong file", "The file you chose is for SHS classes.", "Choose a preset for College classes instead.");
+                return null;
+            }
+
+            int criteriasize = criteria.read();
+            if (criteriasize < 0) {
+                criteria.close();
+                Dialogs.error("Corrupted file", "The file you chose is truncated.", "The program failed to determine the criteria size.");
+                return null;
+            }
+
+            List<Criterion> loadedCriteria = new ArrayList<>();
+            for (int i = 0; i < criteriasize; i++) {
+                Criterion temp = new Criterion();
+                int namelength = criteria.read();
+                if (namelength < 0) {
+                    criteria.close();
+                    Dialogs.error("Corrupted file", "The file you chose is truncated.", "The program failed to determine the criteria name length.");
+                    return null;
+                }
+                byte[] b_name = new byte[namelength];
+                if (criteria.read(b_name) != namelength) {
+                    criteria.close();
+                    Dialogs.error("Corrupted file", "The file you chose is truncated.", "The program failed to determine the criteria name.");
+                    return null;
+                }
+                String name = new String(b_name);
+                int percentage = criteria.read();
+                if (percentage < 0) {
+                    criteria.close();
+                    Dialogs.error("Corrupted file", "The file you chose is truncated.", "The program failed to determine the criteria percentage.");
+                    return null;
+                }
+                int terms = criteria.read();
+                if (terms < 0) {
+                    criteria.close();
+                    Dialogs.error("Corrupted file", "The file you chose is truncated.", "The program failed to determine the criteria terms.");
+                    return null;
+                }
+                temp.setName(name);
+                temp.setPercentage(percentage);
+                temp.setTerms(terms);
+                loadedCriteria.add(temp);
+            }
+
+            byte[] magicnumber2 = new byte[4];
+            int magicnumberlength2 = criteria.read(magicnumber2, 0, 4);
+            if (magicnumberlength2 != 4) {
+                criteria.close();
+                Dialogs.error("Corrupted file", "The file you chose is truncated.", "The program failed to determine the criteria terms.");
+                return null;
+            }
+            for (int i = 0; i < 4; i++) {
+                if (realmagicnumber[i] != magicnumber2[i]) {
+                    criteria.close();
+                    Dialogs.error("Invalid file", "The file you chose is not a criteria preset.", "It may be another type of file.");
+                    return null;
+                }
+            }
+
+            criteria.close();
+            return loadedCriteria;
+        } catch (IOException e) {
+            Dialogs.exception(e);
+        }
+        return null;
+    }
+
+    private void saveCriteriaPreset(File f) throws IOException {
+        FileOutputStream criteria = new FileOutputStream(f);
+        criteria.write(new byte[]{(byte) 0xC5, (byte) 0x17, (byte) 0xE5, (byte) 0x1A}); // magic number
+        criteria.write(currentClass.isSHS() ? 1 : 0); // isSHS?
+        criteria.write((byte) this.criteria.size()); // size of criterias
+        for (Criterion c : this.criteria) {
+            byte[] name = c.getName().getBytes();
+            criteria.write(name.length);
+            criteria.write(name); // write name
+            criteria.write(c.getPercentage()); // write percentage
+            criteria.write(c.getTerms()); // write terms
+        }
+        criteria.write(new byte[]{(byte) 0xC5, (byte) 0x17, (byte) 0xE5, (byte) 0x1A}); // closing marker
     }
 }

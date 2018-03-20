@@ -22,17 +22,8 @@
                     <menus>
                         <Menu fx:id="mnuFile" mnemonicParsing="false" text="%main.file">
                             <items>
-                                <MenuItem fx:id="mnuSave" mnemonicParsing="false" text="%main.save">
-                                    <graphic>
-                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
-                                            <image>
-                                                <Image url="@../../res/Save_16px.png"/>
-                                            </image>
-                                        </ImageView>
-                                    </graphic>
-                                </MenuItem>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="mnuExit" mnemonicParsing="false" text="%main.exit">
+                                <MenuItem fx:id="mnuExit" mnemonicParsing="false" onAction="#mnuExitAction"
+                                          text="%main.exit">
                                     <graphic>
                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
                                             <image>
@@ -45,36 +36,8 @@
                         </Menu>
                         <Menu fx:id="mnuEdit" mnemonicParsing="false" text="%main.edit">
                             <items>
-                                <MenuItem fx:id="mnuUndo" mnemonicParsing="false" text="%main.undo">
-                                    <graphic>
-                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
-                                            <image>
-                                                <Image url="@../../res/Undo_16px.png"/>
-                                            </image>
-                                        </ImageView>
-                                    </graphic>
-                                </MenuItem>
-                                <MenuItem fx:id="mnuRedo" mnemonicParsing="false" text="%main.redo">
-                                    <graphic>
-                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
-                                            <image>
-                                                <Image url="@../../res/Redo_16px.png"/>
-                                            </image>
-                                        </ImageView>
-                                    </graphic>
-                                </MenuItem>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="mnuDelete" mnemonicParsing="false" text="%main.delete">
-                                    <graphic>
-                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
-                                            <image>
-                                                <Image url="@../../res/Delete_16px.png"/>
-                                            </image>
-                                        </ImageView>
-                                    </graphic>
-                                </MenuItem>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#mnuSettingsAction" text="%main.settings"/>
+                                <MenuItem fx:id="mnuSettings" mnemonicParsing="false" onAction="#mnuSettingsAction"
+                                          text="%main.settings"/>
                             </items>
                         </Menu>
                         <Menu fx:id="mnuTools" mnemonicParsing="false" text="%main.tools">
@@ -210,7 +173,8 @@
                     <children>
                         <ToggleButton fx:id="cmdDashboard" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
                                       maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-                                      mnemonicParsing="false" styleClass="navigation" text="%main.home">
+                                      mnemonicParsing="false" onAction="#cmdDashboardAction" styleClass="navigation"
+                                      text="%main.home">
                             <graphic>
                                 <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
                                     <image>

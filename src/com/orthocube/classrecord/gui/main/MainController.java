@@ -37,11 +37,12 @@ import java.util.ResourceBundle;
  * @author OrthoCube
  */
 public class MainController implements Initializable {
-    private User currentUser;
+    // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    MenuItem mnuSettings;
     private MainApp mainApp;
     private ToggleGroup group = null;
-
-    // <editor-fold defaultstate="collapsed" desc="Controls">
+    private User currentUser = new User();
     @FXML
     RadioMenuItem mnuLightTheme;
     @FXML
@@ -121,8 +122,18 @@ public class MainController implements Initializable {
     // </editor-fold>
 
     @FXML
+    void mnuExitAction(ActionEvent event) {
+        mainApp.getStage().close();
+    }
+
+    @FXML
     void cmdClassesAction(ActionEvent event) {
         mainApp.showClasses();
+    }
+
+    @FXML
+    void cmdDashboardAction(ActionEvent event) {
+        mainApp.showDashboard();
     }
 
     @FXML
@@ -194,7 +205,7 @@ public class MainController implements Initializable {
         cmdUsers.setToggleGroup(group);
         cmdReminders.setToggleGroup(group);
         // select the first button to start with
-        group.selectToggle(cmdStudents);
+        group.selectToggle(cmdDashboard);
 
         // enforce rule that one of the ToggleButtons must be selected at any
         // time (that is, it is not valid to have zero ToggleButtons selected).
@@ -237,6 +248,10 @@ public class MainController implements Initializable {
         this.currentUser = user;
         lblUser.setText(currentUser.getNickname().isEmpty() ? currentUser.getUsername() : currentUser.getNickname());
         pboUser.setImage(currentUser.getPicture() == null ? new Image(getClass().getResourceAsStream("/com/orthocube/classrecord/res/Businessman_100px.png")) : currentUser.getPicture());
+
+        if (currentUser.getAccessLevel() < 2) {
+            mnuSettings.setDisable(true);
+        }
     }
 
     public void refreshUser() {

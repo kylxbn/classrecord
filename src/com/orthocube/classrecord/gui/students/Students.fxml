@@ -45,7 +45,8 @@
                                 <MenuItem mnemonicParsing="false" onAction="#mnuSearchOnFacebookAction"
                                           text="Search on Facebook"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#cmdDeleteAction" text="Delete student">
+                                <MenuItem fx:id="mnuDelete" mnemonicParsing="false" onAction="#cmdDeleteAction"
+                                          text="Delete student">
                                     <graphic>
                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" smooth="false">
                                             <image>

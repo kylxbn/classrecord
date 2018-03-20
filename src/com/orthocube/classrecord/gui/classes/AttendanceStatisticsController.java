@@ -125,10 +125,12 @@ public class AttendanceStatisticsController implements Initializable {
         final XYChart.Series<Number, String> others2 = new XYChart.Series<>();
 
         HashMap<String, Integer> students = new HashMap<>();
-        ObservableList<AttendanceList> last = attendanceDays.get(attendanceDays.size() - 1).getAttendanceList();
-        for (AttendanceList al : last) {
-            if (enrolleeMatchesCourse(al.getEnrollee(), cboCourse.getValue()))
-                students.put(al.getEnrollee().getStudent().getLN() + ", " + al.getEnrollee().getStudent().getFN(), 0);
+        if (attendanceDays.size() > 0) {
+            ObservableList<AttendanceList> last = attendanceDays.get(attendanceDays.size() - 1).getAttendanceList();
+            for (AttendanceList al : last) {
+                if (enrolleeMatchesCourse(al.getEnrollee(), cboCourse.getValue()))
+                    students.put(al.getEnrollee().getStudent().getLN() + ", " + al.getEnrollee().getStudent().getFN(), 0);
+            }
         }
 
         presents2.setName("Present");

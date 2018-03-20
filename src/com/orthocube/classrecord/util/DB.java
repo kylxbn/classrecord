@@ -92,7 +92,7 @@ public class DB {
             }
 
             isFirstRun = true;
-            s.executeUpdate("INSERT INTO USERS (Username, Nickname, Password, AccessLevel) VALUES ('admin', 'Administrator', 'admin', 2)");
+            s.executeUpdate("INSERT INTO USERS (Username, Nickname, Password, AccessLevel) VALUES ('admin', 'Administrator', 'admin', 3)");
 
             try {
                 s.executeUpdate("CREATE TABLE Students (StudentID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
@@ -1155,7 +1155,7 @@ public class DB {
         ResultSet r;
 
         PreparedStatement prep;
-        prep = con.prepareStatement("SELECT DayID, Date, Notes FROM AttendanceDays WHERE ClassID = ? ORDER BY Date DESC NULLS FIRST");
+        prep = con.prepareStatement("SELECT DayID, Date, Notes FROM AttendanceDays WHERE ClassID = ? ORDER BY Date ASC NULLS FIRST");
         prep.setLong(1, c.getID());
         r = prep.executeQuery();
 
@@ -1749,11 +1749,11 @@ public class DB {
                 while (r2.next()) {
                     currentCriterion = getCriterion(r2.getInt(1));
 
-                    // for every criteria... we add the criteria to PRELIM
+                    // for every criterion... we add the criterion to PRELIM
                     assert currentCriterion != null;
                     terms.get(t).add(new com.orthocube.classrecord.util.grade.Criterion(currentCriterion.getPercentage()));
 
-                    // then we get the tasks associated with that criteria
+                    // then we get the tasks associated with that criterion
                     prep3 = con.prepareStatement("SELECT Tasks.TaskID FROM Tasks WHERE CriterionID = ? AND BitSet(Term, ?) > 0");
                     prep3.setLong(1, currentCriterion.getID());
                     prep3.setInt(2, t);
@@ -1772,7 +1772,7 @@ public class DB {
                             // we get the student's score
                             score = r4.getInt(1);
                         }
-                        // for every task... we add it to the last criteria in PRELIM
+                        // for every task... we add it to the last criterion in PRELIM
                         terms.get(t).get(terms.get(t).size() - 1).addTask(score, currentTask.getItems());
                     }
                 }
@@ -1900,8 +1900,8 @@ public class DB {
             currentStudent = getStudent(currentEnrollee.getStudent().getID());
 
             // Here, we start getting the data for for each term. =======================================================
-            for (int t = 0; t < 4; t += 2) {
-                prep2 = con.prepareStatement("SELECT SHSCriteria.CriteriaID FROM SHSCriteria WHERE ClassID = ? AND BitSet(Terms, ?) > 0");
+            for (int t = 0; t < 2; t++) {
+                prep2 = con.prepareStatement("SELECT SHSCriteria.CriterionID FROM SHSCriteria WHERE ClassID = ? AND BitSet(Terms, (?*2+1)) > 0");
                 prep2.setLong(1, c.getID());
                 prep2.setInt(2, t);
                 r2 = prep2.executeQuery();
@@ -1910,12 +1910,12 @@ public class DB {
                 while (r2.next()) {
                     currentCriterion = getSHSCriterion(r2.getInt(1));
 
-                    // for every criteria... we add the criteria to PRELIM
+                    // for every criterion... we add the criterion to PRELIM
                     assert currentCriterion != null;
                     terms.get(t).add(new com.orthocube.classrecord.util.grade.SHSCriterion(currentCriterion.getPercentage()));
 
-                    // then we get the tasks associated with that criteria
-                    prep3 = con.prepareStatement("SELECT SHSTasks.TaskID FROM SHSTasks WHERE CriteriaID = ? AND BitSet(Term, ?) > 0");
+                    // then we get the tasks associated with that criterion
+                    prep3 = con.prepareStatement("SELECT SHSTasks.TaskID FROM SHSTasks WHERE CriterionID = ? AND BitSet(Term, ?) > 0");
                     prep3.setLong(1, currentCriterion.getID());
                     prep3.setInt(2, t);
                     r3 = prep3.executeQuery();
@@ -1933,13 +1933,13 @@ public class DB {
                             // we get the student's score
                             score = r4.getInt(1);
                         }
-                        // for every task... we add it to the last criteria in PRELIM
+                        // for every task... we add it to the last criterion in PRELIM
                         terms.get(t / 2).get(terms.get(t / 2).size() - 1).addTask(score, currentTask.getItems());
                     }
                 }
             }
 
-            // by this point, I HOPE that all the tasks inside the criterias inside the terms HAVE the right data,
+            // by this point, I HOPE that all the tasks inside the criteria inside the terms HAVE the right data,
             // so let's hope for the best and compute it.
             ArrayList<String> termStrings = new ArrayList<>();
             ArrayList<BigFraction> termFractions = new ArrayList<>();
@@ -2100,7 +2100,7 @@ public class DB {
         if (r.getID() == -1) {
             LOGGER.log(Level.INFO, "Saving new Reminder...");
             PreparedStatement prep;
-            prep = con.prepareStatement("INSERT INTO Reminders (StartDate, StartTime, EndDate, EndTime, Title, Notes, Location, IsDone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            prep = con.prepareStatement("INSERT INTO Reminders (StartDate, StartTime, EndDate, EndTime, Title, Notes, Location, IsDone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             prep.setDate(1, r.getStartDate());
             prep.setTime(2, r.getStartTime());
             prep.setDate(3, r.getEndDate());

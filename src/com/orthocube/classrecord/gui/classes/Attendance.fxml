@@ -40,6 +40,7 @@
                                 </TableView>
                             </content>
                         </TitledPane>
+                        <Label fx:id="lblTotalDays" text="total days"/>
                         <TitledPane fx:id="pnlDaysInfo" disable="true" maxHeight="1.7976931348623157E308"
                                     maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="100.0"
                                     text="%attendance.info">

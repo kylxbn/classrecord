@@ -60,8 +60,10 @@ public class Utils {
         if (hour == 0) {
             hour = 12;
             tod = bundle.getString("utils.am");
-        } else if (hour < 13) {
+        } else if (hour < 12) {
             tod = bundle.getString("utils.am");
+        } else if (hour == 12) {
+            tod = bundle.getString("utils.pm");
         } else {
             hour -= 12;
             tod = bundle.getString("utils.pm");

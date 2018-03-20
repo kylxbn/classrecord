@@ -48,8 +48,18 @@ public class TasksController implements Initializable {
     private ValidationSupport taskValidationSupport;
     // TODO: Implement proper score validation
     private ValidationSupport scoreValidationSupport;
+    private User currentUser = new User();
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    private MenuItem mnuPDelete;
+    @FXML
+    private MenuItem mnuMDelete;
+    @FXML
+    private MenuItem mnuSDelete;
+    @FXML
+    private MenuItem mnuFDelete;
+
     @FXML
     private VBox vbxTEdit;
     @FXML
@@ -174,7 +184,26 @@ public class TasksController implements Initializable {
     private TitledPane tpnSemis;
     @FXML
     private TitledPane tpnFinals;
+
     // </editor-fold>
+
+    public void setUser(User user) {
+        this.currentUser = user;
+        if (currentUser.getAccessLevel() < 2) {
+            mnuPDelete.setDisable(true);
+            mnuMDelete.setDisable(true);
+            mnuSDelete.setDisable(true);
+            mnuFDelete.setDisable(true);
+            cmdSAdd.setDisable(true);
+            cmdTAdd.setDisable(true);
+            cmdDeleteScore.setDisable(true);
+
+            txtTName.setEditable(false);
+            txtTItems.setEditable(false);
+            txtSScore.setEditable(false);
+            txtSNotes.setEditable(false);
+        }
+    }
 
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
@@ -450,7 +479,7 @@ public class TasksController implements Initializable {
     }
 
     private void taskEditMode(boolean t) {
-        if (t) {
+        if (t && (currentUser.getAccessLevel() > 1)) {
             accTasks.setDisable(true);
             cmdTAdd.setDisable(true);
             cmdTCancel.setVisible(true);
@@ -458,7 +487,8 @@ public class TasksController implements Initializable {
             vbxSEdit.setDisable(true);
         } else {
             accTasks.setDisable(false);
-            cmdTAdd.setDisable(false);
+            if (currentUser.getAccessLevel() > 1)
+                cmdTAdd.setDisable(false);
             cmdTCancel.setVisible(false);
             cmdTSave.setDisable(true);
             vbxSEdit.setDisable(currentTask == null);
@@ -466,7 +496,7 @@ public class TasksController implements Initializable {
     }
 
     private void scoreEditMode(boolean t) {
-        if (t) {
+        if (t && (currentUser.getAccessLevel() > 1)) {
             vbxTEdit.setDisable(true);
             tblScores.setDisable(true);
             cmdSAdd.setDisable(true);
@@ -475,7 +505,8 @@ public class TasksController implements Initializable {
         } else {
             vbxTEdit.setDisable(false);
             tblScores.setDisable(false);
-            cmdSAdd.setDisable(false);
+            if (currentUser.getAccessLevel() > 1)
+                cmdSAdd.setDisable(false);
             cmdSCancel.setVisible(false);
             cmdSSave.setDisable(true);
         }

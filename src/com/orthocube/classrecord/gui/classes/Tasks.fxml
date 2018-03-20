@@ -34,7 +34,7 @@
                                             <contextMenu>
                                                 <ContextMenu>
                                                     <items>
-                                                        <MenuItem mnemonicParsing="false"
+                                                        <MenuItem fx:id="mnuPDelete" mnemonicParsing="false"
                                                                   onAction="#mnuDeleteTaskAction" text="Delete"/>
                                                     </items>
                                                 </ContextMenu>
@@ -56,7 +56,7 @@
                                             <contextMenu>
                                                 <ContextMenu>
                                                     <items>
-                                                        <MenuItem mnemonicParsing="false"
+                                                        <MenuItem fx:id="mnuMDelete" mnemonicParsing="false"
                                                                   onAction="#mnuDeleteTaskAction" text="Delete"/>
                                                     </items>
                                                 </ContextMenu>
@@ -78,7 +78,7 @@
                                             <contextMenu>
                                                 <ContextMenu>
                                                     <items>
-                                                        <MenuItem mnemonicParsing="false"
+                                                        <MenuItem fx:id="mnuSDelete" mnemonicParsing="false"
                                                                   onAction="#mnuDeleteTaskAction" text="Delete"/>
                                                     </items>
                                                 </ContextMenu>
@@ -100,7 +100,7 @@
                                             <contextMenu>
                                                 <ContextMenu>
                                                     <items>
-                                                        <MenuItem mnemonicParsing="false"
+                                                        <MenuItem fx:id="mnuFDelete" mnemonicParsing="false"
                                                                   onAction="#mnuDeleteTaskAction" text="Delete"/>
                                                     </items>
                                                 </ContextMenu>

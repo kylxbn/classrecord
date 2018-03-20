@@ -11,6 +11,7 @@ import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -20,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -43,7 +45,7 @@ public class UsersController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(UsersController.class.getName());
     private MainApp mainApp;
 
-    private User currentUser;
+    private User currentSelectedUser;
     private ObservableList<User> users;
 
     private Image showedImage = null;
@@ -51,6 +53,9 @@ public class UsersController implements Initializable {
     private Image noPicture;
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    private MenuItem mnuRemove;
+
     @FXML
     private ImageView pboImage;
 
@@ -85,7 +90,7 @@ public class UsersController implements Initializable {
     private Label lblRepeat;
 
     @FXML
-    private Button cmdShow;
+    private ToggleButton cmdShow;
 
     @FXML
     private TextField txtUsername;
@@ -118,9 +123,27 @@ public class UsersController implements Initializable {
     private Button cmdSave;
     // </editor-fold>
 
+    private User currentUser = new User();
+
+    public void setUser(User u) {
+        currentUser = u;
+        if (currentUser.getAccessLevel() < 3) {
+            mnuRemove.setDisable(true);
+            cmdAdd.setDisable(true);
+
+            cmdRemove.setDisable(true);
+            cmdReplace.setDisable(true);
+
+            txtUsername.setEditable(false);
+            txtNickname.setEditable(false);
+            txtPassword.setEditable(false);
+            txtRepeat.setEditable(false);
+        }
+    }
+
     @FXML
     void cmdAddAction(ActionEvent event) {
-        currentUser = new User();
+        currentSelectedUser = new User();
         showUserInfo();
         cmdSave.setText("Save as new");
         editMode(true);
@@ -129,15 +152,15 @@ public class UsersController implements Initializable {
 
     @FXML
     void mnuRemoveAction(ActionEvent event) {
-        if (currentUser == null) return;
-        if (currentUser.getID() == 1) {
+        if (currentSelectedUser == null) return;
+        if (currentSelectedUser.getID() == 1) {
             Dialogs.error("Cannot delete master user", "The master user cannot be deleted.", "This is the first ever created user\nand it can't be deleted.");
             return;
         }
-        if (Dialogs.confirm("Delete User", "Are you sure you want to delete this user?", currentUser.getNickname().isEmpty() ? currentUser.getUsername() : currentUser.getNickname()) == ButtonType.OK)
+        if (Dialogs.confirm("Delete User", "Are you sure you want to delete this user?", currentSelectedUser.getNickname().isEmpty() ? currentSelectedUser.getUsername() : currentSelectedUser.getNickname()) == ButtonType.OK)
             try {
-                DB.delete(currentUser);
-                users.remove(currentUser);
+                DB.delete(currentSelectedUser);
+                users.remove(currentSelectedUser);
                 mainApp.getRootNotification().show("User deleted.");
             } catch (SQLException e) {
                 Dialogs.exception(e);
@@ -163,8 +186,8 @@ public class UsersController implements Initializable {
 
     @FXML
     void cmdCancelAction(ActionEvent event) {
-        currentUser = lstUsers.getSelectionModel().getSelectedItem();
-        showedImage = currentUser.getPicture();
+        currentSelectedUser = lstUsers.getSelectionModel().getSelectedItem();
+        showedImage = currentSelectedUser.getPicture();
         cmdSave.setText("Save");
         showUserInfo();
         editMode(false);
@@ -173,7 +196,7 @@ public class UsersController implements Initializable {
     @FXML
     void cmdSaveAction(ActionEvent event) {
         try {
-            if ((!txtUsername.getText().equals(currentUser.getUsername())) && (DB.userExists(txtUsername.getText()))) {
+            if ((!txtUsername.getText().equals(currentSelectedUser.getUsername())) && (DB.userExists(txtUsername.getText()))) {
                 Dialogs.error("Username already exists", "Username already taken.", "Please choose another username.");
                 return;
             }
@@ -183,22 +206,22 @@ public class UsersController implements Initializable {
                 return;
             }
 
-            currentUser.setUsername(txtUsername.getText());
-            currentUser.setNickname(txtNickname.getText());
-            currentUser.setAccessLevel(cboAccessLevel.getSelectionModel().getSelectedIndex() + 1);
-            currentUser.setPicture(showedImage);
+            currentSelectedUser.setUsername(txtUsername.getText());
+            currentSelectedUser.setNickname(txtNickname.getText());
+            currentSelectedUser.setAccessLevel(cboAccessLevel.getSelectionModel().getSelectedIndex() + 1);
+            currentSelectedUser.setPicture(showedImage);
 
             boolean newEntry;
             if (txtPassword.getText().isEmpty()) {
-                newEntry = DB.save(currentUser);
+                newEntry = DB.save(currentSelectedUser);
             } else {
-                newEntry = DB.save(currentUser, txtPassword.getText());
+                newEntry = DB.save(currentSelectedUser, txtPassword.getText());
             }
 
             if (newEntry) {
-                users.add(currentUser);
-                lstUsers.getSelectionModel().select(currentUser);
-                lstUsers.scrollTo(currentUser);
+                users.add(currentSelectedUser);
+                lstUsers.getSelectionModel().select(currentSelectedUser);
+                lstUsers.scrollTo(currentSelectedUser);
             }
 
             txtPassword.setText("");
@@ -221,6 +244,8 @@ public class UsersController implements Initializable {
     public void setModel(ObservableList<User> users) {
         this.users = users;
         lstUsers.setItems(users);
+        lblUsersTotal.textProperty().bind(Bindings.concat(Bindings.size(users), Bindings.when(Bindings.size(users).greaterThan(1)).then(" users").otherwise(" user")));
+
     }
 
     public String getTitle() {
@@ -229,13 +254,13 @@ public class UsersController implements Initializable {
     }
 
     private void showUserInfo() {
-        if (currentUser != null) {
-            txtUsername.setText(currentUser.getUsername());
-            txtNickname.setText(currentUser.getNickname());
+        if (currentSelectedUser != null) {
+            txtUsername.setText(currentSelectedUser.getUsername());
+            txtNickname.setText(currentSelectedUser.getNickname());
             txtPassword.setText("");
             txtRepeat.setText("");
-            cboAccessLevel.getSelectionModel().select(currentUser.getAccessLevel() - 1);
-            cboAccessLevel.setDisable(currentUser.getID() == 1);
+            cboAccessLevel.getSelectionModel().select(currentSelectedUser.getAccessLevel() - 1);
+            cboAccessLevel.setDisable(currentSelectedUser.getID() == 1);
             vbxEdit.setDisable(false);
             if (showedImage == null) {
                 pboImage.setImage(noPicture);
@@ -253,14 +278,15 @@ public class UsersController implements Initializable {
     }
 
     private void editMode(boolean t) {
-        if (t) {
+        if (t && (currentUser.getAccessLevel() > 2)) {
             lstUsers.setDisable(true);
             cmdAdd.setDisable(true);
             cmdCancel.setVisible(true);
             cmdSave.setDisable(false);
         } else {
             lstUsers.setDisable(false);
-            cmdAdd.setDisable(false);
+            if (currentUser.getAccessLevel() > 2)
+                cmdAdd.setDisable(false);
             cmdCancel.setVisible(false);
             cmdSave.setDisable(true);
         }
@@ -312,27 +338,27 @@ public class UsersController implements Initializable {
         });
 
         lstUsers.getSelectionModel().selectedItemProperty().addListener((obs, oldv, newv) -> {
-            currentUser = newv;
-            showedImage = currentUser.getPicture();
+            currentSelectedUser = newv;
+            showedImage = currentSelectedUser.getPicture();
             showUserInfo();
             editMode(false);
         });
 
         txtUsername.textProperty().addListener((ob, ov, nv) -> {
-            if (currentUser != null) editMode(true);
+            if (currentSelectedUser != null) editMode(true);
         });
 
         txtNickname.textProperty().addListener((ob, ov, nv) -> {
-            if (currentUser != null) editMode(true);
+            if (currentSelectedUser != null) editMode(true);
         });
         txtPassword.textProperty().addListener((ob, ov, nv) -> {
-            if (currentUser != null) editMode(true);
+            if (currentSelectedUser != null) editMode(true);
         });
         txtRepeat.textProperty().addListener((ob, ov, nv) -> {
-            if (currentUser != null) editMode(true);
+            if (currentSelectedUser != null) editMode(true);
         });
         cboAccessLevel.valueProperty().addListener((ob, ov, nv) -> {
-            if (currentUser != null) editMode(true);
+            if (currentSelectedUser != null) editMode(true);
         });
 
         noPicture = new Image(getClass().getResourceAsStream("/com/orthocube/classrecord/res/Businessman_100px.png"));
@@ -345,6 +371,7 @@ public class UsersController implements Initializable {
         noUser = SwingFXUtils.toFXImage(bi2, null);
 
         pboImage.setImage(noUser);
+
 
         editMode(false);
     }

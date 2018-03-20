@@ -10,6 +10,7 @@ package com.orthocube.classrecord.gui.reminders;
 import com.orthocube.classrecord.MainApp;
 import com.orthocube.classrecord.data.Clazz;
 import com.orthocube.classrecord.data.Reminder;
+import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import com.orthocube.classrecord.util.Utils;
@@ -41,8 +42,8 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import static com.orthocube.classrecord.util.Utils.toAMPM;
@@ -52,15 +53,17 @@ public class RemindersController implements Initializable {
     private static final Color[][] classColors = {
             {Color.decode("0xa30000"), Color.decode("0xc43c00"), Color.decode("0xc67c00"), Color.decode("0xc7a500"), Color.decode("0x79b700"), Color.decode("0x1faa00"), Color.decode("0x009624"), Color.decode("0x008e76"), Color.decode("0x0088a3"), Color.decode("0x0064b7"), Color.decode("0x0039cb"), Color.decode("0x0026ca"), Color.decode("0x0a00b6"), Color.decode("0x7200ca"), Color.decode("0x8e0038"), Color.decode("0x9b0000")},
             {Color.decode("0xff6434"), Color.decode("0xff9e40"), Color.decode("0xffdd4b"), Color.decode("0xffff52"), Color.decode("0xe4ff54"), Color.decode("0x9cff57"), Color.decode("0x5efc82"), Color.decode("0x5df2d6"), Color.decode("0x62ebff"), Color.decode("0x64c1ff"), Color.decode("0x768fff"), Color.decode("0x7a7cff"), Color.decode("0x9d46ff"), Color.decode("0xe254ff"), Color.decode("0xfd558f"), Color.decode("0xff5131")}};
-    ResourceBundle bundle;
-    MainApp mainApp;
-    Reminder currentReminder;
-    ObservableList<Reminder> reminders;
-    FilteredList<Reminder> filteredReminders;
-    String savedStartTime, savedEndTime;
-    ValidationSupport validationSupport;
-    ObservableList<Clazz> classes;
+    private ResourceBundle bundle;
+    private MainApp mainApp;
+    private Reminder currentReminder;
+    private ObservableList<Reminder> reminders;
+    private FilteredList<Reminder> filteredReminders;
+    private String savedStartTime, savedEndTime;
+    private ValidationSupport validationSupport;
+    private ObservableList<Clazz> classes;
     private boolean isDark = true;
+
+    private User currentUser = new User();
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
     @FXML
@@ -137,6 +140,20 @@ public class RemindersController implements Initializable {
         this.mainApp = mainApp;
     }
 
+    public void setUser(User u) {
+        currentUser = u;
+        if (currentUser.getAccessLevel() < 2) {
+            cmdAdd.setDisable(true);
+            mnuRemove.setDisable(true);
+
+            txtTitle.setEditable(false);
+            txtStartTime.setEditable(false);
+            txtEndTime.setEditable(false);
+            txtLocation.setEditable(false);
+            txtNotes.setEditable(false);
+        }
+    }
+
     public void setModel(ObservableList<Reminder> model) {
         reminders = model;
 
@@ -151,9 +168,8 @@ public class RemindersController implements Initializable {
 
     private void updateFilters() {
         filteredReminders.setPredicate(reminder -> {
-            if (chkAll.isSelected()) return true;
+            return chkAll.isSelected() || !reminder.isDone() && (DAYS.between(LocalDate.now(), reminder.getEndDate().toLocalDate()) <= 31);
 
-            return !reminder.isDone() && (DAYS.between(LocalDate.now(), reminder.getEndDate().toLocalDate()) <= 31);
         });
     }
 
@@ -297,14 +313,17 @@ public class RemindersController implements Initializable {
     }
 
     private void editMode(boolean t) {
-        if (t) {
+        if (t && (currentUser.getAccessLevel() > 1)) {
             vbxShow.setDisable(true);
             cmdSave.setDisable(false);
             cmdCancel.setVisible(true);
+            cmdAdd.setDisable(true);
         } else {
             vbxShow.setDisable(false);
             cmdSave.setDisable(true);
             cmdCancel.setVisible(false);
+            if (currentUser.getAccessLevel() > 1)
+                cmdAdd.setDisable(false);
         }
     }
 
@@ -337,9 +356,16 @@ public class RemindersController implements Initializable {
             if (i > 0)
                 g.setFont(new Font("default", Font.PLAIN, 12));
 
-            int rx = x + (w - metrics.stringWidth(lines[i])) / 2;
+            StringBuilder line = new StringBuilder(lines[i]);
+            if (metrics.stringWidth(line.toString()) > w) {
+                line.append("…");
+                while (metrics.stringWidth(line.toString()) > w)
+                    line.deleteCharAt(line.length() - 2);
+            }
+
+            int rx = x + (w - metrics.stringWidth(line.toString())) / 2;
             int ry = startY + oneLineHeight * i;
-            g.drawString(lines[i], rx, ry);
+            g.drawString(line.toString(), rx, ry);
         }
     }
 
@@ -442,7 +468,7 @@ public class RemindersController implements Initializable {
         for (int i = 0; i < 12; i++) {
             int x = 0;
             int y = (int) ((cellheight * (i + 1)) - (cellheight / 2));
-            drawCenteredString(g, Utils.sanitizeTime(Integer.toString((i + 7)) + ":00"), x, y, (int) cellwidth, (int) cellheight);
+            drawCenteredString(g, toAMPM(Utils.sanitizeTime(Integer.toString((i + 7)) + ":00")), x, y, (int) cellwidth, (int) cellheight);
         }
 
         if (classes == null) {
@@ -471,7 +497,7 @@ public class RemindersController implements Initializable {
                     g.drawRect(x, y, (int) cellwidth + 1, h2);
                     g.setColor(Utils.getBrightness(classColors[isDark ? 0 : 1][classnum % classColors[0].length]) > 0.5 ? Color.BLACK : Color.WHITE);
                     drawCenteredString2(g, c.getName() + "\n" +
-                                    toAMPM(timeStartString) + " - " + toAMPM(timeEndString) + "\n" +
+                                    toAMPM(timeStartString) + "-" + toAMPM(timeEndString) + "\n" +
                                     (c.getRoom().trim().length() > 0 ? "Room " + c.getRoom() + "\n" : "") +
                                     (c.getCourse().trim().length() > 0 ? c.getCourse() : "") +
                                     (c.isSHS() ?
@@ -595,7 +621,7 @@ public class RemindersController implements Initializable {
             case "3":
                 return "Summer";
             default:
-                return "ERROR";
+                return "UNDEFINED";
         }
     }
 
@@ -671,21 +697,30 @@ public class RemindersController implements Initializable {
         });
 
         refreshSchedule();
-        LocalDate ld = LocalDate.now();
-        chooseAgain(cboYear, Integer.toString(ld.getYear()));
-        if ((ld.getMonth().compareTo(Month.JUNE) >= 0) && (ld.getMonth().compareTo(Month.NOVEMBER) < 0)) {
-            chooseAgain(cboSem, "1");
-        } else if ((ld.getMonth().compareTo(Month.NOVEMBER) >= 0) || (ld.getMonth().compareTo(Month.APRIL) < 0)) {
-            chooseAgain(cboSem, "2");
+
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+
+        String sem;
+        if ((month >= 5) && (month < 9)) {
+            sem = "1st";
+        } else if ((month == 3) || (month == 4)) {
+            sem = "Summer";
+            year--;
         } else {
-            chooseAgain(cboSem, "Summer"); // TODO: Fix this fucking hack
+            sem = "2nd";
+            year--;
         }
+
+        chooseAgain(cboYear, Integer.toString(year) + " - " + Integer.toString(year + 1));
+        chooseAgain(cboSem, sem);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         bundle = resources;
 
+        initSchedule();
         initReminders();
     }
 

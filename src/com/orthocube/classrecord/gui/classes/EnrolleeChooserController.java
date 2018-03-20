@@ -43,6 +43,7 @@ public class EnrolleeChooserController implements Initializable {
     private Enrollee currentEnrollee = null;
     private Enrollee result = null;
 
+    // <editor-fold defaultstate="collapsed" desc="Controls">
     @FXML
     private ChoiceBox<String> cboCourse;
 
@@ -72,6 +73,9 @@ public class EnrolleeChooserController implements Initializable {
 
     @FXML
     private Button cmdChoose;
+    // <editor-fold defaultstate="collapsed" desc="Controls">
+
+
     private Stage dialogStage;
     private Task currentTask;
 

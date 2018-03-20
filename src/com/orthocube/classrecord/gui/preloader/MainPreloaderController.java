@@ -166,6 +166,7 @@ public class MainPreloaderController implements Initializable {
         TranslateTransition stage2b = new TranslateTransition(Duration.millis(750), lblClassRecord);
         stage2b.setFromY(-100);
         stage2b.setToY(0);
+        stage2b.setInterpolator(Interpolator.EASE_OUT);
 
         FadeTransition stage2c = new FadeTransition(Duration.millis(750), lblClassRecord2);
         stage2c.setFromValue(0.0);
@@ -174,6 +175,7 @@ public class MainPreloaderController implements Initializable {
         TranslateTransition stage2d = new TranslateTransition(Duration.millis(750), lblClassRecord2);
         stage2d.setFromY(-100);
         stage2d.setToY(0);
+        stage2d.setInterpolator(Interpolator.EASE_OUT);
 
         FadeTransition stage2e = new FadeTransition(Duration.millis(750), vbxLoading);
         stage2e.setFromValue(0.0);
@@ -190,6 +192,7 @@ public class MainPreloaderController implements Initializable {
         TranslateTransition stage2h = new TranslateTransition(Duration.millis(750), pnlBG);
         stage2h.setFromY(-100);
         stage2h.setToY(0);
+        stage2h.setInterpolator(Interpolator.EASE_OUT);
 
         // STAGE 3 - Everything else shows
         FadeTransition stage3 = new FadeTransition(Duration.millis(750), vbxLogin);
@@ -223,18 +226,22 @@ public class MainPreloaderController implements Initializable {
         TranslateTransition stage1a = new TranslateTransition(Duration.millis(1000), lblClassRecord);
         stage1a.setFromY(0.0);
         stage1a.setToY(100);
+        stage1a.setInterpolator(Interpolator.EASE_IN);
 
         TranslateTransition stage1b = new TranslateTransition(Duration.millis(1000), lblClassRecord2);
         stage1b.setFromY(0.0);
         stage1b.setToY(100);
+        stage1b.setInterpolator(Interpolator.EASE_IN);
 
         TranslateTransition stage1c = new TranslateTransition(Duration.millis(1000), vbxLogin);
         stage1c.setFromY(0.0);
         stage1c.setToY(100);
+        stage1c.setInterpolator(Interpolator.EASE_IN);
 
         TranslateTransition stage1d = new TranslateTransition(Duration.millis(1000), pnlBG);
         stage1d.setFromY(0.0);
         stage1d.setToY(100);
+        stage1d.setInterpolator(Interpolator.EASE_IN);
 
         // set up transitions
         ParallelTransition stage1t = new ParallelTransition();

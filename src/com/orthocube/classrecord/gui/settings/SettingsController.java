@@ -32,6 +32,8 @@ public class SettingsController implements Initializable {
 
     @FXML
     private RadioButton rdoJapanese;
+
+
     private Stage dialogStage;
     private MainApp mainApp;
 

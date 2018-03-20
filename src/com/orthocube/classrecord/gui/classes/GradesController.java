@@ -12,13 +12,22 @@ import com.orthocube.classrecord.data.Grade;
 import com.orthocube.classrecord.gui.students.StudentEnrolledInController;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import com.orthocube.classrecord.util.printing.SHSGradePrinter;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.ResolutionSyntax;
+import javax.print.attribute.standard.PrinterResolution;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -70,6 +79,36 @@ public class GradesController implements Initializable {
             tblGrades.setItems(grades);
         } catch (SQLException | IOException e) {
             Dialogs.exception(e);
+        }
+    }
+
+    @FXML
+    void cmdPrintAction(ActionEvent event) {
+        int dpi = 86;
+
+        PrinterJob job = PrinterJob.getPrinterJob();
+        Paper paper = new Paper();
+        paper.setSize(8.5 * 72.0, 13 * 72.0);
+        paper.setImageableArea(0, 0, 8.5 * 72.0, 13 * 72.0);
+
+        PageFormat pf = new PageFormat();
+
+        pf.setPaper(paper);
+        SHSGradePrinter printer = new SHSGradePrinter(dpi);
+        printer.setClass(currentClass);
+        job.setPrintable(printer, pf);
+
+        boolean doPrint = job.printDialog();
+        if (doPrint) {
+            try {
+                HashPrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+                PrinterResolution pr = new PrinterResolution(dpi, dpi, ResolutionSyntax.DPI);
+                set.add(pr);
+                job.setJobName("SHS Grades");
+                job.print(set);
+            } catch (PrinterException ex) {
+                Dialogs.exception(ex);
+            }
         }
     }
 

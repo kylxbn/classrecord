@@ -46,6 +46,8 @@ public class AttendanceController implements Initializable {
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
     @FXML
+    private Label lblTotalDays;
+    @FXML
     private Button cmdDaysCancel;
     @FXML
     private Button cmdListCancel;
@@ -137,6 +139,18 @@ public class AttendanceController implements Initializable {
 
     public void setUser(User u) {
         currentUser = u;
+        if (currentUser.getAccessLevel() < 2) {
+            cmdAddDay.setDisable(true);
+            cmdQuickAdd.setDisable(true);
+            cmdAbsent.setDisable(true);
+            cmdPresent.setDisable(true);
+            cmdLate.setDisable(true);
+            cmdOthers.setDisable(true);
+            mnuRemove.setDisable(true);
+
+            txtDaysNotes.setEditable(false);
+            txtListNotes.setEditable(false);
+        }
     }
 
     public void setMainApp(MainApp mainApp) {
@@ -153,6 +167,8 @@ public class AttendanceController implements Initializable {
             attendanceDays = DB.getAttendanceDays(c);
 
             tblAttendanceDays.setItems(attendanceDays);
+            lblTotalDays.textProperty().bind(Bindings.concat(Bindings.size(attendanceDays), Bindings.when(Bindings.size(attendanceDays).greaterThan(1)).then(" days").otherwise(" day")));
+
         } catch (SQLException ex) {
             Dialogs.exception(ex);
         }
@@ -424,7 +440,7 @@ public class AttendanceController implements Initializable {
     }
 
     private void dayEditMode(boolean t) {
-        if (t && (currentUser.getAccessLevel() > 0)) {
+        if (t && (currentUser.getAccessLevel() > 1)) {
             pnlDays.setDisable(true);
             cmdSaveDay.setDisable(false);
             cmdDaysCancel.setVisible(true);
@@ -435,14 +451,16 @@ public class AttendanceController implements Initializable {
             pnlDays.setDisable(false);
             cmdSaveDay.setDisable(true);
             cmdDaysCancel.setVisible(false);
-            cmdAddDay.setDisable(false);
-            cmdQuickAdd.setDisable(false);
             vbxList.setDisable(false);
+            if (currentUser.getAccessLevel() > 1) {
+                cmdAddDay.setDisable(false);
+                cmdQuickAdd.setDisable(false);
+            }
         }
     }
 
     private void listEditMode(boolean t) {
-        if (t && (currentUser.getAccessLevel() > 0)) {
+        if (t && (currentUser.getAccessLevel() > 1)) {
             vbxDays.setDisable(true);
             pnlList.setDisable(true);
             cmdSaveList.setDisable(false);

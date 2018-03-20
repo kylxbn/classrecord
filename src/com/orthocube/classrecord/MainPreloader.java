@@ -223,8 +223,8 @@ public class MainPreloader extends Preloader {
                     String license;
                     label:
                     do {
-                        license = Dialogs.textInput("Program License", "To use this program, please provide a valid license key.", "License Key:");
-                        LicenseKeyResult result = LicenseKeyResult.INVALID;
+                        license = Dialogs.textInput("Program License", "To use this program, please provide a valid license key.\n(Here's a temporary key for evaluation purposes)", "License Key:", "33FTD-NY7W3-HCFKF-VN7XM-9YRUY");
+                        LicenseKeyResult result;
                         if ((license != null) && (license.trim().length() > 0)) {
                             result = DB.isValidLicense(license);
                         } else {
@@ -291,7 +291,7 @@ public class MainPreloader extends Preloader {
                         label1:
                         do {
                             license = Dialogs.textInput("Program License", "To use this program, please provide a valid license key.", "License Key:");
-                            LicenseKeyResult result2 = LicenseKeyResult.INVALID;
+                            LicenseKeyResult result2;
                             if ((license != null) && (license.trim().length() > 0)) {
                                 result2 = DB.isValidLicense(license);
                             } else {

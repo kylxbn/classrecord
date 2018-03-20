@@ -10,6 +10,7 @@ package com.orthocube.classrecord;
 import com.orthocube.classrecord.data.*;
 import com.orthocube.classrecord.gui.about.AboutController;
 import com.orthocube.classrecord.gui.classes.*;
+import com.orthocube.classrecord.gui.dashboard.DashboardController;
 import com.orthocube.classrecord.gui.main.MainController;
 import com.orthocube.classrecord.gui.reminders.RemindersController;
 import com.orthocube.classrecord.gui.settings.SettingsController;
@@ -44,9 +45,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
@@ -62,6 +61,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private BorderPane root;
     private NotificationPane rootNotification;
 
+    private SplitPane dashboard;
     private SplitPane students;
     private SplitPane classes;
     private SplitPane users;
@@ -69,6 +69,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private SplitPane reminders;
 
     private MainController mainController;
+    private DashboardController dashboardController;
     private StudentsController studentsController;
     private ClassesController classesController;
     private UsersController usersController;
@@ -93,6 +94,10 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
     private void mayBeShown() {
         if (stage != null && currentUser != null) {
             mainController.setUser(currentUser);
+            studentsController.setUser(currentUser);
+            classesController.setUser(currentUser);
+            usersController.setUser(currentUser);
+            remindersController.setUser(currentUser);
             Platform.runLater(() -> {
                 //stage.show();
                 rootNotification.show("Welcome, " + (currentUser.getNickname().isEmpty() ? currentUser.getUsername() : currentUser.getNickname()) + "!");
@@ -123,41 +128,10 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
 
     }
 
-    private static void changeLoggingLevel(Level l) {
-        Logger rootLogger = LogManager.getLogManager().getLogger("");
-        rootLogger.setLevel(l);
-        for (Handler h : rootLogger.getHandlers()) {
-            h.setLevel(l);
-        }
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        if (args.length == 1) {
-            if (args[0].equals("--debug")) {
-                System.out.println("Debug mode activated.");
-                changeLoggingLevel(Level.INFO);
-            } else {
-                changeLoggingLevel(Level.OFF);
-                System.out.println("Invalid arguments. Starting application normally.");
-            }
-        } else if (args.length > 1) {
-            changeLoggingLevel(Level.OFF);
-            System.out.println("Invalid number of arguments. Starting application normally.");
-        } else {
-            changeLoggingLevel(Level.OFF);
-        }
-
-        System.setProperty("javafx.preloader", "com.orthocube.classrecord.MainPreloader");
-        Application.launch(MainApp.class, args);
-    }
-
     @Override
     public void init() throws Exception {
         prepareApp();
-        showStudents();
+        showDashboard();
     }
 
     @Override
@@ -170,12 +144,14 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         scene.getStylesheets().add(getClass().getResource("res/modena_dark.css").toExternalForm());
         rootNotification.getStyleClass().add(NotificationPane.STYLE_CLASS_DARK);
         remindersController.setDark();
+        dashboardController.setDark();
     }
 
     public void setLightTheme() {
         scene.getStylesheets().clear();
         rootNotification.getStyleClass().remove(rootNotification.getStyleClass().size() - 1);
         remindersController.setLight();
+        dashboardController.setLight();
     }
 
     @Override
@@ -210,6 +186,13 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         mainController.setMainApp(this);
         notifyPreloader(new MainPreloader.ProgressNotification(0.2));
 
+        // ------------- LOAD DASHBOARD --------------
+        LOGGER.log(Level.INFO, "Loading Dashboards.fxml...");
+        FXMLLoader dashboardLoader = new FXMLLoader(getClass().getResource("gui/dashboard/Dashboard.fxml"));
+        dashboardLoader.setResources(Settings.bundle);
+        dashboard = dashboardLoader.load();
+        dashboardController = dashboardLoader.getController();
+        dashboardController.setMainApp(this);
 
         // ------------ LOAD STUDENTS ----------------
         LOGGER.log(Level.INFO, "Loading Students.fxml...");
@@ -311,6 +294,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         SplitPane enrollees = loader.load();
         EnrolleesController controller = loader.getController();
         controller.setMainApp(this);
+        controller.setUser(currentUser);
         controller.showClass(c);
 
         trimHistoryThenAdd(enrollees, controller.getTitle());
@@ -397,6 +381,17 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         updateNavigation();
     }
 
+    public void showDashboard() {
+        history.clear();
+        historyTitles.clear();
+        history.add(dashboard);
+        historyTitles.add(dashboardController.getTitle());
+        currentHistory = 0;
+        updateNavigation();
+        dashboardController.clear();
+        dashboardController.refresh();
+    }
+
     public void showClass(Clazz c) {
         classesController.showClass(c);
 
@@ -428,6 +423,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         SplitPane enrollees = loader.load();
         CriteriaController controller = loader.getController();
         controller.setMainApp(this);
+        controller.setUser(currentUser);
         controller.setClass(currentClass);
 
         trimHistoryThenAdd(enrollees, controller.getTitle());
@@ -441,6 +437,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         SplitPane attendance = loader.load();
         AttendanceController controller = loader.getController();
         controller.setMainApp(this);
+        controller.setUser(currentUser);
         controller.setClass(currentClass);
 
         trimHistoryThenAdd(attendance, controller.getTitle());
@@ -454,6 +451,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         SplitPane attendance = loader.load();
         AttendanceController controller = loader.getController();
         controller.setMainApp(this);
+        controller.setUser(currentUser);
         controller.setClass(currentClass);
         controller.quickAdd();
 
@@ -480,6 +478,7 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         SplitPane tasks = loader.load();
         TasksController controller = loader.getController();
         controller.setMainApp(this);
+        controller.setUser(currentUser);
         controller.setClass(currentClass);
 
         trimHistoryThenAdd(tasks, controller.getTitle());
@@ -641,5 +640,9 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         }
         stage.setScene(new Scene(history.get(currentHistory), 800, 600));
         stage.show();
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }
