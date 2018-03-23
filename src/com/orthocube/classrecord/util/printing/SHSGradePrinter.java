@@ -37,7 +37,6 @@ import java.util.ArrayList;
  * @author OrthoCube
  */
 public class SHSGradePrinter implements Printable {
-    private int dpi;
     private ArrayList<SHSGradeRow> mt;
 
     private boolean drawInfo = true;
@@ -47,7 +46,7 @@ public class SHSGradePrinter implements Printable {
     private Clazz currentClass;
 
     public SHSGradePrinter(int d) {
-        dpi = d;
+        int dpi = d;
     }
 
     public void setClass(Clazz c) {

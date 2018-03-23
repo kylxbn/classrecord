@@ -184,7 +184,6 @@ public class AttendanceSummaryController implements Initializable {
 
         List<String> days = new ArrayList<>();
         days.add("Enrollee");
-        ObservableList<TableColumn<AttendanceMatrix, String>> tableColumns = FXCollections.observableArrayList();
         // so now we fill in the attendance of each enrollee
         for (AttendanceDay ad : filteredDays) {
             days.add(Integer.toString(ad.getDate().toLocalDate().getDayOfMonth()));

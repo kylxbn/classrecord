@@ -15,7 +15,7 @@ import com.orthocube.classrecord.util.license.Utils;
  * Provides methods for verifying a licence key.
  */
 public class LicenseKeyCheck {
-    Info info = null;
+    private Info info = null;
 
     public Info getDecodedInfo() {
         return info;
@@ -129,7 +129,7 @@ public class LicenseKeyCheck {
     /**
      * Indicate if the check sum portion of the key is valid
      */
-    public boolean checkKeyChecksum(String key, int totalKeyByteSets) {
+    private boolean checkKeyChecksum(String key, int totalKeyByteSets) {
         boolean result = false;
 
         key = Utils.pad(key, 8 + 4 + (2 * totalKeyByteSets), "0");

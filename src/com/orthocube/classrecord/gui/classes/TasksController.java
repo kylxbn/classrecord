@@ -302,6 +302,7 @@ public class TasksController implements Initializable {
         } catch (Exception e) {
             Dialogs.exception(e);
         }
+
     }
 
     @FXML

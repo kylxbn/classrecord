@@ -181,7 +181,8 @@ public class DB {
             try {
                 s.executeUpdate("CREATE TABLE AttendanceDays (DayID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                         "Date DATE NOT NULL, " +
-                        "ClassID BIGINT REFERENCES Classes(ClassID), " +
+                        "ClassID BIGINT REFERENCES Classes(ClassID) ON DELETE CASCADE" +
+                        ", " +
                         "Notes VARCHAR(255))");
             } catch (SQLException e) {
                 if (!("X0Y32".equals(e.getSQLState()))) {
@@ -871,7 +872,7 @@ public class DB {
         return enrollees;
     }
 
-    private static Enrollee getSHSEnrollee(long id) throws SQLException {
+    public static Enrollee getSHSEnrollee(long id) throws SQLException {
         LOGGER.log(Level.INFO, "Getting SHS Enrollee...");
         ResultSet r;
 
@@ -895,7 +896,7 @@ public class DB {
         }
     }
 
-    private static Enrollee getEnrollee(long id) throws SQLException {
+    public static Enrollee getEnrollee(long id) throws SQLException {
         LOGGER.log(Level.INFO, "Getting Enrollee...");
         ResultSet r;
 

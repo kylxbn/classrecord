@@ -12,7 +12,7 @@ import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class PrintUtil {
+final class PrintUtil {
 
     /**
      * Utility class; no construction!

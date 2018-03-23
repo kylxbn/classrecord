@@ -216,30 +216,10 @@
                                                                 vgrow="SOMETIMES"/>
                                             </rowConstraints>
                                             <children>
-                                                <Label fx:id="lblName" text="Name:"/>
-                                                <Label fx:id="lblSY" text="School Year:" GridPane.rowIndex="1"/>
-                                                <Label fx:id="lblSemester" text="Semester:" GridPane.rowIndex="2"/>
-                                                <Label fx:id="lblYear" text="Year:" GridPane.rowIndex="3"/>
-                                                <Label fx:id="lblCourse" text="Course:" GridPane.rowIndex="4"/>
-                                                <Label fx:id="lblRoom" text="Room:" GridPane.rowIndex="5"/>
-                                                <Label fx:id="lblLevel" text="Level:" GridPane.rowIndex="6"/>
-                                                <Label fx:id="lblNotes" text="Notes:" GridPane.rowIndex="7"/>
                                                 <TextField fx:id="txtName" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2"/>
                                                 <TextField fx:id="txtSY" GridPane.columnIndex="1"
                                                            GridPane.rowIndex="1"/>
-                                                <TextField fx:id="txtCourse" GridPane.columnIndex="1"
-                                                           GridPane.columnSpan="2" GridPane.rowIndex="4"/>
-                                                <TextField fx:id="txtRoom" GridPane.columnIndex="1"
-                                                           GridPane.columnSpan="2" GridPane.rowIndex="5"/>
-                                                <TextField fx:id="txtNotes" GridPane.columnIndex="1"
-                                                           GridPane.columnSpan="2" GridPane.rowIndex="7"/>
-                                                <ChoiceBox fx:id="cboLevel" maxHeight="1.7976931348623157E308"
-                                                           maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                                                           minWidth="-Infinity" GridPane.columnIndex="1"
-                                                           GridPane.columnSpan="2" GridPane.rowIndex="6"/>
-                                                <Label fx:id="lblSY2" text="- ????" GridPane.columnIndex="2"
-                                                       GridPane.rowIndex="1"/>
                                                 <ChoiceBox fx:id="cboSemester" maxHeight="1.7976931348623157E308"
                                                            maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                                                            minWidth="-Infinity" GridPane.columnIndex="1"
@@ -248,6 +228,26 @@
                                                            maxWidth="1.7976931348623157E308" minHeight="-Infinity"
                                                            minWidth="-Infinity" GridPane.columnIndex="1"
                                                            GridPane.columnSpan="2" GridPane.rowIndex="3"/>
+                                                <TextField fx:id="txtCourse" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2" GridPane.rowIndex="4"/>
+                                                <TextField fx:id="txtRoom" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2" GridPane.rowIndex="5"/>
+                                                <ChoiceBox fx:id="cboLevel" maxHeight="1.7976931348623157E308"
+                                                           maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                                           minWidth="-Infinity" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2" GridPane.rowIndex="6"/>
+                                                <TextField fx:id="txtNotes" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="2" GridPane.rowIndex="7"/>
+                                                <Label fx:id="lblName" text="Name:"/>
+                                                <Label fx:id="lblSY" text="School Year:" GridPane.rowIndex="1"/>
+                                                <Label fx:id="lblSemester" text="Semester:" GridPane.rowIndex="2"/>
+                                                <Label fx:id="lblYear" text="Year:" GridPane.rowIndex="3"/>
+                                                <Label fx:id="lblCourse" text="Course:" GridPane.rowIndex="4"/>
+                                                <Label fx:id="lblRoom" text="Room:" GridPane.rowIndex="5"/>
+                                                <Label fx:id="lblLevel" text="Level:" GridPane.rowIndex="6"/>
+                                                <Label fx:id="lblNotes" text="Notes:" GridPane.rowIndex="7"/>
+                                                <Label fx:id="lblSY2" text="- ????" GridPane.columnIndex="2"
+                                                       GridPane.rowIndex="1"/>
                                             </children>
                                         </GridPane>
                                     </content>

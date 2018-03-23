@@ -7,6 +7,7 @@
 
 package com.orthocube.classrecord.gui.dashboard;
 
+import com.orthocube.classrecord.gui.dashboard.provider.ConsecutiveAbsences;
 import com.orthocube.classrecord.gui.dashboard.provider.DashboardProvider;
 import com.orthocube.classrecord.gui.dashboard.provider.DefaultCredentials;
 import com.orthocube.classrecord.gui.dashboard.provider.NoTasks;
@@ -30,12 +31,13 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardPoller extends Task<List<Node>> {
+class DashboardPoller extends Task<List<Node>> {
 
     private List<DashboardProvider> getProviders() {
         List<DashboardProvider> dashboardProviders = new ArrayList<>();
         dashboardProviders.add(new NoTasks());
         dashboardProviders.add(new DefaultCredentials());
+        dashboardProviders.add(new ConsecutiveAbsences());
 
         return dashboardProviders;
     }

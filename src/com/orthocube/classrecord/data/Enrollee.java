@@ -17,6 +17,11 @@ public final class Enrollee {
     private final StringProperty notes = new SimpleStringProperty();
     private final StringProperty course = new SimpleStringProperty();
 
+    @Override
+    public int hashCode() {
+        return (int) id.get();
+    }
+
     public Enrollee(long id, Clazz clazz, Student student, int classcard, String notes, String course) {
         this.id.set(id);
         this.clazz.set(clazz);

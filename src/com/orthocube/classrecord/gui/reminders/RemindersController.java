@@ -53,7 +53,6 @@ public class RemindersController implements Initializable {
     private static final Color[][] classColors = {
             {Color.decode("0xa30000"), Color.decode("0xc43c00"), Color.decode("0xc67c00"), Color.decode("0xc7a500"), Color.decode("0x79b700"), Color.decode("0x1faa00"), Color.decode("0x009624"), Color.decode("0x008e76"), Color.decode("0x0088a3"), Color.decode("0x0064b7"), Color.decode("0x0039cb"), Color.decode("0x0026ca"), Color.decode("0x0a00b6"), Color.decode("0x7200ca"), Color.decode("0x8e0038"), Color.decode("0x9b0000")},
             {Color.decode("0xff6434"), Color.decode("0xff9e40"), Color.decode("0xffdd4b"), Color.decode("0xffff52"), Color.decode("0xe4ff54"), Color.decode("0x9cff57"), Color.decode("0x5efc82"), Color.decode("0x5df2d6"), Color.decode("0x62ebff"), Color.decode("0x64c1ff"), Color.decode("0x768fff"), Color.decode("0x7a7cff"), Color.decode("0x9d46ff"), Color.decode("0xe254ff"), Color.decode("0xfd558f"), Color.decode("0xff5131")}};
-    private ResourceBundle bundle;
     private MainApp mainApp;
     private Reminder currentReminder;
     private ObservableList<Reminder> reminders;
@@ -167,10 +166,7 @@ public class RemindersController implements Initializable {
     }
 
     private void updateFilters() {
-        filteredReminders.setPredicate(reminder -> {
-            return chkAll.isSelected() || !reminder.isDone() && (DAYS.between(LocalDate.now(), reminder.getEndDate().toLocalDate()) <= 31);
-
-        });
+        filteredReminders.setPredicate(reminder -> chkAll.isSelected() || !reminder.isDone() && (DAYS.between(LocalDate.now(), reminder.getEndDate().toLocalDate()) <= 31));
     }
 
     public String getTitle() {
@@ -718,7 +714,7 @@ public class RemindersController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        bundle = resources;
+        ResourceBundle bundle = resources;
 
         initSchedule();
         initReminders();

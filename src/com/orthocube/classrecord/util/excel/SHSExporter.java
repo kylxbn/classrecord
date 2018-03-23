@@ -10,12 +10,10 @@ package com.orthocube.classrecord.util.excel;
 import com.orthocube.classrecord.data.Clazz;
 import javafx.concurrent.Task;
 
-public class SHSExporter extends Task<Void> {
-
-    private Clazz currentClass;
+class SHSExporter extends Task<Void> {
 
     public SHSExporter(Clazz c) {
-        currentClass = c;
+        Clazz currentClass = c;
     }
 
     @Override

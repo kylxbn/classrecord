@@ -18,11 +18,11 @@ package com.orthocube.classrecord.util.printing.data;
  * @author OrthoCube
  */
 public class SHSGradeRow {
-    private String name;
-    private String midterms;
-    private String finals;
-    private String average;
-    private String remarks;
+    private final String name;
+    private final String midterms;
+    private final String finals;
+    private final String average;
+    private final String remarks;
 
     public SHSGradeRow(String n, String m, String f, String a, String r) {
         name = n;

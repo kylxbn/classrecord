@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public class Dialogs {
 
-    private static Image[] icons;
+    private static final Image[] icons;
 
     static {
         icons = new Image[]{

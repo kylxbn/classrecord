@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class DashboardController implements Initializable {
-    private MainApp mainApp;
 
     @FXML
     private VBox vbxNotifications;
@@ -33,7 +32,7 @@ public class DashboardController implements Initializable {
     private ProgressIndicator prgLoading;
 
     public void setMainApp(MainApp mainApp) {
-        this.mainApp = mainApp;
+        MainApp mainApp1 = mainApp;
     }
 
     public String getTitle() {
@@ -59,6 +58,8 @@ public class DashboardController implements Initializable {
                 vbxNotifications.getChildren().setAll(poller.getValue());
                 transitionIn.setOnFinished(e -> prgLoading.setVisible(false));
                 transitionIn.play();
+            } else if (newv == Worker.State.FAILED) {
+                poller.getException().printStackTrace();
             }
         });
 

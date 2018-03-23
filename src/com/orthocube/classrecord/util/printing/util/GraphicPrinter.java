@@ -28,8 +28,8 @@ import java.awt.*;
  * @author OrthoCube
  */
 public class GraphicPrinter {
-    private Graphics g;
-    private int dpi;
+    private final Graphics g;
+    private final int dpi;
     private double xoffset, yoffset;
 
     /**

@@ -62,14 +62,14 @@
                                                         vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                     <children>
-                                        <Label text="%attendance.dateprompt"/>
-                                        <Label text="%attendance.notesprompt" GridPane.rowIndex="1"/>
                                         <DatePicker fx:id="dpkDate" maxWidth="1.7976931348623157E308"
                                                     minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1"
                                                     GridPane.columnSpan="2"/>
                                         <TextField fx:id="txtDaysNotes" minHeight="-Infinity" minWidth="-Infinity"
                                                    GridPane.columnIndex="1" GridPane.columnSpan="2"
                                                    GridPane.rowIndex="1"/>
+                                        <Label text="%attendance.dateprompt"/>
+                                        <Label text="%attendance.notesprompt" GridPane.rowIndex="1"/>
                                         <HBox alignment="TOP_RIGHT" spacing="4.0" GridPane.columnSpan="3"
                                               GridPane.rowIndex="2">
                                             <children>
@@ -133,8 +133,7 @@
                                 <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="-Infinity"
                                                    minWidth="-Infinity"/>
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                                <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308"
-                                                   minWidth="-Infinity"/>
+                                <ColumnConstraints/>
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
@@ -145,21 +144,17 @@
                                                 vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
+                                <ChoiceBox fx:id="cboRemarks" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                           minWidth="-Infinity" GridPane.columnIndex="1"/>
+                                <TextField fx:id="txtListNotes" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                                 <Label text="%attendance.remarksprompt"/>
                                 <Label text="%attendance.notesprompt" GridPane.rowIndex="1"/>
-                                <Label text="%attendance.lastmeeting" GridPane.rowIndex="2"/>
-                                <ChoiceBox fx:id="cboRemarks" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                                           minWidth="-Infinity" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
-                                <TextField fx:id="txtListNotes" GridPane.columnIndex="1" GridPane.columnSpan="2"
-                                           GridPane.rowIndex="1"/>
-                                <Label fx:id="lblLastMeeting" text="Label" GridPane.columnIndex="1"
-                                       GridPane.columnSpan="2" GridPane.rowIndex="2"/>
-                                <HBox spacing="4.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                <HBox alignment="BOTTOM_RIGHT" spacing="8.0" GridPane.columnSpan="2"
+                                      GridPane.rowIndex="2">
                                     <children>
                                         <Button fx:id="cmdListCancel" mnemonicParsing="false"
-                                                onAction="#cmdListCancelAction" text="%attendance.cancel"/>
-                                        <Button fx:id="cmdSaveList" defaultButton="true" disable="true"
-                                                mnemonicParsing="false" onAction="#cmdSaveListAction"
+                                                text="%attendance.cancel"/>
+                                        <Button fx:id="cmdSaveList" defaultButton="true" mnemonicParsing="false"
                                                 text="%attendance.save"/>
                                     </children>
                                 </HBox>

@@ -18,7 +18,9 @@ package com.orthocube.classrecord.util.printing.data;
  * @author OrthoCube
  */
 public class Field {
-    private double x, y, w;
+    private final double x;
+    private final double y;
+    private final double w;
 
     public Field(double x, double y, double w) {
         this.x = x;

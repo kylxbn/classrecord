@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class Main {
+class Main {
     private static void changeLoggingLevel(Level l) {
         Logger rootLogger = LogManager.getLogManager().getLogger("");
         rootLogger.setLevel(l);
