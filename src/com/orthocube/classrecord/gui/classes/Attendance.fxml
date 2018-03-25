@@ -153,9 +153,9 @@
                                       GridPane.rowIndex="2">
                                     <children>
                                         <Button fx:id="cmdListCancel" mnemonicParsing="false"
-                                                text="%attendance.cancel"/>
+                                                onAction="#cmdListCancelAction" text="%attendance.cancel"/>
                                         <Button fx:id="cmdSaveList" defaultButton="true" mnemonicParsing="false"
-                                                text="%attendance.save"/>
+                                                onAction="#cmdSaveListAction" text="%attendance.save"/>
                                     </children>
                                 </HBox>
                             </children>
