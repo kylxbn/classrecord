@@ -150,139 +150,172 @@
                         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
                     </padding>
                 </HBox>
+                <Separator prefWidth="200.0"/>
             </children>
         </VBox>
     </top>
     <left>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="150.0">
+        <HBox>
             <children>
-                <GridPane stylesheets="@../../res/Navigation.css">
-                    <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308"
-                                           minWidth="-Infinity"/>
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints/>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                    </rowConstraints>
+                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="150.0">
                     <children>
-                        <ToggleButton fx:id="cmdDashboard" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
-                                      maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-                                      mnemonicParsing="false" onAction="#cmdDashboardAction" styleClass="navigation"
-                                      text="%main.home">
-                            <graphic>
-                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
-                                    <image>
-                                        <Image url="@../../res/Home_40px.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                            <padding>
-                                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
-                            </padding>
-                        </ToggleButton>
-                        <ToggleButton fx:id="cmdStudents" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
-                                      maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-                                      mnemonicParsing="false" onAction="#cmdStudentsAction" styleClass="navigation"
-                                      text="%main.students" GridPane.rowIndex="1">
-                            <graphic>
-                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
-                                    <image>
-                                        <Image url="@../../res/Student_Male_40px.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                            <padding>
-                                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
-                            </padding>
-                        </ToggleButton>
-                        <ToggleButton fx:id="cmdClasses" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
-                                      maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-                                      mnemonicParsing="false" onAction="#cmdClassesAction" styleClass="navigation"
-                                      text="%main.classes" GridPane.rowIndex="2">
-                            <graphic>
-                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
-                                    <image>
-                                        <Image url="@../../res/Classroom_40px.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                            <padding>
-                                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
-                            </padding>
-                        </ToggleButton>
-                        <ToggleButton fx:id="cmdUsers" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
-                                      maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-                                      mnemonicParsing="false" onAction="#cmdUsersAction" styleClass="navigation"
-                                      text="%main.users" GridPane.rowIndex="3">
-                            <graphic>
-                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
-                                    <image>
-                                        <Image url="@../../res/Businessman_40px.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                            <padding>
-                                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
-                            </padding>
-                        </ToggleButton>
-                        <ToggleButton fx:id="cmdReminders" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
-                                      maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
-                                      mnemonicParsing="false" onAction="#mnuRemindersAction" styleClass="navigation"
-                                      text="%main.reminders" GridPane.rowIndex="4">
-                            <graphic>
-                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
-                                    <image>
-                                        <Image url="@../../res/Notification_40px.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                            <padding>
-                                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
-                            </padding>
-                        </ToggleButton>
-                    </children>
-                </GridPane>
-                <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1.0"
-                      minWidth="1.0" VBox.vgrow="ALWAYS"/>
-                <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="8.0">
-                    <children>
-                        <ImageView fx:id="pboUser" fitHeight="125.0" fitWidth="125.0" pickOnBounds="true"
-                                   preserveRatio="true"/>
-                        <Label fx:id="lblUser" text="Username">
-                            <font>
-                                <Font name="System Bold" size="14.0"/>
-                            </font>
-                        </Label>
+                        <GridPane stylesheets="@../../res/Navigation.css">
+                            <columnConstraints>
+                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"
+                                                   maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints/>
+                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+                                                vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <ToggleButton fx:id="cmdDashboard" alignment="TOP_LEFT"
+                                              maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                              minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                                              onAction="#cmdDashboardAction" styleClass="navigation" text="%main.home">
+                                    <graphic>
+                                        <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
+                                            <image>
+                                                <Image url="@../../res/Home_40px.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <padding>
+                                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                                    </padding>
+                                </ToggleButton>
+                                <ToggleButton fx:id="cmdStudents" alignment="TOP_LEFT"
+                                              maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                              minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                                              onAction="#cmdStudentsAction" styleClass="navigation"
+                                              text="%main.students" GridPane.rowIndex="1">
+                                    <graphic>
+                                        <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
+                                            <image>
+                                                <Image url="@../../res/Student_Male_40px.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <padding>
+                                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                                    </padding>
+                                </ToggleButton>
+                                <ToggleButton fx:id="cmdClasses" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
+                                              maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                              minWidth="-Infinity" mnemonicParsing="false" onAction="#cmdClassesAction"
+                                              styleClass="navigation" text="%main.classes" GridPane.rowIndex="2">
+                                    <graphic>
+                                        <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
+                                            <image>
+                                                <Image url="@../../res/Classroom_40px.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <padding>
+                                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                                    </padding>
+                                </ToggleButton>
+                                <ToggleButton fx:id="cmdUsers" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
+                                              maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                                              minWidth="-Infinity" mnemonicParsing="false" onAction="#cmdUsersAction"
+                                              styleClass="navigation" text="%main.users" GridPane.rowIndex="3">
+                                    <graphic>
+                                        <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
+                                            <image>
+                                                <Image url="@../../res/Businessman_40px.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <padding>
+                                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                                    </padding>
+                                </ToggleButton>
+                                <ToggleButton fx:id="cmdReminders" alignment="TOP_LEFT"
+                                              maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                              minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                                              onAction="#mnuRemindersAction" styleClass="navigation"
+                                              text="%main.reminders" GridPane.rowIndex="4">
+                                    <graphic>
+                                        <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" smooth="false">
+                                            <image>
+                                                <Image url="@../../res/Notification_40px.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <padding>
+                                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                                    </padding>
+                                </ToggleButton>
+                            </children>
+                        </GridPane>
+                        <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1.0"
+                              minWidth="1.0" VBox.vgrow="ALWAYS"/>
+                        <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="8.0">
+                            <children>
+                                <ImageView fx:id="pboUser" fitHeight="125.0" fitWidth="125.0" pickOnBounds="true"
+                                           preserveRatio="true"/>
+                                <Label fx:id="lblUser" text="Username">
+                                    <font>
+                                        <Font name="System Bold" size="14.0"/>
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
                     </children>
                 </VBox>
+                <Separator maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity"
+                           minWidth="-Infinity" orientation="VERTICAL"/>
             </children>
-        </VBox>
+        </HBox>
     </left>
     <bottom>
-        <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-              minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" BorderPane.alignment="CENTER_RIGHT">
+        <VBox BorderPane.alignment="CENTER_RIGHT">
             <children>
-                <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                           minWidth="-Infinity" orientation="VERTICAL"/>
-                <StackPane>
+                <Separator maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                           minWidth="-Infinity"/>
+                <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                      minHeight="-Infinity" minWidth="-Infinity" spacing="8.0">
                     <children>
-                        <ProgressBar fx:id="prgMemory" prefWidth="150.0" progress="0.0"/>
-                        <Label fx:id="lblMemory" text="MB"/>
+                        <Separator layoutX="395.0" layoutY="22.0" maxHeight="-Infinity" maxWidth="-Infinity"
+                                   minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="18.0"/>
+                        <Label text="%main.sy"/>
+                        <Label fx:id="lblCurrentSY" text="Label"/>
+                        <Separator maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                                   orientation="VERTICAL" prefHeight="18.0"/>
+                        <Label text="%main.sem"/>
+                        <Label fx:id="lblCurrentSem" text="Label"/>
+                        <Separator maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                                   orientation="VERTICAL" prefHeight="18.0"/>
+                        <Label text="%main.period"/>
+                        <Label fx:id="lblCurrentPeriod" text="Label"/>
+                        <Separator maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                                   orientation="VERTICAL" prefHeight="18.0"/>
+                        <StackPane>
+                            <children>
+                                <ProgressBar fx:id="prgMemory" prefWidth="150.0" progress="0.0"/>
+                                <Label fx:id="lblMemory" text="MB"/>
+                            </children>
+                        </StackPane>
+                        <Separator maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                                   orientation="VERTICAL" prefHeight="18.0"/>
+                        <Label fx:id="lblStatus" text="%main.ready"/>
                     </children>
-                </StackPane>
-                <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                           minWidth="-Infinity" orientation="VERTICAL"/>
-                <Label fx:id="lblStatus" text="%main.ready"/>
+                    <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                    </padding>
+                </HBox>
             </children>
-            <padding>
-                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
-            </padding>
-        </HBox>
+        </VBox>
     </bottom>
 </BorderPane>

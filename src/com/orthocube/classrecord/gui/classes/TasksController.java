@@ -12,6 +12,7 @@ import com.orthocube.classrecord.data.*;
 import com.orthocube.classrecord.util.CriterionConverter;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
+import com.orthocube.classrecord.util.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,7 +29,6 @@ import org.controlsfx.validation.Validator;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -614,36 +614,19 @@ public class TasksController implements Initializable {
         });
 
 
-        Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DATE);
-        switch (month) {
-            case Calendar.JULY:
-            case Calendar.DECEMBER:
-                if (day < 20)
-                    accTasks.setExpandedPane(tpnPrelims);
-                else
-                    accTasks.setExpandedPane(tpnMidterms);
+        int[] sysemperiod = Utils.getSYSemPeriod();
+        switch (sysemperiod[3]) {
+            case 1:
+                accTasks.setExpandedPane(tpnPrelims);
                 break;
-            case Calendar.AUGUST:
-            case Calendar.JANUARY:
-                if (day < 20)
-                    accTasks.setExpandedPane(tpnMidterms);
-                else
-                    accTasks.setExpandedPane(tpnSemis);
+            case 2:
+                accTasks.setExpandedPane(tpnMidterms);
                 break;
-            case Calendar.SEPTEMBER:
-            case Calendar.FEBRUARY:
-                if (day < 20)
-                    accTasks.setExpandedPane(tpnSemis);
-                else
-                    accTasks.setExpandedPane(tpnFinals);
+            case 3:
+                accTasks.setExpandedPane(tpnSemis);
                 break;
-            default:
-                if (day < 20)
-                    accTasks.setExpandedPane(tpnFinals);
-                else
-                    accTasks.setExpandedPane(tpnPrelims);
+            case 4:
+                accTasks.setExpandedPane(tpnFinals);
                 break;
         }
 

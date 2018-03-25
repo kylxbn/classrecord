@@ -15,6 +15,7 @@ import org.controlsfx.control.textfield.TextFields;
 import java.awt.*;
 import java.lang.reflect.Method;
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -69,5 +70,114 @@ public class Utils {
             tod = bundle.getString("utils.pm");
         }
         return String.format(bundle.getString("utils.timeformat"), hour, minute, tod);
+    }
+
+    public static int[] getSYSemPeriod() {
+        // get sy, sem, term;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+
+        int sem, period;
+        if ((month >= 5) && (month < 10)) {
+            if (month == 5) {
+                if (day < 20)
+                    sem = 3;
+                else
+                    sem = 1;
+            } else if (month == 9) {
+                if (day < 20)
+                    sem = 1;
+                else
+                    sem = 3;
+            } else {
+                sem = 1;
+            }
+
+            if (month == 5) {
+                if (day < 20) {
+                    period = 0;
+                } else {
+                    period = 1;
+                }
+            } else if (month == 6) {
+                if (day < 20) {
+                    period = 1;
+                } else {
+                    period = 2;
+                }
+            } else if (month == 7) {
+                if (day < 20) {
+                    period = 2;
+                } else {
+                    period = 3;
+                }
+            } else if (month == 8) {
+                if (day < 20) {
+                    period = 3;
+                } else {
+                    period = 4;
+                }
+            } else {
+                if (day < 20) {
+                    period = 4;
+                } else {
+                    period = 0;
+                }
+            }
+        } else if (((month >= 10) && (month < 12)) || ((month >= 0) && (month < 3))) {
+            if (month == 10) {
+                if (day < 20)
+                    sem = 1;
+                else
+                    sem = 2;
+            } else if (month == 2) {
+                if (day < 20)
+                    sem = 2;
+                else
+                    sem = 3;
+            } else {
+                sem = 2;
+            }
+
+            year--;
+            if (month == 10) {
+                if (day < 20) {
+                    period = 0;
+                } else {
+                    period = 1;
+                }
+            } else if (month == 11) {
+                if (day < 20) {
+                    period = 1;
+                } else {
+                    period = 2;
+                }
+            } else if (month == 0) {
+                if (day < 20) {
+                    period = 2;
+                } else {
+                    period = 3;
+                }
+            } else if (month == 1) {
+                if (day < 20) {
+                    period = 3;
+                } else {
+                    period = 4;
+                }
+            } else {
+                if (day < 20) {
+                    period = 4;
+                } else {
+                    period = 0;
+                }
+            }
+        } else {
+            sem = 3;
+            year--;
+            period = 0;
+        }
+
+        return new int[]{year, sem, period};
     }
 }

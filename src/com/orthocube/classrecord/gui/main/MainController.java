@@ -12,6 +12,7 @@ import com.orthocube.classrecord.data.User;
 import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import com.orthocube.classrecord.util.Settings;
+import com.orthocube.classrecord.util.Utils;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -37,12 +38,20 @@ import java.util.ResourceBundle;
  * @author OrthoCube
  */
 public class MainController implements Initializable {
+    @FXML
+    Label lblCurrentSY;
+    @FXML
+    Label lblCurrentSem;
+    @FXML
+    Label lblCurrentPeriod;
+
     // <editor-fold defaultstate="collapsed" desc="Controls">
     @FXML
     MenuItem mnuSettings;
     private MainApp mainApp;
     private ToggleGroup group = null;
     private User currentUser = new User();
+
     @FXML
     RadioMenuItem mnuLightTheme;
     @FXML
@@ -241,6 +250,27 @@ public class MainController implements Initializable {
         );
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
+
+        int[] sysemperiod = Utils.getSYSemPeriod();
+
+        lblCurrentSY.setText(Integer.toString(sysemperiod[0]) + " - " + Integer.toString(sysemperiod[0] + 1));
+        if (sysemperiod[1] == 1)
+            lblCurrentSem.setText("1st");
+        else if (sysemperiod[1] == 2)
+            lblCurrentSem.setText("2nd");
+        else
+            lblCurrentSem.setText("Summer");
+
+        if (sysemperiod[2] == 0)
+            lblCurrentPeriod.setText("Vacation");
+        else if (sysemperiod[2] == 1)
+            lblCurrentPeriod.setText("Prelims");
+        else if (sysemperiod[2] == 2)
+            lblCurrentPeriod.setText("Semis");
+        else if (sysemperiod[2] == 3)
+            lblCurrentPeriod.setText("Prelims");
+        else
+            lblCurrentPeriod.setText("Finals");
 
     }
 

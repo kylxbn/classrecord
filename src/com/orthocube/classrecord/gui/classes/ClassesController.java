@@ -707,45 +707,17 @@ public class ClassesController implements Initializable {
             }
 
             if (timefilter == 0) {
-                int year = Calendar.getInstance().get(Calendar.YEAR);
-                int month = Calendar.getInstance().get(Calendar.MONTH);
+                int[] sysemperiod = Utils.getSYSemPeriod();
 
-                int sem;
-                if ((month >= 5) && (month < 9)) {
-                    sem = 1;
-                } else if ((month == 3) || (month == 4)) {
-                    sem = 3;
-                    year--;
-                } else {
-                    sem = 2;
-                    year--;
-                }
-
-                LOGGER.log(Level.INFO, "Current SY: " + year + "\nCurrent Sem: " + sem);
-
-                include &= (clazz.getSem() == sem) ? 1 : 0;
-                include &= (clazz.getSY() == year ? 1 : 0);
+                include &= (clazz.getSem() == sysemperiod[1]) ? 1 : 0;
+                include &= (clazz.getSY() == sysemperiod[0] ? 1 : 0);
 
                 include &= (clazz.getDays() & (1 << (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1))) > 0 ? 1 : 0;
             } else if (timefilter == 1) {
-                int year = Calendar.getInstance().get(Calendar.YEAR);
-                int month = Calendar.getInstance().get(Calendar.MONTH);
+                int[] sysemperiod = Utils.getSYSemPeriod();
 
-                int sem;
-                if ((month >= 5) && (month < 9)) {
-                    sem = 1;
-                } else if ((month == 3) || (month == 4)) {
-                    sem = 3;
-                    year--;
-                } else {
-                    sem = 2;
-                    year--;
-                }
-
-                LOGGER.log(Level.INFO, "Current SY: " + year + "\nCurrent Sem: " + sem);
-
-                include &= (clazz.getSem() == sem) ? 1 : 0;
-                include &= (clazz.getSY() == year ? 1 : 0);
+                include &= (clazz.getSem() == sysemperiod[1]) ? 1 : 0;
+                include &= (clazz.getSY() == sysemperiod[0] ? 1 : 0);
             }
 
             if (levelfilter == 0) {
