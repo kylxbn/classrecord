@@ -10,6 +10,8 @@ package com.orthocube.classrecord.data;
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
 
+import java.time.LocalDate;
+
 /**
  * @author OrthoCube
  */
@@ -20,6 +22,7 @@ public final class Student {
     private final StringProperty fn = new SimpleStringProperty();
     private final StringProperty mn = new SimpleStringProperty();
     private final StringProperty ln = new SimpleStringProperty();
+    private final ObjectProperty<LocalDate> birthdate = new SimpleObjectProperty<>();
     private final BooleanProperty isFemale = new SimpleBooleanProperty();
     private final StringProperty contact = new SimpleStringProperty();
     private final StringProperty address = new SimpleStringProperty();
@@ -53,6 +56,18 @@ public final class Student {
 
     public LongProperty idProperty() {
         return id;
+    }
+
+    public LocalDate getBirthdate() {
+        return birthdate.get();
+    }
+
+    public void setBirthdate(LocalDate birthdate) {
+        this.birthdate.set(birthdate);
+    }
+
+    public ObjectProperty<LocalDate> birthdateProperty() {
+        return birthdate;
     }
 
     public String getSID() {

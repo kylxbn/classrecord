@@ -100,6 +100,7 @@ public class DB {
                         "FN VARCHAR(64), " +
                         "MN VARCHAR(64), " +
                         "LN VARCHAR(64), " +
+                        "Birthdate DATE, " +
                         "isFemale SMALLINT, " +
                         "Contact VARCHAR(64), " +
                         "Address VARCHAR(255), " +
@@ -290,6 +291,23 @@ public class DB {
             }
 
             try {
+                s.executeUpdate("CREATE TABLE OverrideGrade (ID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                        "EnrolleeID BIGINT NOT NULL, Remarks SMALLINT, Notes VARCHAR(255))");
+            } catch (SQLException e) {
+                if (!("X0Y32".equals(e.getSQLState()))) {
+                    Dialogs.exception(e);
+                }
+            }
+
+            try {
+                s.executeUpdate("CREATE TABLE SHSOverrideGrade (ID BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                        "EnrolleeID BIGINT NOT NULL, Remarks SMALLINT, Notes VARCHAR(255))");
+            } catch (SQLException e) {
+                if (!("X0Y32".equals(e.getSQLState()))) {
+                    Dialogs.exception(e);
+                }
+            }
+            try {
                 s.executeUpdate("CREATE TABLE Settings (SettingKey VARCHAR(64) PRIMARY KEY NOT NULL, " +
                         "SettingValue VARCHAR(255) NOT NULL)");
             } catch (SQLException e) {
@@ -446,7 +464,7 @@ public class DB {
     public static ObservableList<Student> getStudents() throws SQLException, IOException {
         LOGGER.log(Level.INFO, "Getting students...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT Students.StudentID, Students.SID, Students.FN, Students.MN, Students.LN, Students.IsFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture FROM Students ORDER BY LN ASC NULLS FIRST, FN ASC NULLS FIRST");
+        PreparedStatement prep = con.prepareStatement("SELECT Students.StudentID, Students.SID, Students.FN, Students.MN, Students.LN, Students.Birthdate, Students.IsFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture FROM Students ORDER BY LN ASC NULLS FIRST, FN ASC NULLS FIRST");
         r = prep.executeQuery();
 
         ObservableList<Student> students = FXCollections.observableArrayList();
@@ -457,11 +475,16 @@ public class DB {
             temp.setFN(r.getString(3));
             temp.setMN(r.getString(4));
             temp.setLN(r.getString(5));
-            temp.setFemale(r.getInt(6) > 0);
-            temp.setContact(r.getString(7));
-            temp.setAddress(r.getString(8));
-            temp.setNotes(r.getString(9));
-            InputStream is = r.getBinaryStream(10);
+            if (r.getDate(6) == null) {
+                temp.setBirthdate(null);
+            } else {
+                temp.setBirthdate(r.getDate(6).toLocalDate());
+            }
+            temp.setFemale(r.getInt(7) > 0);
+            temp.setContact(r.getString(8));
+            temp.setAddress(r.getString(9));
+            temp.setNotes(r.getString(10));
+            InputStream is = r.getBinaryStream(11);
             if (is != null) {
                 temp.setPicture(SwingFXUtils.toFXImage(ImageIO.read(is), null));
                 is.close();
@@ -475,7 +498,7 @@ public class DB {
     private static Student getStudent(long id) throws SQLException, IOException {
         LOGGER.log(Level.INFO, "Getting student...");
         ResultSet r;
-        PreparedStatement prep = con.prepareStatement("SELECT Students.StudentID, Students.SID, Students.FN, Students.MN, Students.LN, Students.IsFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture FROM Students WHERE Students.StudentID = ?");
+        PreparedStatement prep = con.prepareStatement("SELECT Students.StudentID, Students.SID, Students.FN, Students.MN, Students.LN, Students.Birthdate, Students.IsFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture FROM Students WHERE Students.StudentID = ?");
         prep.setLong(1, id);
         r = prep.executeQuery();
 
@@ -485,11 +508,16 @@ public class DB {
             student.setFN(r.getString(3));
             student.setMN(r.getString(4));
             student.setLN(r.getString(5));
-            student.setFemale(r.getInt(6) > 0);
-            student.setContact(r.getString(7));
-            student.setAddress(r.getString(8));
-            student.setNotes(r.getString(9));
-            InputStream is = r.getBinaryStream(10);
+            if (r.getDate(6) == null) {
+                student.setBirthdate(null);
+            } else {
+                student.setBirthdate(r.getDate(6).toLocalDate());
+            }
+            student.setFemale(r.getInt(7) > 0);
+            student.setContact(r.getString(8));
+            student.setAddress(r.getString(9));
+            student.setNotes(r.getString(10));
+            InputStream is = r.getBinaryStream(11);
             if (is != null) {
                 student.setPicture(SwingFXUtils.toFXImage(ImageIO.read(is), null));
                 is.close();
@@ -514,16 +542,21 @@ public class DB {
             if (imgbytes != null)
                 LOGGER.log(Level.INFO, "Image size: " + imgbytes.length + " bytes");
 
-            PreparedStatement preps = con.prepareStatement("INSERT INTO Students (Students.SID, Students.FN, Students.MN, Students.LN, Students.isFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture) VALUES (?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preps = con.prepareStatement("INSERT INTO Students (Students.SID, Students.FN, Students.MN, Students.LN, Students.Birthdate, Students.isFemale, Students.Contact, Students.Address, Students.Notes, Students.Picture) VALUES (?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             preps.setString(1, s.getSID());
             preps.setString(2, s.getFN());
             preps.setString(3, s.getMN());
             preps.setString(4, s.getLN());
-            preps.setInt(5, s.isFemale() ? 1 : 0);
-            preps.setString(6, s.getContact());
-            preps.setString(7, s.getAddress());
-            preps.setString(8, s.getNotes());
-            preps.setBytes(9, imgbytes);
+            if (s.getBirthdate() == null) {
+                preps.setDate(5, null);
+            } else {
+                preps.setDate(5, Date.valueOf(s.getBirthdate()));
+            }
+            preps.setInt(6, s.isFemale() ? 1 : 0);
+            preps.setString(7, s.getContact());
+            preps.setString(8, s.getAddress());
+            preps.setString(9, s.getNotes());
+            preps.setBytes(10, imgbytes);
             preps.executeUpdate();
             ResultSet res = preps.getGeneratedKeys();
             res.next();
@@ -542,17 +575,18 @@ public class DB {
             if (imgbytes != null)
                 LOGGER.log(Level.INFO, "Image size: " + imgbytes.length + " bytes");
 
-            PreparedStatement preps = con.prepareStatement("UPDATE Students SET SID = ?, FN = ?, MN = ?, LN = ?, isFemale = ?, Contact = ?, Address = ?, Notes = ?, Picture = ? WHERE StudentID = ?");
+            PreparedStatement preps = con.prepareStatement("UPDATE Students SET SID = ?, FN = ?, MN = ?, LN = ?, Birthdate = ?, isFemale = ?, Contact = ?, Address = ?, Notes = ?, Picture = ? WHERE StudentID = ?");
             preps.setString(1, s.getSID());
             preps.setString(2, s.getFN());
             preps.setString(3, s.getMN());
             preps.setString(4, s.getLN());
-            preps.setInt(5, s.isFemale() ? 1 : 0);
-            preps.setString(6, s.getContact());
-            preps.setString(7, s.getAddress());
-            preps.setString(8, s.getNotes());
-            preps.setBytes(9, imgbytes);
-            preps.setLong(10, s.getID());
+            preps.setDate(5, Date.valueOf(s.getBirthdate()));
+            preps.setInt(6, s.isFemale() ? 1 : 0);
+            preps.setString(7, s.getContact());
+            preps.setString(8, s.getAddress());
+            preps.setString(9, s.getNotes());
+            preps.setBytes(10, imgbytes);
+            preps.setLong(11, s.getID());
             preps.executeUpdate();
 
             return false;
@@ -1806,8 +1840,26 @@ public class DB {
             temp.setSemis(termStrings.get(2));
             temp.setFinals(termStrings.get(3));
             temp.setFinal(finalCollegeGrade(termFractions));
+            temp.setRemarks(Double.parseDouble(temp.getFinal()) > 3.00 ? "FAILED" : "PASSED");
             temp.setClassCard(currentEnrollee.getClasscard());
             temp.setCourse(currentEnrollee.getCourse());
+            temp.setNotes("");
+
+            // we check if the student's grade is overridden
+            PreparedStatement override = con.prepareStatement("SELECT Remarks, Notes FROM OverrideGrade WHERE EnrolleeID = ?");
+            override.setLong(1, currentEnrollee.getID());
+            ResultSet overrideResult = override.executeQuery();
+            if (overrideResult.next()) {
+                switch (overrideResult.getShort(1)) {
+                    case 0:
+                        temp.setRemarks("INCOMPLETE");
+                        break;
+                    case 1:
+                        temp.setRemarks("DROPPED");
+                        break;
+                }
+                temp.setNotes(overrideResult.getString(2));
+            }
             grades.add(temp);
         }
 
@@ -1966,7 +2018,25 @@ public class DB {
             temp.setMidterms(termStrings.get(0));
             temp.setFinals(termStrings.get(1));
             temp.setFinal(finalSHSGrade(termFractions));
+            temp.setRemarks(Integer.parseInt(temp.getFinal()) < 75 ? "FAILED" : "PASSED");
             temp.setCourse(currentEnrollee.getCourse());
+            temp.setNotes("");
+
+            // we check if the student's grade is overridden
+            PreparedStatement override = con.prepareStatement("SELECT Remarks, Notes FROM SHSOverrideGrade WHERE EnrolleeID = ?");
+            override.setLong(1, currentEnrollee.getID());
+            ResultSet overrideResult = override.executeQuery();
+            if (overrideResult.next()) {
+                switch (overrideResult.getShort(1)) {
+                    case 0:
+                        temp.setRemarks("ERROR");
+                        break;
+                    case 1:
+                        temp.setRemarks("DROPPED");
+                        break;
+                }
+                temp.setNotes(overrideResult.getString(2));
+            }
             grades.add(temp);
         }
 
@@ -2070,6 +2140,14 @@ public class DB {
         return Long.toString(Math.round(average.doubleValue()));
     }
 
+    private static void setSHSIncomplete(long enrolleeID) throws SQLException {
+        PreparedStatement ps = con.prepareStatement("SELECT Remarks FROM SHSOverrideGrade WHERE EnrolleeID = ?");
+        ps.setLong(1, enrolleeID);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            PreparedStatement ps2 = con.prepareStatement("UPDATE SHSOverrideGrade SET ");
+        }
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Reminders">

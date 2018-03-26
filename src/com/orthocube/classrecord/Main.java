@@ -7,6 +7,8 @@
 
 package com.orthocube.classrecord;
 
+import com.orthocube.classrecord.data.Student;
+import com.orthocube.classrecord.util.DB;
 import javafx.application.Application;
 import org.apache.commons.io.FileUtils;
 
@@ -40,12 +42,12 @@ class Main {
                     break;
                 case "--reset":
                     System.out.println("Resetting program.");
-                    try {
-                        FileUtils.deleteDirectory(new File("database"));
-                    } catch (IOException e) {
-                        System.out.println("Unable to reset program.");
-                    }
+                    reset();
                     break;
+                case "--demodata":
+                    System.out.println("Resetting and inserting demo data...");
+                    reset();
+                    demoData();
                 case "--help":
                 case "-h":
                     System.out.println("Class Record -- available switches\n");
@@ -62,5 +64,30 @@ class Main {
 
         System.setProperty("javafx.preloader", "com.orthocube.classrecord.MainPreloader");
         Application.launch(MainApp.class, args);
+    }
+
+    private static void reset() {
+        try {
+            FileUtils.deleteDirectory(new File("database"));
+        } catch (IOException e) {
+            System.out.println("Unable to reset program.");
+        }
+    }
+
+    private static void demoData() {
+
+        // TODO: Finish this
+        try {
+            Student arguelles = new Student();
+            arguelles.setFN("Angela Racel");
+            arguelles.setLN("Arguelles");
+            arguelles.setFemale(true);
+            arguelles.setMN("J");
+            DB.save(arguelles);
+
+
+        } catch (Exception e) {
+            System.out.println("Unable to insert demo data.");
+        }
     }
 }

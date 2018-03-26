@@ -7,10 +7,7 @@
 
 package com.orthocube.classrecord.data;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 public class Grade {
     private final StringProperty fname = new SimpleStringProperty();
@@ -20,8 +17,49 @@ public class Grade {
     private final StringProperty midterms = new SimpleStringProperty();
     private final StringProperty finals = new SimpleStringProperty();
     private final StringProperty _final = new SimpleStringProperty();
+    private final StringProperty remarks = new SimpleStringProperty();
     private final IntegerProperty classCard = new SimpleIntegerProperty();
     private final StringProperty course = new SimpleStringProperty();
+    private final StringProperty notes = new SimpleStringProperty();
+    private final LongProperty enrolleeID = new SimpleLongProperty();
+
+    public long getEnrolleeID() {
+        return enrolleeID.get();
+    }
+
+    public void setEnrolleeID(long name) {
+        this.enrolleeID.set(name);
+    }
+
+    public LongProperty enrolleeIDProperty() {
+        return enrolleeID;
+    }
+
+
+    public String getNotes() {
+        return notes.get();
+    }
+
+    public void setNotes(String name) {
+        this.notes.set(name);
+    }
+
+    public StringProperty notesProperty() {
+        return notes;
+    }
+
+
+    public String getRemarks() {
+        return remarks.get();
+    }
+
+    public void setRemarks(String name) {
+        this.remarks.set(name);
+    }
+
+    public StringProperty remarksProperty() {
+        return remarks;
+    }
 
     public String getFName() {
         return fname.get();

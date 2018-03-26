@@ -15,6 +15,8 @@ import org.controlsfx.control.textfield.TextFields;
 import java.awt.*;
 import java.lang.reflect.Method;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 
@@ -179,5 +181,10 @@ public class Utils {
         }
 
         return new int[]{year, sem, period};
+    }
+
+    public static int getAge(LocalDate birthdate) {
+        if (birthdate == null) return 0;
+        return Period.between(birthdate, LocalDate.now()).getYears();
     }
 }

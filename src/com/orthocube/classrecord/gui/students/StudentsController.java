@@ -14,6 +14,7 @@ import com.orthocube.classrecord.util.DB;
 import com.orthocube.classrecord.util.Dialogs;
 import com.orthocube.classrecord.util.Utils;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -57,6 +58,10 @@ public class StudentsController implements Initializable {
     private Image showedImage = null;
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
+    @FXML
+    private TableColumn<Student, Number> colAge;
+    @FXML
+    private DatePicker dpkBirthdate;
     @FXML
     private MenuItem mnuDelete;
     @FXML
@@ -173,13 +178,14 @@ public class StudentsController implements Initializable {
             txtContact.setEditable(false);
             txtAddress.setEditable(false);
             txtNotes.setEditable(false);
+            dpkBirthdate.setEditable(false);
         }
     }
 
     @FXML
     void cmdCancelAction(ActionEvent event) {
         currentStudent = tblStudents.getSelectionModel().getSelectedItem();
-        showedImage = currentStudent.getPicture();
+        showedImage = currentStudent == null ? noStudent : (currentStudent.getPicture() == null ? noPicture : currentStudent.getPicture());
         cmdSave.setText("Save");
         showStudentInfo();
         editMode(false);
@@ -192,6 +198,7 @@ public class StudentsController implements Initializable {
             currentStudent.setFN(txtFN.getText());
             currentStudent.setMN(txtMN.getText());
             currentStudent.setLN(txtLN.getText());
+            currentStudent.setBirthdate(dpkBirthdate.getValue());
             currentStudent.setFemale(cboGender.getSelectionModel().getSelectedIndex() > 0);
             currentStudent.setContact(txtContact.getText());
             currentStudent.setAddress(txtAddress.getText());
@@ -294,6 +301,7 @@ public class StudentsController implements Initializable {
             txtFN.setText(currentStudent.getFN());
             txtMN.setText(currentStudent.getMN());
             txtLN.setText(currentStudent.getLN());
+            dpkBirthdate.setValue(currentStudent.getBirthdate());
             cboGender.getSelectionModel().select(currentStudent.isFemale() ? 1 : 0);
             txtContact.setText(currentStudent.getContact());
             txtAddress.setText(currentStudent.getAddress());
@@ -331,7 +339,16 @@ public class StudentsController implements Initializable {
             if (newv == null || newv.isEmpty())
                 return true;
             String lowercasefilter = newv.toLowerCase();
-            return student.getFN().toLowerCase().contains(lowercasefilter) || student.getLN().toLowerCase().contains(lowercasefilter);
+            int converted;
+            try {
+                converted = Integer.parseInt(lowercasefilter);
+            } catch (NumberFormatException e) {
+                converted = 0;
+            }
+            return student.getFN().toLowerCase().contains(lowercasefilter)
+                    || student.getLN().toLowerCase().contains(lowercasefilter)
+                    || student.getSID().toLowerCase().contains(lowercasefilter)
+                    || Utils.getAge(student.getBirthdate()) == converted;
         }));
 
         SortedList<Student> sortedStudents = new SortedList<>(filteredStudents);
@@ -369,6 +386,16 @@ public class StudentsController implements Initializable {
         colName.setCellValueFactory(
                 cellData -> Bindings.concat(cellData.getValue().lnProperty(), ", "/*bundle.getString("nameseparator")*/, cellData.getValue().fnProperty())
         );
+        colAge.setCellValueFactory(cellData -> new ObjectBinding<Number>() {
+            {
+                bind(cellData.getValue().birthdateProperty());
+            }
+
+            @Override
+            protected Number computeValue() {
+                return Utils.getAge(cellData.getValue().getBirthdate());
+            }
+        });
 
         tblStudents.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldV, newV) -> {
@@ -382,7 +409,8 @@ public class StudentsController implements Initializable {
         cboGender.setItems(FXCollections.observableArrayList("Male", "Female"));//bundle.getString("male"), bundle.getString("female")));
 
         colID.setPrefWidth(135);
-        colName.prefWidthProperty().bind(tblStudents.widthProperty().subtract(155));
+        colName.setPrefWidth(230);
+        colAge.setPrefWidth(34);
 
         lblShowID.textProperty().bind(txtSID.textProperty());
         lblShowName.textProperty().bind(Bindings.concat(txtFN.textProperty(), " ", txtLN.textProperty()));
@@ -406,6 +434,9 @@ public class StudentsController implements Initializable {
         pboPicture.setImage(noStudent);
 
         // <editor-fold defaultstate="collapsed" desc="change listeners">
+        dpkBirthdate.valueProperty().addListener((ob, ov, nv) -> {
+            if (currentStudent != null) editMode(true);
+        });
         txtSID.textProperty().addListener((ob, ov, nv) -> {
             if (currentStudent != null) editMode(true);
         });

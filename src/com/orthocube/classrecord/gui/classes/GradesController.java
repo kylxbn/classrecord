@@ -18,6 +18,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -38,25 +39,79 @@ import java.util.logging.Logger;
 public class GradesController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(StudentEnrolledInController.class.getName());
     private Clazz currentClass;
+    ObservableList<Grade> grades;
 
     @FXML
     private TableView<Grade> tblGrades;
 
+    @FXML
+    private MenuItem mnuIncomplete;
+
+    @FXML
+    private MenuItem mnuDropped;
+
+    @FXML
+    private MenuItem mnuRemoveOverride;
+
+    @FXML
+    void mnuDroppedAction(ActionEvent event) {
+//        try {
+//            if (tblGrades.getSelectionModel().getSelectedItem() != null)
+//                if (currentClass.isSHS()) {
+//                    DB.setSHSDropped(tblGrades.getSelectionModel().getSelectedItem().getEnrolleeID());
+//                } else {
+//                    DB.setDropped(tblGrades.getSelectionModel().getSelectedItem().getEnrolleeID());
+//                }
+//        } catch (SQLException e) {
+//            Dialogs.exception(e);
+//        }
+    }
+
+    @FXML
+    void mnuIncompleteAction(ActionEvent event) {
+//        try {
+//            if (tblGrades.getSelectionModel().getSelectedItem() != null)
+//                if (currentClass.isSHS()) {
+//                    DB.setSHSIncomplete(tblGrades.getSelectionModel().getSelectedItem().getEnrolleeID());
+//                } else {
+//                    DB.setIncomplete(tblGrades.getSelectionModel().getSelectedItem().getEnrolleeID());
+//                }
+//        } catch (SQLException e) {
+//            Dialogs.exception(e);
+//        }
+    }
+
+    @FXML
+    void mnuRemoveOverrideAction(ActionEvent event) {
+//        try {
+//            if (tblGrades.getSelectionModel().getSelectedItem() != null)
+//                if (currentClass.isSHS()) {
+//                    DB.clearSHSOverride(tblGrades.getSelectionModel().getSelectedItem().getEnrolleeID());
+//                } else {
+//                    DB.clearOverride(tblGrades.getSelectionModel().getSelectedItem().getEnrolleeID());
+//                }
+//        } catch (SQLException e) {
+//            Dialogs.exception(e);
+//        }
+    }
+
     public void setClass(Clazz c) {
         currentClass = c;
         try {
-            ObservableList<Grade> grades;
             if (currentClass.isSHS()) {
                 grades = DB.getSHSGrades(c);
                 TableColumn<Grade, String> colStudent = new TableColumn<>("Student");
                 TableColumn<Grade, String> colMidterms = new TableColumn<>("Midterms");
                 TableColumn<Grade, String> colFinals = new TableColumn<>("Finals");
                 TableColumn<Grade, String> colFinal = new TableColumn<>("Final Grade");
+                TableColumn<Grade, String> colRemarks = new TableColumn<>("Remarks");
                 colStudent.setCellValueFactory(cellD -> Bindings.concat(cellD.getValue().lnameProperty(), ", ", cellD.getValue().fnameProperty()));
                 colMidterms.setCellValueFactory(cellD -> cellD.getValue().midtermsProperty());
                 colFinals.setCellValueFactory(cellD -> cellD.getValue().finalsProperty());
                 colFinal.setCellValueFactory(cellD -> cellD.getValue().finalProperty());
-                tblGrades.getColumns().addAll(colStudent, colMidterms, colFinals, colFinal);
+                colRemarks.setCellValueFactory(cellD -> cellD.getValue().remarksProperty());
+                tblGrades.getColumns().addAll(colStudent, colMidterms, colFinals, colFinal, colRemarks);
+                mnuIncomplete.setDisable(true);
             } else {
                 grades = DB.getCollegeGrades(c);
                 TableColumn<Grade, String> colStudent = new TableColumn<>("Student");
@@ -65,6 +120,7 @@ public class GradesController implements Initializable {
                 TableColumn<Grade, String> colSemis = new TableColumn<>("Semis");
                 TableColumn<Grade, String> colFinals = new TableColumn<>("Finals");
                 TableColumn<Grade, String> colFinal = new TableColumn<>("Final Grade");
+                TableColumn<Grade, String> colRemarks = new TableColumn<>("Remarks");
                 TableColumn<Grade, Number> colClassCard = new TableColumn<>("Class Card");
                 colStudent.setCellValueFactory(cellD -> Bindings.concat(cellD.getValue().lnameProperty(), ", ", cellD.getValue().fnameProperty()));
                 colPrelims.setCellValueFactory(cellD -> cellD.getValue().prelimProperty());
@@ -73,7 +129,8 @@ public class GradesController implements Initializable {
                 colFinals.setCellValueFactory(cellD -> cellD.getValue().finalsProperty());
                 colFinal.setCellValueFactory(cellD -> cellD.getValue().finalProperty());
                 colClassCard.setCellValueFactory(cellD -> cellD.getValue().classCardProperty());
-                tblGrades.getColumns().addAll(colStudent, colPrelims, colMidterms, colSemis, colFinals, colFinal, colClassCard);
+                colRemarks.setCellValueFactory(cellD -> cellD.getValue().remarksProperty());
+                tblGrades.getColumns().addAll(colStudent, colPrelims, colMidterms, colSemis, colFinals, colFinal, colRemarks, colClassCard);
             }
 
             tblGrades.setItems(grades);

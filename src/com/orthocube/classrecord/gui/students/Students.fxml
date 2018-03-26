@@ -22,12 +22,14 @@
             <children>
                 <HBox alignment="CENTER_LEFT" spacing="8.0"/>
                 <CustomTextField fx:id="txtSearch" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                 minHeight="-Infinity" minWidth="100.0" promptText="Search for name or Student ID..."/>
+                                 minHeight="-Infinity" minWidth="100.0"
+                                 promptText="Search for name or Student ID, or even age..."/>
                 <TableView fx:id="tblStudents" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                            minWidth="100.0" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colID" prefWidth="75.0" resizable="false" text="ID"/>
-                        <TableColumn fx:id="colName" prefWidth="75.0" resizable="false" text="Name"/>
+                        <TableColumn fx:id="colName" prefWidth="75.0" text="Name"/>
+                        <TableColumn fx:id="colAge" prefWidth="75.0" resizable="false" text="Age"/>
                     </columns>
                     <contextMenu>
                         <ContextMenu>
@@ -103,6 +105,8 @@
                                                                         vgrow="SOMETIMES"/>
                                                         <RowConstraints minHeight="-Infinity" valignment="BASELINE"
                                                                         vgrow="SOMETIMES"/>
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity"
+                                                                        valignment="BASELINE" vgrow="SOMETIMES"/>
                                                         <RowConstraints minHeight="-Infinity" valignment="BASELINE"
                                                                         vgrow="SOMETIMES"/>
                                                         <RowConstraints minHeight="-Infinity" valignment="BASELINE"
@@ -121,12 +125,12 @@
                                                                GridPane.rowIndex="3"/>
                                                         <Label fx:id="lblMiddleName" text="Middle Name:"
                                                                GridPane.rowIndex="4"/>
-                                                        <Label fx:id="lblGender" text="Gender:" GridPane.rowIndex="5"/>
+                                                        <Label fx:id="lblGender" text="Gender:" GridPane.rowIndex="6"/>
                                                         <Label fx:id="lblContactNumber" text="Contact Number:"
-                                                               GridPane.rowIndex="6"/>
-                                                        <Label fx:id="lblAddress" text="Address:"
                                                                GridPane.rowIndex="7"/>
-                                                        <Label fx:id="lblNotes" text="Notes:" GridPane.rowIndex="8"/>
+                                                        <Label fx:id="lblAddress" text="Address:"
+                                                               GridPane.rowIndex="8"/>
+                                                        <Label fx:id="lblNotes" text="Notes:" GridPane.rowIndex="9"/>
                                                         <TextField fx:id="txtSID" GridPane.columnIndex="1"
                                                                    GridPane.rowIndex="1"/>
                                                         <TextField fx:id="txtLN" GridPane.columnIndex="1"
@@ -135,15 +139,18 @@
                                                                    GridPane.rowIndex="3"/>
                                                         <TextField fx:id="txtMN" GridPane.columnIndex="1"
                                                                    GridPane.rowIndex="4"/>
+                                                        <DatePicker fx:id="dpkBirthdate"
+                                                                    maxWidth="1.7976931348623157E308"
+                                                                    GridPane.columnIndex="1" GridPane.rowIndex="5"/>
                                                         <ChoiceBox fx:id="cboGender" maxWidth="1.7976931348623157E308"
-                                                                   GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                                                                   GridPane.columnIndex="1" GridPane.rowIndex="6"/>
                                                         <TextField fx:id="txtContact" GridPane.columnIndex="1"
-                                                                   GridPane.rowIndex="6"/>
+                                                                   GridPane.rowIndex="7"/>
                                                         <TextArea fx:id="txtAddress" prefHeight="200.0"
                                                                   prefWidth="200.0" GridPane.columnIndex="1"
-                                                                  GridPane.rowIndex="7"/>
+                                                                  GridPane.rowIndex="8"/>
                                                         <TextArea fx:id="txtNotes" prefHeight="200.0" prefWidth="200.0"
-                                                                  GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                                                                  GridPane.columnIndex="1" GridPane.rowIndex="9"/>
                                                         <VBox GridPane.columnSpan="2">
                                                             <children>
                                                                 <HBox spacing="8.0">
@@ -185,6 +192,7 @@
                                                                 </VBox>
                                                             </children>
                                                         </VBox>
+                                                        <Label text="Birthdate:" GridPane.rowIndex="5"/>
                                                     </children>
                                                 </GridPane>
                                             </children>
