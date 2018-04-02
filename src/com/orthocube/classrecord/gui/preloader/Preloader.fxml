@@ -29,8 +29,6 @@
                                         <Font name="System Bold" size="12.0"/>
                                     </font>
                                 </Label>
-                                <Label text="%preloader.copyright"/>
-                                <Label text="%preloader.email"/>
                             </children>
                         </VBox>
                         <HBox fx:id="vbxLoading" alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"

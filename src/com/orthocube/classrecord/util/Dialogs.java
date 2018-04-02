@@ -88,7 +88,7 @@ public class Dialogs {
         ex.printStackTrace(pw);
         String exceptionText = sw.toString();
 
-        Label label = new Label("The program will try its best to recover from the \nerror but to be safe, please save all work and close the program.\nHere is the stacktrace in case you want to report this error,\nand you are encouraged to :)");
+        Label label = new Label("The program will try its best to recover from the \nerror but to be safe, please save all work and close the program.\nHere is the stacktrace in case you want to report this error,\nand you are encouraged to.");
 
         TextArea textArea = new TextArea(exceptionText);
         textArea.setEditable(false);

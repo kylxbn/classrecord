@@ -95,7 +95,7 @@
                                 </GridPane>
                             </children>
                         </VBox>
-                        <VBox fx:id="subscenebox" alignment="TOP_CENTER">
+                        <VBox fx:id="subscenebox" alignment="TOP_CENTER" visible="false">
                             <children>
                                 <Label text="%about.developer"/>
                                 <Label text="Orthographic Cube Software">
@@ -123,7 +123,7 @@
                         <Label text="%about.programmedin"/>
                     </children>
                 </VBox>
-                <HBox alignment="CENTER">
+                <HBox alignment="CENTER" visible="false">
                     <children>
                         <VBox alignment="TOP_CENTER">
                             <children>
@@ -134,7 +134,7 @@
                         </VBox>
                     </children>
                 </HBox>
-                <VBox alignment="TOP_CENTER">
+                <VBox alignment="TOP_CENTER" visible="false">
                     <children>
                         <Label text="%about.song"/>
                         <Label text="    Carl Orff - “O Fortuna”"/>

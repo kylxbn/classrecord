@@ -7,7 +7,7 @@
 Current:
     Microsoft Windows 10
     Acer Aspire E15 / E5-575G-52DA
-    Java 9
+    Java 10
     IntelliJ IDEA
     JavaFX
     SceneBuilder
@@ -15,6 +15,7 @@ Current:
 
 Before:
     Dell Inspiron 15-3531
+    Java 9
     Java 8
     NetBeans 8.2
     Swing
@@ -41,22 +42,7 @@ Before:
 
 
 
- ----- Thanks
-
-    みきとP
-    鬱P
-    buzzG
-    初音ミク
-    キズナアイ
-    ミライアカリ
-    輝夜月
-    Stack Overflow
-
-
-
  ----- Legal stuff
-
-This program is (c) 2018 Kyle Alexander Buan.
 
 This program is not responsible for any loss, damage, or any misfortune that may arise from the use of this program. You are solely responsible for your own actions, and the programmer will NOT be held liable for anything.
 

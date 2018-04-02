@@ -615,7 +615,7 @@ public class TasksController implements Initializable {
 
 
         int[] sysemperiod = Utils.getSYSemPeriod();
-        switch (sysemperiod[3]) {
+        switch (sysemperiod[2]) {
             case 1:
                 accTasks.setExpandedPane(tpnPrelims);
                 break;
