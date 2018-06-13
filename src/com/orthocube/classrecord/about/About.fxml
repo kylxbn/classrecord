@@ -49,7 +49,7 @@
                     <children>
                         <VBox HBox.hgrow="ALWAYS">
                             <children>
-                                <Label text="Version 3.0 ALPHA, Built on " />
+                                <Label text="Version 3.0, Built on " />
                                 <Label fx:id="lblDatabaseVersion" text="Database engine version " />
                             </children>
                         </VBox>
