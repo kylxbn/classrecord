@@ -8,13 +8,19 @@
   -->
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.effect.GaussianBlur?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
-           maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="100.0" prefHeight="694.0" prefWidth="932.0"
-           xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.orthocube.classrecord.gui.about.AboutController">
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="100.0" prefHeight="694.0" prefWidth="932.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orthocube.classrecord.gui.about.AboutController">
     <items>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" spacing="8.0">
             <children>
@@ -22,18 +28,17 @@
                     <children>
                         <StackPane>
                             <children>
-                                <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
-                                       text="%about.classrecord">
+                                <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="%about.classrecord">
                                     <font>
-                                        <Font name="Monospaced Bold" size="36.0"/>
+                                        <Font name="Monospaced Bold" size="36.0" />
                                     </font>
                                     <effect>
-                                        <GaussianBlur radius="15.0"/>
+                                        <GaussianBlur radius="15.0" />
                                     </effect>
                                 </Label>
                                 <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" text="%about.classrecord">
                                     <font>
-                                        <Font name="Monospaced Bold" size="36.0"/>
+                                        <Font name="Monospaced Bold" size="36.0" />
                                     </font>
                         </Label>
                             </children>
@@ -48,62 +53,49 @@
                                     <children>
                                         <VBox HBox.hgrow="ALWAYS">
                                             <children>
-                                                <Label text="%about.version"/>
-                                                <Label text="%about.builddate"/>
-                                                <Label fx:id="lblDatabaseVersion" text="Database engine version "/>
+                                                <Label text="%about.version" />
+                                                <Label text="%about.builddate" />
+                                                <Label fx:id="lblDatabaseVersion" text="Database engine version " />
                                             </children>
                                         </VBox>
                                     </children>
                                 </HBox>
-                                <GridPane hgap="8.0" maxHeight="1.7976931348623157E308"
-                                          maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
+                                <GridPane hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
                                     <columnConstraints>
-                                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER"
-                                                           maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308"
-                                                           minWidth="-Infinity"/>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
                                     </columnConstraints>
                                     <rowConstraints>
-                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                        vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                        vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                        vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                        vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="lblJavaVersion" text="Currently running on Java "
-                                               GridPane.columnIndex="1"/>
-                                        <Label fx:id="lblVendor" text="Label" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="1"/>
-                                        <Label text="%about.jreversion"/>
-                                        <Label text="%about.jredeveloper" GridPane.rowIndex="1"/>
-                                        <Label text="%about.osname" GridPane.rowIndex="2"/>
-                                        <Label text="%about.osversion" GridPane.rowIndex="3"/>
-                                        <Label fx:id="lblOSName" text="Label" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="2"/>
-                                        <Label fx:id="lblOSVersion" text="Label" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="3"/>
-                                        <Label text="%about.osarch" GridPane.rowIndex="4"/>
-                                        <Label fx:id="lblCPUISA" text="Label" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="4"/>
+                                        <Label fx:id="lblJavaVersion" text="Currently running on Java " GridPane.columnIndex="1" />
+                                        <Label fx:id="lblVendor" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <Label text="%about.jreversion" />
+                                        <Label text="%about.jredeveloper" GridPane.rowIndex="1" />
+                                        <Label text="%about.osname" GridPane.rowIndex="2" />
+                                        <Label text="%about.osversion" GridPane.rowIndex="3" />
+                                        <Label fx:id="lblOSName" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <Label fx:id="lblOSVersion" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <Label text="%about.osarch" GridPane.rowIndex="4" />
+                                        <Label fx:id="lblCPUISA" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                     </children>
                                 </GridPane>
                             </children>
                         </VBox>
-                        <VBox fx:id="subscenebox" alignment="TOP_CENTER" visible="false">
+                        <VBox fx:id="subscenebox" alignment="TOP_CENTER">
                             <children>
-                                <Label text="%about.developer"/>
+                                <Label text="%about.developer" />
                                 <Label text="Orthographic Cube Software">
                                     <font>
-                                        <Font name="System Bold" size="12.0"/>
+                                        <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Label>
-                                <Label text="© 2018 Kyle Alexander Buan"/>
+                                <Label text="© 2018 Kyle Alexander Buan" />
                             </children>
                         </VBox>
                     </children>
@@ -112,58 +104,56 @@
                     <children>
                         <VBox alignment="TOP_CENTER">
                             <children>
-                                <Label text="%about.about1" wrapText="true"/>
-                                <Label text="%about.about2" wrapText="true"/>
+                                <Label text="%about.about1" wrapText="true" />
+                                <Label text="%about.about2" wrapText="true" />
                             </children>
                         </VBox>
                     </children>
                 </HBox>
                 <VBox alignment="TOP_CENTER">
                     <children>
-                        <Label text="%about.programmedin"/>
+                        <Label text="%about.programmedin" />
                     </children>
                 </VBox>
                 <HBox alignment="CENTER" visible="false">
                     <children>
                         <VBox alignment="TOP_CENTER">
                             <children>
-                                <Label text="%about.suggest1"/>
-                                <Label text="%about.suggest2"/>
-                                <Label text="orthocube@protonmail.com"/>
+                                <Label text="%about.suggest1" />
+                                <Label text="%about.suggest2" />
+                                <Label text="orthocube@protonmail.com" />
                             </children>
                         </VBox>
                     </children>
                 </HBox>
                 <VBox alignment="TOP_CENTER" visible="false">
                     <children>
-                        <Label text="%about.song"/>
-                        <Label text="    Carl Orff - “O Fortuna”"/>
-                        <Label text="    From the album “Carmina Burana”"/>
+                        <Label text="%about.song" />
+                        <Label text="    Carl Orff - “O Fortuna”" />
+                        <Label text="    From the album “Carmina Burana”" />
                     </children>
                 </VBox>
-                <TextArea fx:id="txtCredits" editable="false" prefHeight="200.0" prefWidth="200.0" text="tersitke"
-                          wrapText="true" VBox.vgrow="ALWAYS">
+                <TextArea fx:id="txtCredits" editable="false" prefHeight="200.0" prefWidth="200.0" text="tersitke" wrapText="true" VBox.vgrow="ALWAYS">
                     <font>
-                        <Font name="Consolas" size="12.0"/>
+                        <Font name="Consolas" size="12.0" />
                     </font>
                 </TextArea>
             </children>
             <padding>
-                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
             </padding>
         </VBox>
         <VBox spacing="8.0">
             <children>
-                <Label text="%about.changelog"/>
-                <TextArea fx:id="txtChangelog" editable="false" prefHeight="200.0" prefWidth="200.0" text="tsryth\"
-                          wrapText="true" VBox.vgrow="ALWAYS">
+                <Label text="%about.changelog" />
+                <TextArea fx:id="txtChangelog" editable="false" prefHeight="200.0" prefWidth="200.0" text="tsryth\" wrapText="true" VBox.vgrow="ALWAYS">
                     <font>
-                        <Font name="Consolas" size="12.0"/>
+                        <Font name="Consolas" size="12.0" />
                     </font>
                 </TextArea>
             </children>
             <padding>
-                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
             </padding>
         </VBox>
     </items>
