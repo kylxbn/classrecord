@@ -1,5 +1,11 @@
 CHANGELOG:
 
+3.0.0 (June 13, 2018)
+    * First official release of Version 3! There has been too many
+      change to list them all, since this is a complete rewrite of
+      the original, but I'm sure you will find what you're looking
+      for easily. Good luck!
+
 2.3.3 (January 2, 2018)
     * Fix cases where Task editor window will fail to show due to
       missing icon files
