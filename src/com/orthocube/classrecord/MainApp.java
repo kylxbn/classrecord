@@ -118,11 +118,11 @@ public class MainApp extends Application implements MainPreloader.CredentialsCon
         //setDarkTheme();
         Platform.setImplicitExit(true);
         // TODO: fix blank notification/confirmation window on Linux
-        stage.setOnCloseRequest(e -> {
-            if (Dialogs.confirm("Close Application", "Are you sure you want to leave?", "Any unsaved changes will be lost.") == ButtonType.CANCEL) {
-                e.consume();
-            }
-        });
+//        stage.setOnCloseRequest(e -> {
+//            if (Dialogs.confirm("Close Application", "Are you sure you want to leave?", "Any unsaved changes will be lost.") == ButtonType.CANCEL) {
+//                e.consume();
+//            }
+//        });
 
         this.stage.setTitle(Settings.bundle.getString("main.classrecord"));
 
