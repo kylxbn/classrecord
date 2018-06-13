@@ -794,7 +794,7 @@ public class DB {
             preps.setString(6, c.getRoom());
             preps.setInt(7, c.getDays());
 
-            StringBuilder times = new StringBuilder("");
+            StringBuilder times = new StringBuilder();
             for (String time : c.getTimes()) {
                 times.append(time).append('|');
             }
@@ -819,7 +819,7 @@ public class DB {
             prep.setString(6, c.getRoom());
             prep.setInt(7, c.getDays());
 
-            StringBuilder ti = new StringBuilder("");
+            StringBuilder ti = new StringBuilder();
             for (String t : c.getTimes()) {
                 ti.append(t).append("|");
             }

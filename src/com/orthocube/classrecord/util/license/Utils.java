@@ -124,7 +124,7 @@ public class Utils {
         }
 
         List<Integer> res1 = convertBase(n, 16, myAlphabet.length);
-        StringBuilder res = new StringBuilder("");
+        StringBuilder res = new StringBuilder();
         for (int num : res1) {
             res.append(myAlphabet[num]);
         }
@@ -144,7 +144,7 @@ public class Utils {
         }
 
         List<Integer> res1 = convertBase(n, myAlphabet.length, 16);
-        StringBuilder res = new StringBuilder("");
+        StringBuilder res = new StringBuilder();
         for (int num : res1) {
             res.append(hexAlphabet[num]);
         }

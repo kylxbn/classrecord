@@ -77,9 +77,9 @@ public class AboutController implements Initializable {
         lblCPUISA.setText(System.getProperty("os.arch"));
 
         BufferedReader reader = null;
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         BufferedReader reader2 = null;
-        StringBuilder sb2 = new StringBuilder("");
+        StringBuilder sb2 = new StringBuilder();
         try {
             InputStream in = getClass().getClassLoader().getResourceAsStream("com/orthocube/classrecord/resources/changelog.txt");
             reader = new BufferedReader(new InputStreamReader(in));
