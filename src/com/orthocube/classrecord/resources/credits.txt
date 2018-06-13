@@ -5,7 +5,7 @@
  ----- Technologies used
 
 Current:
-    Microsoft Windows 10
+    Manjaro (17.1.10) with Linux (4.17)
     Acer Aspire E15 / E5-575G-52DA
     Java 10
     IntelliJ IDEA
@@ -14,6 +14,7 @@ Current:
     Git
 
 Before:
+    Microsoft Windows 10
     Dell Inspiron 15-3531
     Java 9
     Java 8
