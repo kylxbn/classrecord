@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.PrintWriter;
@@ -48,6 +49,7 @@ public class Dialogs {
         alert.setHeaderText(header);
         alert.setContentText(content);
 
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
     }
 
@@ -59,6 +61,7 @@ public class Dialogs {
         alert.setHeaderText(header);
         alert.setContentText(content);
 
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         return alert.showAndWait().get();
     }
 
@@ -70,6 +73,7 @@ public class Dialogs {
         alert.setHeaderText(header);
         alert.setContentText(content);
 
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
     }
 
@@ -107,6 +111,7 @@ public class Dialogs {
         // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
 
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
     }
 
@@ -118,6 +123,7 @@ public class Dialogs {
         alert.setHeaderText(header);
         alert.setContentText(content);
 
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         return alert.showAndWait().get();
     }
 
@@ -128,6 +134,7 @@ public class Dialogs {
         dialog.setHeaderText(header);
         dialog.setContentText(prompt);
 
+        dialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<String> result = dialog.showAndWait();
         return result.orElse(null);
     }
