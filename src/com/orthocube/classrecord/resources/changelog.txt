@@ -1,7 +1,14 @@
 CHANGELOG:
 
+3.0.1 (June 27, 2017)
+    * Now more clearly indicates the current day
+      on the schedule table
+    + Now has a refresh button on the schedule table
+    + Now indicates that there are no dashboard notifications
+      if there are none
+
 3.0.0 (June 13, 2018)
-    * First official release of Version 3! There has been too many
+    + First official release of Version 3! There has been too many
       change to list them all, since this is a complete rewrite of
       the original, but I'm sure you will find what you're looking
       for easily. Good luck!

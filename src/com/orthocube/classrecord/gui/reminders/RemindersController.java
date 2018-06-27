@@ -133,6 +133,9 @@ public class RemindersController implements Initializable {
 
     @FXML
     private ImageView pboSchedule;
+
+    @FXML
+    private Button cmdRefresh;
     // </editor-fold>
 
     public void setMainApp(MainApp mainApp) {
@@ -182,6 +185,11 @@ public class RemindersController implements Initializable {
         showReminderInfo();
         cmdSave.setText("Save as new");
         editMode(true);
+    }
+
+    @FXML
+    void cmdRefreshAction(ActionEvent event) {
+        refreshSchedule();
     }
 
     @FXML
@@ -429,6 +437,12 @@ public class RemindersController implements Initializable {
         }
         g.setColor(isDark ? Color.decode("0x404040") : Color.decode("0xE4E4E4"));
         g.fillRect(0, 0, (int) cellwidth, h);
+
+        // show current date
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        g.setColor(Color.decode("0x808080"));
+        g.fillRect((int) (cellwidth * day), (int) cellheight, (int) cellwidth, h);
 
         // draw current time
         LocalTime lt = LocalTime.now();

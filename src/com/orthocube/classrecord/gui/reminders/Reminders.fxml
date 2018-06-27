@@ -12,7 +12,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="669.0" prefWidth="902.0"
-           xmlns="http://javafx.com/javafx/9.0.1"
+           xmlns="http://javafx.com/javafx/10.0.1"
            fx:controller="com.orthocube.classrecord.gui.reminders.RemindersController">
     <items>
         <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
@@ -172,6 +172,10 @@
                                         <ChoiceBox fx:id="cboYear" minHeight="-Infinity" minWidth="-Infinity"/>
                                         <Label text="Semester:"/>
                                         <ChoiceBox fx:id="cboSem" minHeight="-Infinity" minWidth="-Infinity"/>
+                                        <Pane maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0"
+                                              minWidth="1.0" prefHeight="1.0" prefWidth="1.0" HBox.hgrow="ALWAYS"/>
+                                        <Button fx:id="cmdRefresh" mnemonicParsing="false" onAction="#cmdRefreshAction"
+                                                text="Refresh"/>
                                     </children>
                                 </HBox>
                                 <Pane fx:id="pnlSchedule" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">

@@ -33,6 +33,14 @@ import java.util.List;
 
 class DashboardPoller extends Task<List<Node>> {
 
+    private Node noNotifications;
+
+    public DashboardPoller() {
+        Node content = new Label("There are no notifications for now.");
+        noNotifications = wrap("Hello, there.", content);
+        noNotifications.setOpacity(0);
+    }
+
     private List<DashboardProvider> getProviders() {
         List<DashboardProvider> dashboardProviders = new ArrayList<>();
         dashboardProviders.add(new NoTasks());
@@ -53,6 +61,11 @@ class DashboardPoller extends Task<List<Node>> {
                 wrapped.setOpacity(0);
                 notifications.add(wrapped);
             }
+        }
+
+        // if there are no notifications, just add a default "No notifications" message.
+        if (notifications.size() == 0) {
+            notifications.add(noNotifications);
         }
         return notifications;
     }
