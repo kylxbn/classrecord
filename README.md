@@ -12,3 +12,14 @@
 - 複数のユーザー対応
 - データバックアップ可能
 - 成績の計算方法が変えられる
+
+## スクショ
+
+（ちょっと古いバージョン）
+
+![](http://orthocube.x10host.com/classrecord/images/p1.png)
+
+![](http://orthocube.x10host.com/classrecord/images/p2.png)
+
+![](http://orthocube.x10host.com/classrecord/images/p3.png)
+
