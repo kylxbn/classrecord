@@ -15,6 +15,10 @@
 
 ## スクショ
 
+（最新バージョン）
+
+![](http://orthocube.x10host.com/classrecord/images/p5.png)
+
 （ちょっと古いバージョン）
 
 ![](http://orthocube.x10host.com/classrecord/images/p1.png)
