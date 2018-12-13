@@ -19,6 +19,8 @@
 
 ![](http://orthocube.x10host.com/classrecord/images/p4.png)
 
+![](http://orthocube.x10host.com/classrecord/images/p.png)
+
 （ちょっと古いバージョン）
 
 ![](http://orthocube.x10host.com/classrecord/images/p1.png)
