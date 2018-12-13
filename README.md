@@ -19,7 +19,7 @@
 
 ![](http://orthocube.x10host.com/classrecord/images/p4.png)
 
-![](http://orthocube.x10host.com/classrecord/images/p.png)
+![](http://orthocube.x10host.com/classrecord/images/p6.png)
 
 （ちょっと古いバージョン）
 
