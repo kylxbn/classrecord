@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="controlsfx-9.0.0">
+  <library name="controlsfx-8.40.14">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/controlsfx-9.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/controlsfx-8.40.14.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
