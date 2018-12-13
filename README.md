@@ -17,7 +17,7 @@
 
 （最新バージョン）
 
-![](http://orthocube.x10host.com/classrecord/images/p5.png)
+![](http://orthocube.x10host.com/classrecord/images/p4.png)
 
 （ちょっと古いバージョン）
 
