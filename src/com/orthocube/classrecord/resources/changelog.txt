@@ -1,5 +1,8 @@
 CHANGELOG:
 
+3.0.2 (October 25, 2018)
+    * Java 8 compatibility added
+
 3.0.1 (June 27, 2017)
     * Now more clearly indicates the current day
       on the schedule table

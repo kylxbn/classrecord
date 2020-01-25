@@ -90,11 +90,11 @@ public class StudentEnrolledInController implements Initializable {
         bundle = rb;
 
 
-        lstCollege.setCellFactory(new Callback<>() {
+        lstCollege.setCellFactory(new Callback<ListView<Clazz>, ListCell<Clazz>>() {
             @Override
             public ListCell<Clazz> call(ListView<Clazz> p) {
 
-                return new ListCell<>() {
+                return new ListCell<Clazz>() {
                     @Override
                     protected void updateItem(Clazz t, boolean bln) {
                         super.updateItem(t, bln);
@@ -106,11 +106,11 @@ public class StudentEnrolledInController implements Initializable {
             }
         });
 
-        lstSHS.setCellFactory(new Callback<>() {
+        lstSHS.setCellFactory(new Callback<ListView<Clazz>, ListCell<Clazz>>() {
             @Override
             public ListCell<Clazz> call(ListView<Clazz> p) {
 
-                return new ListCell<>() {
+                return new ListCell<Clazz>() {
                     @Override
                     protected void updateItem(Clazz t, boolean bln) {
                         super.updateItem(t, bln);

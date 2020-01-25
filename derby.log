@@ -1,0 +1,19 @@
+----------------------------------------------------------------
+Wed Aug 28 14:52:01 PST 2019:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.1.0 - (1808820): instance a816c00e-016c-d6fe-d710-00000ab60908 
+on database directory /run/media/orthocube/OrthoCubeTR/Kylefile/Documents/Programming/Java/ClassRecord/database with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
+Loaded from file:/run/media/orthocube/OrthoCubeTR/Kylefile/Documents/Programming/Java/ClassRecord/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_222-b05
+user.dir=/run/media/orthocube/OrthoCubeTR/Kylefile/Documents/Programming/Java/ClassRecord
+os.name=Linux
+os.arch=amd64
+os.version=5.2.9-arch1-1-ARCH
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Wed Aug 28 14:55:15 PST 2019: Shutting down Derby engine
+----------------------------------------------------------------
+Wed Aug 28 14:55:15 PST 2019:
+Shutting down instance a816c00e-016c-d6fe-d710-00000ab60908 on database directory /run/media/orthocube/OrthoCubeTR/Kylefile/Documents/Programming/Java/ClassRecord/database with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
+----------------------------------------------------------------

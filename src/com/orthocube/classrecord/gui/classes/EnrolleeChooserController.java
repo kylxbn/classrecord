@@ -27,6 +27,8 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,6 +44,7 @@ public class EnrolleeChooserController implements Initializable {
     private final static Logger LOGGER = Logger.getLogger(EnrolleeChooserController.class.getName());
     private Enrollee currentEnrollee = null;
     private Enrollee result = null;
+    SortedList<Enrollee> sortedEnrollees;
 
     // <editor-fold defaultstate="collapsed" desc="Controls">
     @FXML
@@ -73,6 +76,7 @@ public class EnrolleeChooserController implements Initializable {
 
     @FXML
     private Button cmdChoose;
+
     // <editor-fold defaultstate="collapsed" desc="Controls">
 
 
@@ -116,7 +120,7 @@ public class EnrolleeChooserController implements Initializable {
                     return false;
             }));
 
-            SortedList<Enrollee> sortedEnrollees = new SortedList<>(filteredEnrollees);
+            sortedEnrollees = new SortedList<>(filteredEnrollees);
             sortedEnrollees.comparatorProperty().bind(tblEnrollees.comparatorProperty());
 
             tblEnrollees.setRowFactory(tv -> {

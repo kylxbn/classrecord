@@ -48,6 +48,7 @@ public class Dialogs {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
+        alert.setResizable(true);
 
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
@@ -60,6 +61,7 @@ public class Dialogs {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
+        alert.setResizable(true);
 
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         return alert.showAndWait().get();
@@ -72,6 +74,7 @@ public class Dialogs {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
+        alert.setResizable(true);
 
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
@@ -111,6 +114,8 @@ public class Dialogs {
         // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
 
+        alert.setResizable(true);
+
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
     }
@@ -122,6 +127,7 @@ public class Dialogs {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
+        alert.setResizable(true);
 
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         return alert.showAndWait().get();
@@ -133,6 +139,7 @@ public class Dialogs {
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(prompt);
+        dialog.setResizable(true);
 
         dialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<String> result = dialog.showAndWait();

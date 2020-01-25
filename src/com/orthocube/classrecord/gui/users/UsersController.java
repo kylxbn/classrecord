@@ -317,11 +317,11 @@ public class UsersController implements Initializable {
             }
         });
 
-        lstUsers.setCellFactory(new Callback<>() {
+        lstUsers.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
             @Override
             public ListCell<User> call(ListView<User> p) {
 
-                return new ListCell<>() {
+                return new ListCell<User>() {
                     @Override
                     protected void updateItem(User u, boolean bln) {
                         super.updateItem(u, bln);

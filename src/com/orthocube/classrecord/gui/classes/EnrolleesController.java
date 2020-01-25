@@ -31,6 +31,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,6 +55,7 @@ public class EnrolleesController implements Initializable {
     private Clazz currentClass;
     private Enrollee currentEnrollee;
     private ObservableList<String> courses;
+    SortedList<Enrollee> sortedEnrollees;
 
     private boolean saveInProgress = false;
 
@@ -99,6 +102,8 @@ public class EnrolleesController implements Initializable {
     private TextField txtClassCard;
     @FXML
     private Button cmdSave;
+    @FXML
+    private Button cmdCopy;
     // </editor-fold>
 
     public void setUser(User u) {
@@ -162,7 +167,7 @@ public class EnrolleesController implements Initializable {
                     return false;
             }));
 
-            SortedList<Enrollee> sortedEnrollees = new SortedList<>(filteredEnrollees);
+            sortedEnrollees = new SortedList<>(filteredEnrollees);
             sortedEnrollees.comparatorProperty().bind(tblEnrollees.comparatorProperty());
 
             tblEnrollees.setItems(sortedEnrollees);
@@ -269,6 +274,27 @@ public class EnrolleesController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    void cmdCopyAction(ActionEvent event) {
+        Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+        try {
+            StringBuilder sb = new StringBuilder();
+            for (Enrollee e : sortedEnrollees) {
+                sb.append(e.getStudent().getLN());
+                sb.append(", ");
+                sb.append(e.getStudent().getFN());
+                sb.append(" ");
+                sb.append(e.getStudent().getMN());
+                sb.append("\n");
+            }
+            StringSelection ss = new StringSelection(sb.toString());
+            cb.setContents(ss, null);
+        } catch (Exception e) {
+            Dialogs.exception(e);
+        }
+    }
+
 
     @FXML
     private void mnuViewStudentAction(ActionEvent event) {
