@@ -1,31 +1,18 @@
-# classrecord
+# ClassRecord
 
-- 生徒の情報の保存（電話番号、住所、写真とその他）
-- 授業の管理
-- 配点の管理
-- すでに登録されている生徒の入学
-- 出席の管理と記録（他の出席情報の保存も可能【欠席の理由など】）
-- 出席の分析
-- 成績の自動計算
-- 授業の予定表
-- ノートやメモの管理
-- 複数のユーザー対応
-- データバックアップ可能
-- 成績の計算方法が変えられる
+ClassRecord is an app that is made to help the management of classes for teachers in the Philippines, with support for both Senior High and College. It includes tools to make the tasks often done by teachers easier by helping them record grades, attendance, and other data and then presenting computed data in a nice and presentable way.
 
-## スクショ
+The features include, but are not limited to:
 
-（最新バージョン）
-
-![](http://orthocube.x10host.com/classrecord/images/p4.png)
-
-![](http://orthocube.x10host.com/classrecord/images/p6.png)
-
-（ちょっと古いバージョン）
-
-![](http://orthocube.x10host.com/classrecord/images/p1.png)
-
-![](http://orthocube.x10host.com/classrecord/images/p2.png)
-
-![](http://orthocube.x10host.com/classrecord/images/p3.png)
-
+- Saving student data (including phone numbers, addresses, photos, and others)
+- Class management
+- Score recording
+- Enrolling of registered students into classes
+- Management and recording of attendance  (recording of other data, for example, absence reason, is possible)
+- Attendance statistic report and analysis
+- Automatic computation of grades based on recorded scores
+- Class schedule table display
+- Notes and memos management
+- Multiple user support
+- Data backup
+- Alternative grading systems support
